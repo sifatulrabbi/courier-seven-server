@@ -1,0 +1,6 @@
+{
+  "watch": ["src", ".env", ".env.example"],
+  "ext": ".js",
+  "ignore": [],
+  "exec": "node ./src/main.js"
+}
