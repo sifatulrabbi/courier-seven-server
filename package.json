@@ -1,25 +1,31 @@
 {
   "name": "api",
   "version": "0.5.0",
-  "main": "src/main.js",
+  "main": "src/server.js",
   "repository": "git@github.com:Courier-007/api.git",
   "author": "Sifatul <mdsifatulislam.rabbi@gmail.com> (https://temujins.github.io)",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "node src/main.js",
+    "start": "node src/server.js",
     "start:dev": "nodemon",
     "lint": "eslint --fix",
     "format": "prettier --write src/*"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "connect-mongo": "^4.6.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^14.3.2",
     "express": "^4.17.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-session": "^1.17.2",
     "helmet": "^5.0.2",
-    "mongoose": "^6.1.8"
+    "mongoose": "^6.1.8",
+    "passport": "^0.5.2",
+    "passport-local": "^1.0.0",
+    "socket.io": "^4.4.1"
   },
   "devDependencies": {
     "eslint": "^8.7.0",
@@ -28,6 +34,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0",
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.15",
     "prettier": "^2.5.1"
   }
