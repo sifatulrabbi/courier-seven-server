@@ -1,4 +1,6 @@
-const usersController = require("express").Router();
+import { Router } from "express";
+
+export const usersController = Router();
 
 usersController.get("/profile");
 
@@ -9,5 +11,3 @@ usersController.post("/create");
 usersController.put("/profile");
 
 usersController.delete("/profile");
-
-module.exports = usersController;

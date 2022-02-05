@@ -1,5 +1,5 @@
-const fs = require("fs");
-const dotenv = require("dotenv");
+import fs from "fs";
+import dotenv from "dotenv";
 
 const PROD = process.env.NODE_ENV === "production";
 
@@ -19,10 +19,11 @@ function loadEnvFile() {
 }
 loadEnvFile();
 
-module.exports = {
+export const config = {
   PROD,
-  PORT: process.env.PORT,
-  MONGODB_URI: process.env.MONGODB_URI,
-  SESSION_SECRET: process.env.SESSION_SECRET,
-  COOKIE_MAX_AGE: process.env.COOKIE_MAX_AGE,
+  PORT: parseInt(process.env.PORT || "5000", 10),
+  MONGODB_URI:
+    process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/courier-007-database",
+  SESSION_SECRET: process.env.SESSION_SECRET || "KEYBOARD CAT",
+  COOKIE_MAX_AGE: parseInt(process.env.COOKIE_MAX_AGE || "10000", 10),
 };

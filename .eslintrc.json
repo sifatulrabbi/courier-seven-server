@@ -1,18 +1,23 @@
 {
+  "project": "./tsconfig.json",
+  "parser": "@typescript-eslint/parser",
   "root": true,
-  "extends": [
-    "eslint-config-airbnb-base",
-    "eslint-config-import",
-    "eslint-config-prettier"
-  ],
   "parserOptions": { "sourceType": "module", "ecmaVersion": 2018 },
-  "plugins": ["eslint-plugin-prettier", "eslint-plugin-import"],
-  "ignorePatterns": ["src/**/*.test.js", "dist/*"],
+  "plugins": [
+    "eslint-plugin-prettier",
+    "eslint-plugin-import",
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "eslint-config-import",
+    "eslint-config-prettier",
+    "eslint-config-airbnb-typescript"
+  ],
+  "ignorePatterns": ["dist/*", "*.d.ts"],
   "rules": {
-    "camelcase": "warn",
-    "arrow-parens": "warn",
-    "arrow-spacing": "warn",
-    "default-case": "warn",
     "no-console": "off",
     "no-unused-vars": "warn",
     "no-underscore-dangle": "off"

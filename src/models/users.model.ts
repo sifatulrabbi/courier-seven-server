@@ -1,22 +1,24 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+import { Schema, model } from "mongoose";
+import bcrypt from "bcrypt";
+import { IUserModel, IUser } from "../interfaces";
 
-const usersSchema = new mongoose.Schema(
+const usersSchema = new Schema<IUser, IUserModel>(
   {
     name: {
       first: { type: String, require: true },
       last: { type: String, require: true },
     },
     email: { type: String, require: true, unique: true },
-    mobile: { type: String, require: true, unique: true },
-    accountType: { type: String, require: true },
-    permanentAddress: {
+    mobile: { type: Number, require: true, unique: true },
+    password: { type: String, required: true },
+    account_type: { type: String, require: true },
+    permanent_address: {
       district: { type: String, require: true },
       area: { type: String, require: true },
       street: { type: String, require: true },
       house: { type: String, require: true },
     },
-    presentAddress: {
+    present_address: {
       district: { type: String, require: true },
       area: { type: String, require: true },
       street: { type: String, require: true },
@@ -29,17 +31,18 @@ const usersSchema = new mongoose.Schema(
   }
 );
 
-usersSchema.pre("save", async (next) => {
+usersSchema.pre("save", async function (this: IUser, next) {
   const hash = await bcrypt.hash(this.password, 10);
   this.password = hash;
   next();
 });
 
-usersSchema.methods.comparePassword = async (password) => {
+usersSchema.methods.comparePassword = async function (
+  this: IUser,
+  password: string
+) {
   const compare = await bcrypt.compare(password, this.password);
   return compare;
 };
 
-const usersModel = mongoose.model("users", usersSchema);
-
-module.exports = usersModel;
+export const usersModel = model<IUser, IUserModel>("users", usersSchema);
