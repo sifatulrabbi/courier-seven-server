@@ -1,13 +1,15 @@
-import { Router } from "express";
+import { Request, Response } from "express";
 
-export const usersController = Router();
+class UsersController {
+  async getAll(req: Request, res: Response) {}
 
-usersController.get("/profile");
+  async getOne(req: Request, res: Response) {}
 
-usersController.get("/:id");
+  async create(req: Request, res: Response) {}
 
-usersController.post("/create");
+  async update(req: Request, res: Response) {}
 
-usersController.put("/profile");
+  async remove(req: Request, res: Response) {}
+}
 
-usersController.delete("/profile");
+export const usersController = new UsersController();

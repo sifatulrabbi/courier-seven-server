@@ -8,10 +8,13 @@
     "esModuleInterop": true,
     "alwaysStrict": true,
     "module": "CommonJS",
+    "moduleResolution": "node",
     "strictNullChecks": true,
     "skipLibCheck": true,
     "pretty": true,
     "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "outDir": "dist",
     "rootDir": "src"
   },

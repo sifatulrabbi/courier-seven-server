@@ -1,4 +1,4 @@
-import https from "https";
+import http from "http";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -7,14 +7,9 @@ import cookieParse from "cookie-parser";
 import passport from "passport";
 import session from "express-session";
 import { config, sessionConfig } from "./configs";
-import {
-  showLogs,
-  connectDb,
-  localStrategy,
-  userSerializer,
-  userDeserializer,
-} from "./libs";
-import { IUserSession } from "./interfaces";
+import { showLogs, connectDb } from "./libs";
+import { localStrategy, userDeserializer, userSerializer } from "./auth";
+import { HealthController } from "./controllers";
 
 const app = express();
 
@@ -35,11 +30,13 @@ passport.deserializeUser<string>(userDeserializer);
 
 showLogs(app);
 
-const server = https.createServer(app);
+HealthController.use(app);
+
+const server = http.createServer(app);
 server.listen(config.PORT, () => {
   connectDb();
 
   if (!config.PROD) {
-    console.log("Server is up and running");
+    console.log(`Server is running on http://localhost:${config.PORT}`);
   }
 });
