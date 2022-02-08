@@ -9,7 +9,7 @@ const usersSchema = new Schema<IUser, IUserModel>(
       last: { type: String, require: true },
     },
     email: { type: String, require: true, unique: true },
-    mobile: { type: Number, require: true, unique: true },
+    mobile: { type: String, require: true, unique: true },
     password: { type: String, required: true },
     account_type: { type: String, require: true },
     permanent_address: {

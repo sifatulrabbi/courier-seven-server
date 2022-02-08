@@ -8,7 +8,7 @@ export interface IUser {
     last: string;
   };
   email: string;
-  mobile: number;
+  mobile: string;
   password: string;
   present_address: {
     district: string;
@@ -25,7 +25,7 @@ export interface IUser {
   account_type: AccountTypes;
 }
 
-interface IUserMethods {
+export interface IUserMethods {
   comparePassword: (password: string) => Promise<boolean>;
 }
 
