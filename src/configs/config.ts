@@ -26,4 +26,6 @@ export const config = {
     process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/courier-007-database",
   SESSION_SECRET: process.env.SESSION_SECRET || "KEYBOARD CAT",
   COOKIE_MAX_AGE: parseInt(process.env.COOKIE_MAX_AGE || "10000", 10),
+  SMTP_EMAIL: process.env.SMTP_EMAIL,
+  SMTP_PASSWORD: process.env.SMTP_PASSWORD,
 };

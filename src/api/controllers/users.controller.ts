@@ -1,9 +1,11 @@
 import { Router, Express, Request, Response } from "express";
 import { IUser } from "../../interfaces";
 import { CustomResponse, trimUser } from "../../libs";
-import { usersService } from "../../services";
+import { usersService, EmailsService } from "../../services";
+import { MAIL_SUBJECTS, ADMIN_EMAILS } from "../../libs/constants";
 
 const userRouter = Router();
+const emailService = new EmailsService();
 
 /**
  * @route /all
@@ -74,6 +76,7 @@ userRouter.get("/profile/:id", async (req: Request, res: Response) => {
 userRouter.post("/", async (req: Request, res: Response) => {
   try {
     const user = await usersService.create(req.body);
+    emailService.sendUserCreationMail(user);
     CustomResponse.created(res, "User registered", [user]);
   } catch (err) {
     CustomResponse.badRequest(res, false, String(err));
@@ -89,7 +92,6 @@ userRouter.delete("/profile/:id", async (req: Request, res: Response) => {
   try {
     const user = await usersService.remove(req.params.id);
     if (!user) return CustomResponse.notFound(res, "User not found", null);
-
     CustomResponse.ok(res, "User removed");
   } catch (err) {
     CustomResponse.badRequest(res, false, String(err));
