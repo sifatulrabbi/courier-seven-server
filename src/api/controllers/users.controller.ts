@@ -4,7 +4,7 @@ import { CustomResponse, trimUser } from "../../libs";
 import { usersService, EmailsService } from "../../services";
 import { MAIL_SUBJECTS, ADMIN_EMAILS } from "../../libs/constants";
 
-const userRouter = Router();
+const router = Router();
 const emailService = new EmailsService();
 
 /**
@@ -12,7 +12,7 @@ const emailService = new EmailsService();
  * @method GET
  * @controller return all the users
  */
-userRouter.get("/all", async (req: Request, res: Response) => {
+router.get("/all", async (req: Request, res: Response) => {
   try {
     const users = await usersService.getAll();
     CustomResponse.ok(res, "Success", users);
@@ -26,7 +26,7 @@ userRouter.get("/all", async (req: Request, res: Response) => {
  * @method GET
  * @controller returns the profile of the logged in user
  */
-userRouter.get("/profile", async (req: Request, res: Response) => {
+router.get("/profile", async (req: Request, res: Response) => {
   try {
     if (!req.isAuthenticated()) {
       CustomResponse.unauthorized(
@@ -56,7 +56,7 @@ userRouter.get("/profile", async (req: Request, res: Response) => {
  * @method GET
  * @controller finds a user with the id
  */
-userRouter.get("/profile/:id", async (req: Request, res: Response) => {
+router.get("/profile/:id", async (req: Request, res: Response) => {
   try {
     const user = await usersService.find({ id: req.params.id });
     if (!user) return CustomResponse.notFound(res, "User not found", null);
@@ -73,7 +73,7 @@ userRouter.get("/profile/:id", async (req: Request, res: Response) => {
  * @controller creates user
  * @redirects /profile
  */
-userRouter.post("/", async (req: Request, res: Response) => {
+router.post("/", async (req: Request, res: Response) => {
   try {
     const user = await usersService.create(req.body);
     emailService.sendUserCreationMail(user);
@@ -88,7 +88,7 @@ userRouter.post("/", async (req: Request, res: Response) => {
  * @method DELETE
  * @controller removes user
  */
-userRouter.delete("/profile/:id", async (req: Request, res: Response) => {
+router.delete("/profile/:id", async (req: Request, res: Response) => {
   try {
     const user = await usersService.remove(req.params.id);
     if (!user) return CustomResponse.notFound(res, "User not found", null);
@@ -99,5 +99,5 @@ userRouter.delete("/profile/:id", async (req: Request, res: Response) => {
 });
 
 export function useUserRouter(app: Express) {
-  app.use("/api/v1/users", userRouter);
+  app.use("/api/v1/users", router);
 }

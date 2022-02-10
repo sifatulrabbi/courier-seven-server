@@ -1,0 +1,8 @@
+Steps:
+  - Generate 6 digit OTP
+  - Store the OTP in the database
+  - Create a hash with the OTP object
+  - Set the hash in the client-side cookie
+  - Get user input OTP and the stored hash
+  - Verify OTP and the hash
+  - Complete registration
