@@ -28,4 +28,5 @@ export const config = {
   COOKIE_MAX_AGE: parseInt(process.env.COOKIE_MAX_AGE || "10000", 10),
   SMTP_EMAIL: process.env.SMTP_EMAIL,
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+  OTP_MAX_AGE: process.env.OTP_MAX_AGE || 12000,
 };
