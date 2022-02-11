@@ -24,6 +24,10 @@ class UsersService {
     } catch (err) {}
   }
 
+  async register({ mobile }: { mobile: string }) {
+    // const userDoc =
+  }
+
   async create(createUserDto: ICreateUser) {
     try {
       const userDoc: IUserDoc = new usersModel({

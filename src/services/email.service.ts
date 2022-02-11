@@ -3,7 +3,7 @@ import { transportConfig } from "../configs";
 import { IMail, IUser } from "../interfaces";
 import { ADMIN_EMAILS, MAIL_SUBJECTS } from "../libs/constants";
 
-export class EmailsService {
+class EmailService {
   private readonly transporter: nodemailer.Transporter;
   private readonly senderEmail: string;
 
@@ -49,14 +49,20 @@ export class EmailsService {
     return info;
   }
 
-  // async sendParcelCreationMail(parcel: IParcel) {
-  //   const mail: IMail = {
-  //     to: ADMIN_EMAILS,
-  //     subject: MAIL_SUBJECTS.userCreated,
-  //     text: ``,
-  //     html: ``,
-  //   };
-  //   const info = await this.sendMail(mail);
-  //   return info;
-  // }
+  async sendOtpMail(email: string, otp: string) {
+    const mail: IMail = {
+      to: email,
+      subject: `${otp} is the ${MAIL_SUBJECTS.sendOtp}`,
+      text: `
+        Dear User,
+        Your OTP is ${otp}`,
+      html: `
+        Dear User,
+        Your OTP for Courier 007 is: <code><h2>${otp}</h2></code>`,
+    };
+    const info = await this.sendMail(mail);
+    return info;
+  }
 }
+
+export const emailService = new EmailService();
