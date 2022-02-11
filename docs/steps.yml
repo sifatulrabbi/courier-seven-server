@@ -1,4 +1,10 @@
-Steps:
+user_registration_steps:
+  - Get user mobile mobile and generate an OTP and OTP hash then send the hash to the client
+  - Get OTP from user and verify it
+  - Profile creation page to create profile
+  - Create user profile
+
+OTP_steps:
   - Generate 6 digit OTP
   - Store the OTP in the database
   - Create a hash with the OTP object
