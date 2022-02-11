@@ -4,6 +4,7 @@ import { config } from "../../configs";
 import { CustomResponse } from "../../libs";
 import { COOKIES } from "../../libs/constants";
 import { otpService, emailService, usersService } from "../../services";
+import { checkUserMiddleware } from "../middlewares";
 
 const router = Router();
 
@@ -35,19 +36,23 @@ router.post("/logout", (req: Request, res: Response, next: NextFunction) => {
  * @method POST
  * @controller send otp to the given mobile number
  */
-router.post("/register", async (req: Request, res: Response) => {
-  try {
-    const { mobile } = req.body;
-    const { hash, key } = await otpService.generateOtp(mobile);
-    res.cookie(COOKIES.otpAuth, hash, {
-      maxAge: config.COOKIE_MAX_AGE,
-    });
-    emailService.sendOtpMail(mobile, key);
-    CustomResponse.ok(res, "OTP send to the address");
-  } catch (err: any) {
-    CustomResponse.internal(res, false, err.message);
+router.post(
+  "/register",
+  checkUserMiddleware,
+  async (req: Request, res: Response) => {
+    try {
+      const { mobile } = req.body;
+      const { hash, key } = await otpService.generateOtp(mobile);
+      res.cookie(COOKIES.otpAuth, hash, {
+        maxAge: config.COOKIE_MAX_AGE,
+      });
+      emailService.sendOtpMail(mobile, key);
+      CustomResponse.ok(res, "OTP send to the address");
+    } catch (err: any) {
+      CustomResponse.internal(res, false, err.message);
+    }
   }
-});
+);
 
 /**
  * @route /otp
@@ -56,14 +61,10 @@ router.post("/register", async (req: Request, res: Response) => {
  */
 router.post("/otp", async (req: Request, res: Response) => {
   try {
-    const { authentication_header } = req.cookies;
+    const hash = req.cookies[COOKIES.otpAuth];
     const { mobile, otp } = req.body;
 
-    const compare = await otpService.compareOtp(
-      otp,
-      mobile,
-      authentication_header
-    );
+    const compare = await otpService.compareOtp(otp, mobile, hash);
     if (!compare) return CustomResponse.unauthorized(res, "OTP invalid", null);
 
     res.clearCookie(COOKIES.otpAuth, { path: "/" });
