@@ -26,6 +26,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "start:dev": "nodemon",
+    "build": "rmdir ./dist && tsc",
     "lint": "eslint --fix",
     "format": "prettier --write src/*"
   },
