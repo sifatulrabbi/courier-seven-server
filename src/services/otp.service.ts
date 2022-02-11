@@ -1,6 +1,7 @@
 import { IOtp } from "../interfaces";
 import { otpModel } from "../models";
 import { createHmac } from "crypto";
+import { config } from "../configs";
 
 class OtpService {
   private hashOtp(secret: string, otp: IOtp): string {
@@ -29,25 +30,35 @@ class OtpService {
 
   async generateOtp(mobile: string) {
     try {
-      const otpDoc = new otpModel({ key: this.generateKey(), mobile });
+      const created_at = new Date();
+      const expires_at = new Date(created_at.getTime() + config.OTP_MAX_AGE);
+
+      const otpDoc = new otpModel({
+        key: this.generateKey(),
+        mobile,
+        created_at,
+        expires_at,
+      });
       const otp = await otpDoc.save();
-      console.log("OTP key is %s", otp.key);
+      console.log("OTP: %s", otp.key);
 
       const hash = this.hashOtp(mobile, otp);
-      return hash;
+      return { key: otp.key, hash };
     } catch (err) {
       throw new Error(String(err));
     }
   }
 
-  async compareOtp(otp: string, mobile: string, hash: string) {
+  async compareOtp(otp: string, secret: string, hash: string) {
     const otpObj = await otpModel.findOne({ otp });
-    if (!otpObj) return false;
+    if (!otpObj) throw new Error("Invalid OTP");
 
-    const otpHash = this.hashOtp(mobile, otpObj);
+    console.log(otpObj.expires_at.toISOString(), new Date().toISOString());
+    const valid = otpObj.expires_at > new Date();
+    const otpHash = this.hashOtp(secret, otpObj);
 
-    if (!otpObj.isValid()) return false;
-    if (otpHash !== hash) return false;
+    if (!valid) throw new Error("Your OTP has been expired");
+    if (otpHash !== hash) throw new Error("Identity error");
 
     await otpModel.deleteMany({});
     return true;
