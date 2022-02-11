@@ -2,7 +2,6 @@ import { Router, Express, Request, Response } from "express";
 import { IUser } from "../../interfaces";
 import { CustomResponse, trimUser } from "../../libs";
 import { usersService, emailService } from "../../services";
-import { MAIL_SUBJECTS, ADMIN_EMAILS } from "../../libs/constants";
 
 const router = Router();
 
