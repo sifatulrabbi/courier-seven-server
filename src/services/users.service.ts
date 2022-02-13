@@ -1,9 +1,4 @@
-import type {
-    IUser,
-    IUserProfile,
-    IUsersProfileDoc,
-    IDone,
-} from "../interfaces";
+import type { IUser, IUserProfile, IDone } from "../interfaces";
 import { usersModel, usersProfileModel } from "../models";
 
 interface ICreateProfile extends Omit<IUserProfile, "_id" | "user_id"> {}
@@ -61,7 +56,7 @@ class UsersService {
     ) {
         try {
             this.find({ id: userId }, (err, user) => {
-                if (err) return done(new Error(err.message));
+                if (err) return done(err);
                 if (!user) return done(new Error("User not found"));
                 const userProfileDoc = new usersProfileModel({
                     user_id: user?._id,
@@ -83,11 +78,11 @@ class UsersService {
     ) {
         try {
             this.find({ id: userId }, (err, user) => {
-                if (err) return done(new Error(err.message));
+                if (err) return done(err);
                 if (!user) return done(new Error("User not found"));
 
                 this.findProfile(userId, (err, userProfile) => {
-                    if (err) return done(new Error(err.message));
+                    if (err) return done(err);
                     if (!userProfile) return done(new Error("User not found"));
 
                     if (userProfile._id !== user._id) {
@@ -105,6 +100,29 @@ class UsersService {
             });
         } catch (err: any) {
             done(new Error(err.message));
+        }
+    }
+
+    async removeUser(userId: string, done: IDone<string>) {
+        try {
+            this.find({ id: userId }, (err, user) => {
+                if (err) return done(err);
+                if (!user) return done(new Error("User not found"));
+
+                usersModel.findByIdAndRemove(userId, (err: any) => {
+                    if (err) return done(new Error(String(err)));
+
+                    usersProfileModel.findOneAndRemove(
+                        { user_id: userId },
+                        (err: any) => {
+                            if (err) return done(new Error(String(err)));
+                            done(null, "User removed");
+                        }
+                    );
+                });
+            });
+        } catch (err) {
+            done(new Error("Unable to remove user please try again later"));
         }
     }
 }

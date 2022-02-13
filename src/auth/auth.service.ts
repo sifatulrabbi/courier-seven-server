@@ -1,4 +1,5 @@
 import type { IUser, IDone } from "../interfaces";
+import { usersModel } from "../models";
 import { usersService, emailService, otpService } from "../services";
 
 interface IGetOtp {
@@ -16,8 +17,10 @@ interface IRegister {
 class AuthService {
     async getOtp({ mobile, email }: IGetOtp, done: IDone<string>) {
         try {
-            if (!mobile || !email)
+            if (!mobile || !email) {
                 return done(new Error("mobile email is required"));
+            }
+
             const otp = await otpService.generateOtp(mobile);
             await emailService.sendOtpMail(email, otp.key);
             done(null, "And OTP has been sent to the email");
@@ -51,11 +54,38 @@ class AuthService {
             user?: IUser | false,
             info?: { message: string }
         ) => void
-    ) {}
+    ) {
+        try {
+            usersModel.findOne({ email, mobile }, (err: any, result: IUser) => {
+                if (err) return done(new Error(err.message));
+                if (!result) {
+                    return done(new Error("User not found"), false, {
+                        message: "User not found",
+                    });
+                }
+                done(null, result);
+            });
+        } catch (err) {
+            done(err);
+        }
+    }
 
-    async serializer(user: any, done: IDone<string>) {}
+    async serializer(user: any, done: IDone<string>) {
+        try {
+            if (!user) return done(new Error("User not found"));
+            done(null, user._id);
+        } catch (err) {
+            done(err);
+        }
+    }
 
-    async deserializer(userId: string, done: IDone<IUser>) {}
+    async deserializer(userId: string, done: IDone<IUser>) {
+        try {
+            usersService.find({ id: userId }, done);
+        } catch (err) {
+            done(err);
+        }
+    }
 }
 
 export const authService = new AuthService();
