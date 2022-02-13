@@ -23,7 +23,7 @@ class AuthService {
 
             const otp = await otpService.generateOtp(mobile);
             await emailService.sendOtpMail(email, otp.key);
-            done(null, "And OTP has been sent to the email");
+            done(null, otp.hash);
         } catch (err: any) {
             done(new Error(err.message));
         }

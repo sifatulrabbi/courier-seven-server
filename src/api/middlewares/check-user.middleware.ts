@@ -8,10 +8,18 @@ export async function checkUserMiddleware(
     next: NextFunction
 ) {
     try {
-        const user = await usersService.find({ mobile: req.body.mobile });
-        if (!user) return next();
-        CustomResponse.badRequest(res, false, "User already registered");
+        const { mobile } = req.body;
+        usersService.find({ mobile: mobile }, (err, user) => {
+            if (user) {
+                return CustomResponse.badRequest(
+                    res,
+                    false,
+                    "User already exists please login"
+                );
+            }
+        });
+        next();
     } catch (err: any) {
-        CustomResponse.internal(res, false, err.message);
+        CustomResponse.badRequest(res, false, err.message);
     }
 }
