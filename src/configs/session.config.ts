@@ -1,7 +1,9 @@
+import type { Express } from "express";
 import MongoStore from "connect-mongo";
+import session from "express-session";
 import { config } from "./config";
 
-export const sessionConfig = {
+const sessionConfig = {
     secret: config.SESSION_SECRET,
     saveUninitialized: false,
     resave: true,
@@ -16,3 +18,7 @@ export const sessionConfig = {
         autoRemove: "native",
     }),
 };
+
+export function prepareSession(app: Express) {
+    app.use(session(sessionConfig));
+}

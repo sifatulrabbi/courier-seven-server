@@ -18,7 +18,8 @@ class AuthService {
     async getOtp({ mobile, email }: IGetOtp, done: IDone<string>) {
         try {
             if (!mobile || !email) {
-                return done(new Error("mobile email is required"));
+                done(new Error("mobile email is required"));
+                return;
             }
 
             const otp = await otpService.generateOtp(mobile);
@@ -49,19 +50,18 @@ class AuthService {
     async verifyUser(
         email: string,
         mobile: string,
-        done: (
-            err: any,
-            user?: IUser | false,
-            info?: { message: string }
-        ) => void
+        otp: string,
+        hash: string,
+        done: (err: any, user?: IUser | false) => void
     ) {
         try {
+            const verify = await otpService.compareOtp(otp, mobile, hash);
+            if (!verify) return done(new Error("Unable to verify OTP"));
+
             usersModel.findOne({ email, mobile }, (err: any, result: IUser) => {
                 if (err) return done(new Error(err.message));
                 if (!result) {
-                    return done(new Error("User not found"), false, {
-                        message: "User not found",
-                    });
+                    return done(new Error("User not found"), false);
                 }
                 done(null, result);
             });

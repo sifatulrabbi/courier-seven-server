@@ -35,10 +35,8 @@ class OtpService {
                 created_at.getTime() + config.OTP_MAX_AGE
             );
             const key = this.generateKey();
-
             const otpDoc = new otpModel({ key, created_at, expires_at });
             const otp = await otpDoc.save();
-            console.log("OTP: %s", otp.key);
 
             const hash = this.hashOtp(mobile, otp);
             return { key: otp.key, hash };

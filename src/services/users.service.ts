@@ -23,19 +23,11 @@ class UsersService {
         }
     }
 
-    find(p: IFindProps, done: IDone<IUser>) {
+    find({ id, mobile }: IFindProps, done: IDone<IUser>) {
         try {
-            switch (p) {
-                case p.id:
-                    usersModel.findById(p.id, done);
-                    break;
-                case p.mobile:
-                    usersModel.findOne({ mobile: p.mobile }, done);
-                    break;
-                default:
-                    done(new Error("mobile or email is required"));
-                    break;
-            }
+            if (id) return usersModel.findById(id, done);
+            if (mobile) return usersModel.findOne({ mobile: mobile }, done);
+            done(new Error("mobile or email is required"));
         } catch (err: any) {
             done(new Error(err.message));
         }
