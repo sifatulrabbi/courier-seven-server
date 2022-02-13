@@ -43,5 +43,5 @@ router.route("").get((req: Request, res: Response) => {});
 router.route("").get((req: Request, res: Response) => {});
 
 export function useUserRouter(app: Express) {
-  app.use("/api/v1/users", router);
+    app.use("/api/v1/users", router);
 }

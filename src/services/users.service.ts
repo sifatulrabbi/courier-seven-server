@@ -1,36 +1,112 @@
 import type {
-  IUser,
-  IUserProfile,
-  IUsersProfileDoc,
-  IDone,
+    IUser,
+    IUserProfile,
+    IUsersProfileDoc,
+    IDone,
 } from "../interfaces";
-import { usersModel, registeredUsersModel } from "../models";
+import { usersModel, usersProfileModel } from "../models";
 
-interface ICreateProfile extends Omit<IUserProfile, "_id"> {}
+interface ICreateProfile extends Omit<IUserProfile, "_id" | "user_id"> {}
 
 interface IRegProps {
-  mobile: string;
-  email: string;
+    mobile: string;
+    email: string;
 }
 
 interface IFindProps {
-  id?: string;
-  mobile?: string;
+    id?: string;
+    mobile?: string;
 }
 
 class UsersService {
-  register({ mobile, email }: IRegProps, done: IDone<IUser>) {
-    const userDoc = new registeredUsersModel({ mobile, email });
-    userDoc.save(done);
-  }
+    createUser({ mobile, email }: IRegProps, done: IDone<IUser>) {
+        try {
+            const userDoc = new usersModel({ mobile, email });
+            userDoc.save(done);
+        } catch (err: any) {
+            done(new Error(err.message));
+        }
+    }
 
-  find({ id, mobile }: IFindProps, done: IDone<IUser>) {
-    if (id) {
-      usersModel.findById(id, done);
-    } else if (mobile) {
-      usersModel.findOne({ mobile }, done);
-    } else done(new Error("User not found"));
-  }
+    find(p: IFindProps, done: IDone<IUser>) {
+        try {
+            switch (p) {
+                case p.id:
+                    usersModel.findById(p.id, done);
+                    break;
+                case p.mobile:
+                    usersModel.findOne({ mobile: p.mobile }, done);
+                    break;
+                default:
+                    done(new Error("mobile or email is required"));
+                    break;
+            }
+        } catch (err: any) {
+            done(new Error(err.message));
+        }
+    }
+
+    findProfile(user_id: string, done: IDone<IUserProfile>) {
+        try {
+            usersProfileModel.findById(user_id, done);
+        } catch (err: any) {
+            done(new Error(err.message));
+        }
+    }
+
+    async createProfile(
+        userId: string,
+        { name, addresses, account_type }: ICreateProfile,
+        done: IDone<IUserProfile>
+    ) {
+        try {
+            this.find({ id: userId }, (err, user) => {
+                if (err) return done(new Error(err.message));
+                if (!user) return done(new Error("User not found"));
+                const userProfileDoc = new usersProfileModel({
+                    user_id: user?._id,
+                    name,
+                    addresses,
+                    account_type,
+                });
+                userProfileDoc.save(done);
+            });
+        } catch (err: any) {
+            done(new Error(err.message));
+        }
+    }
+
+    async updateProfile(
+        userId: string,
+        { name, addresses, account_type }: Partial<ICreateProfile>,
+        done: IDone<IUserProfile>
+    ) {
+        try {
+            this.find({ id: userId }, (err, user) => {
+                if (err) return done(new Error(err.message));
+                if (!user) return done(new Error("User not found"));
+
+                this.findProfile(userId, (err, userProfile) => {
+                    if (err) return done(new Error(err.message));
+                    if (!userProfile) return done(new Error("User not found"));
+
+                    if (userProfile._id !== user._id) {
+                        return done(new Error("User not authorized"));
+                    }
+
+                    const data = Object.assign(userProfile, {
+                        name,
+                        addresses,
+                        account_type,
+                    });
+
+                    usersProfileModel.updateMany(data, done);
+                });
+            });
+        } catch (err: any) {
+            done(new Error(err.message));
+        }
+    }
 }
 
 export const usersService = new UsersService();

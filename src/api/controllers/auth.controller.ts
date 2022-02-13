@@ -6,10 +6,10 @@ import type { IDone, IUser } from "../../interfaces";
 import { CustomResponse, convertMobileNumber } from "../../libs";
 import { COOKIES } from "../../libs/constants";
 import {
-  otpService,
-  emailService,
-  usersService,
-  messageService,
+    otpService,
+    emailService,
+    usersService,
+    messageService,
 } from "../../services";
 import { checkUserMiddleware } from "../middlewares";
 
@@ -21,15 +21,19 @@ const router = Router();
  * @controller send otp to the given mobile number
  */
 router.post("/get-otp", checkUserMiddleware, (req: Request, res: Response) => {
-  const done: IDone<IUser> = (err: any, user?: IUser) => {
-    if (err) {
-      return CustomResponse.badRequest(res, "Unable to register", err.message);
-    }
-    CustomResponse.ok(res, "And OTP was sent to the mobile number");
-  };
+    const done: IDone<IUser> = (err: any, user?: IUser) => {
+        if (err) {
+            return CustomResponse.badRequest(
+                res,
+                "Unable to register",
+                err.message
+            );
+        }
+        CustomResponse.ok(res, "And OTP was sent to the mobile number");
+    };
 
-  const { mobile, email } = req.body;
-  usersService.register({ mobile, email }, done);
+    const { mobile, email } = req.body;
+    usersService.register({ mobile, email }, done);
 });
 // router.post(
 //   "/register",
@@ -62,29 +66,29 @@ router.post("/get-otp", checkUserMiddleware, (req: Request, res: Response) => {
  * @controller gets the otp from the user and verifies it
  */
 router.post("/register", (req: Request, res: Response) => {
-  const done: IDone<IUser> = (err, result) => {
-    if (err) {
-      return CustomResponse.badRequest(
-        res,
-        "Unable to register user",
-        err.message
-      );
-    }
+    const done: IDone<IUser> = (err, result) => {
+        if (err) {
+            return CustomResponse.badRequest(
+                res,
+                "Unable to register user",
+                err.message
+            );
+        }
 
-    if (!result) {
-      return CustomResponse.notFound(
-        res,
-        "Unable to register user",
-        err.message
-      );
-    }
+        if (!result) {
+            return CustomResponse.notFound(
+                res,
+                "Unable to register user",
+                err.message
+            );
+        }
 
-    CustomResponse.created(res, "User registered", [result]);
-  };
+        CustomResponse.created(res, "User registered", [result]);
+    };
 
-  const { mobile, email, otp } = req.body;
-  const hash = req.cookies[COOKIES.otpAuth];
-  authService.register({ mobile, email, otp, hash }, done);
+    const { mobile, email, otp } = req.body;
+    const hash = req.cookies[COOKIES.otpAuth];
+    authService.register({ mobile, email, otp, hash }, done);
 });
 // router.post("/otp", async (req: Request, res: Response) => {
 //   try {
@@ -126,5 +130,5 @@ router.post("/register", (req: Request, res: Response) => {
 // });
 
 export function userAuthRouter(app: Express) {
-  app.use("/api/v1/auth", router);
+    app.use("/api/v1/auth", router);
 }
