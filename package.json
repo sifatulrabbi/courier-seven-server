@@ -31,6 +31,7 @@
     "format": "prettier --write src/*"
   },
   "dependencies": {
+    "@vonage/server-sdk": "^2.10.10",
     "bcrypt": "^5.0.1",
     "connect-mongo": "^4.6.0",
     "cookie-parser": "^1.4.6",
@@ -41,11 +42,11 @@
     "express-session": "^1.17.2",
     "helmet": "^5.0.2",
     "mongoose": "^6.1.8",
+    "morgan": "^1.10.0",
     "nodemailer": "^6.7.2",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",
-    "socket.io": "^4.4.1",
-    "morgan": "^1.10.0"
+    "socket.io": "^4.4.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

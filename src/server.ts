@@ -5,9 +5,9 @@ import { app } from "./api/app";
 
 const server = http.createServer(app);
 server.listen(config.PORT, () => {
-  connectDb();
+    connectDb();
 
-  if (!config.PROD) {
-    console.log(`Server is running on http://localhost:${config.PORT}`);
-  }
+    if (!config.PROD) {
+        console.log(`Server is running on http://localhost:${config.PORT}`);
+    }
 });

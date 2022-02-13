@@ -1,76 +1,130 @@
-import { IUser, IUserDoc } from "../interfaces";
-import { usersModel } from "../models";
+import type { IUser, IUserProfile, IDone } from "../interfaces";
+import { usersModel, usersProfileModel } from "../models";
 
-interface ICreateUser extends Omit<IUser, "_id"> {}
+interface ICreateProfile extends Omit<IUserProfile, "_id" | "user_id"> {}
+
+interface IRegProps {
+    mobile: string;
+    email: string;
+}
+
+interface IFindProps {
+    id?: string;
+    mobile?: string;
+}
 
 class UsersService {
-  async getAll() {
-    try {
-      const users = await usersModel.find({}, "_id email name mobile");
-      return users;
-    } catch (err) {
-      throw new Error(String(err));
+    createUser({ mobile, email }: IRegProps, done: IDone<IUser>) {
+        try {
+            const userDoc = new usersModel({ mobile, email });
+            userDoc.save(done);
+        } catch (err: any) {
+            done(new Error(err.message));
+        }
     }
-  }
 
-  async find({ id, mobile }: { id?: string; mobile?: string }) {
-    try {
-      const user = id
-        ? await usersModel.findById(id)
-        : mobile
-        ? await usersModel.findOne({ mobile })
-        : null;
-      return user;
-    } catch (err) {}
-  }
-
-  async register({ mobile }: { mobile: string }) {
-    // const userDoc =
-  }
-
-  async create(createUserDto: ICreateUser) {
-    try {
-      const userDoc: IUserDoc = new usersModel({
-        ...createUserDto,
-        mobile: String(createUserDto.mobile),
-      });
-      const user = await userDoc.save();
-      return user;
-    } catch (err) {
-      throw new Error(String(err));
+    find(p: IFindProps, done: IDone<IUser>) {
+        try {
+            switch (p) {
+                case p.id:
+                    usersModel.findById(p.id, done);
+                    break;
+                case p.mobile:
+                    usersModel.findOne({ mobile: p.mobile }, done);
+                    break;
+                default:
+                    done(new Error("mobile or email is required"));
+                    break;
+            }
+        } catch (err: any) {
+            done(new Error(err.message));
+        }
     }
-  }
 
-  async update(id: string, updateUserDto: Partial<ICreateUser>) {
-    try {
-      const user = await this.find({ id });
-
-      if (!user) {
-        return null;
-      }
-
-      const data = updateUserDto;
-      const updatedUser = await user.updateOne({ ...data });
-      return updatedUser;
-    } catch (err) {
-      throw new Error(String(err));
+    findProfile(user_id: string, done: IDone<IUserProfile>) {
+        try {
+            usersProfileModel.findById(user_id, done);
+        } catch (err: any) {
+            done(new Error(err.message));
+        }
     }
-  }
 
-  async remove(id: string) {
-    try {
-      const user = await this.find({ id });
-
-      if (!user) {
-        return null;
-      }
-
-      await user.remove();
-      return user.email;
-    } catch (err) {
-      throw new Error(String(err));
+    async createProfile(
+        userId: string,
+        { name, addresses, account_type }: ICreateProfile,
+        done: IDone<IUserProfile>
+    ) {
+        try {
+            this.find({ id: userId }, (err, user) => {
+                if (err) return done(err);
+                if (!user) return done(new Error("User not found"));
+                const userProfileDoc = new usersProfileModel({
+                    user_id: user?._id,
+                    name,
+                    addresses,
+                    account_type,
+                });
+                userProfileDoc.save(done);
+            });
+        } catch (err: any) {
+            done(new Error(err.message));
+        }
     }
-  }
+
+    async updateProfile(
+        userId: string,
+        { name, addresses, account_type }: Partial<ICreateProfile>,
+        done: IDone<IUserProfile>
+    ) {
+        try {
+            this.find({ id: userId }, (err, user) => {
+                if (err) return done(err);
+                if (!user) return done(new Error("User not found"));
+
+                this.findProfile(userId, (err, userProfile) => {
+                    if (err) return done(err);
+                    if (!userProfile) return done(new Error("User not found"));
+
+                    if (userProfile._id !== user._id) {
+                        return done(new Error("User not authorized"));
+                    }
+
+                    const data = Object.assign(userProfile, {
+                        name,
+                        addresses,
+                        account_type,
+                    });
+
+                    usersProfileModel.updateMany(data, done);
+                });
+            });
+        } catch (err: any) {
+            done(new Error(err.message));
+        }
+    }
+
+    async removeUser(userId: string, done: IDone<string>) {
+        try {
+            this.find({ id: userId }, (err, user) => {
+                if (err) return done(err);
+                if (!user) return done(new Error("User not found"));
+
+                usersModel.findByIdAndRemove(userId, (err: any) => {
+                    if (err) return done(new Error(String(err)));
+
+                    usersProfileModel.findOneAndRemove(
+                        { user_id: userId },
+                        (err: any) => {
+                            if (err) return done(new Error(String(err)));
+                            done(null, "User removed");
+                        }
+                    );
+                });
+            });
+        } catch (err) {
+            done(new Error("Unable to remove user please try again later"));
+        }
+    }
 }
 
 export const usersService = new UsersService();

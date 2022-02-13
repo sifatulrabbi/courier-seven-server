@@ -7,7 +7,7 @@ import passport from "passport";
 import session from "express-session";
 import { sessionConfig } from "../configs";
 import { showLogs } from "../libs";
-import { localStrategy, userDeserializer, userSerializer } from "../auth";
+import { localStrategy, authService } from "../auth";
 import { HealthController, useUserRouter, userAuthRouter } from "./controllers";
 
 export const app = express();
@@ -24,8 +24,8 @@ app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(localStrategy);
-passport.serializeUser<string>(userSerializer);
-passport.deserializeUser<string>(userDeserializer);
+passport.serializeUser<string>(authService.serializer);
+passport.deserializeUser<string>(authService.deserializer);
 
 showLogs(app);
 
