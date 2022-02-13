@@ -1,4 +1,6 @@
 import { Express, Router, Request, Response } from "express";
+import { CustomResponse } from "../../libs";
+import { messageService } from "../../services";
 
 export class HealthController {
   router: Router;
@@ -17,6 +19,7 @@ export class HealthController {
       .route("/cookie")
       .post(this.setClientCookie)
       .get(this.getClientCookie);
+    this.router.post("/sms", this.sendSMS);
   }
 
   private getHello(req: Request, res: Response) {
@@ -43,5 +46,15 @@ export class HealthController {
 
   private getClientCookie(req: Request, res: Response) {
     res.json({ cookie: req.cookies["client-cookie"] });
+  }
+
+  private async sendSMS(req: Request, res: Response) {
+    try {
+      const { mobile, otp } = req.body;
+      const info = await messageService.sendOtp(mobile, otp);
+      CustomResponse.ok(res, "Message sent", [info]);
+    } catch (err: any) {
+      CustomResponse.badRequest(res, false, err.message);
+    }
   }
 }

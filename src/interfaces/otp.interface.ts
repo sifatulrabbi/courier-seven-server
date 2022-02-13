@@ -3,7 +3,6 @@ import { HydratedDocument, Model } from "mongoose";
 export interface IOtp {
   _id?: string;
   key: string;
-  mobile: string;
   created_at: Date;
   expires_at: Date;
 }

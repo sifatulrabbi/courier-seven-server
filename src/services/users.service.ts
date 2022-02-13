@@ -1,75 +1,35 @@
-import { IUser, IUserDoc } from "../interfaces";
-import { usersModel } from "../models";
+import type {
+  IUser,
+  IUserProfile,
+  IUsersProfileDoc,
+  IDone,
+} from "../interfaces";
+import { usersModel, registeredUsersModel } from "../models";
 
-interface ICreateUser extends Omit<IUser, "_id"> {}
+interface ICreateProfile extends Omit<IUserProfile, "_id"> {}
+
+interface IRegProps {
+  mobile: string;
+  email: string;
+}
+
+interface IFindProps {
+  id?: string;
+  mobile?: string;
+}
 
 class UsersService {
-  async getAll() {
-    try {
-      const users = await usersModel.find({}, "_id email name mobile");
-      return users;
-    } catch (err) {
-      throw new Error(String(err));
-    }
+  register({ mobile, email }: IRegProps, done: IDone<IUser>) {
+    const userDoc = new registeredUsersModel({ mobile, email });
+    userDoc.save(done);
   }
 
-  async find({ id, mobile }: { id?: string; mobile?: string }) {
-    try {
-      const user = id
-        ? await usersModel.findById(id)
-        : mobile
-        ? await usersModel.findOne({ mobile })
-        : null;
-      return user;
-    } catch (err) {}
-  }
-
-  async register({ mobile }: { mobile: string }) {
-    // const userDoc =
-  }
-
-  async create(createUserDto: ICreateUser) {
-    try {
-      const userDoc: IUserDoc = new usersModel({
-        ...createUserDto,
-        mobile: String(createUserDto.mobile),
-      });
-      const user = await userDoc.save();
-      return user;
-    } catch (err) {
-      throw new Error(String(err));
-    }
-  }
-
-  async update(id: string, updateUserDto: Partial<ICreateUser>) {
-    try {
-      const user = await this.find({ id });
-
-      if (!user) {
-        return null;
-      }
-
-      const data = updateUserDto;
-      const updatedUser = await user.updateOne({ ...data });
-      return updatedUser;
-    } catch (err) {
-      throw new Error(String(err));
-    }
-  }
-
-  async remove(id: string) {
-    try {
-      const user = await this.find({ id });
-
-      if (!user) {
-        return null;
-      }
-
-      await user.remove();
-      return user.email;
-    } catch (err) {
-      throw new Error(String(err));
-    }
+  find({ id, mobile }: IFindProps, done: IDone<IUser>) {
+    if (id) {
+      usersModel.findById(id, done);
+    } else if (mobile) {
+      usersModel.findOne({ mobile }, done);
+    } else done(new Error("User not found"));
   }
 }
 

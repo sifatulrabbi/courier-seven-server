@@ -3,12 +3,17 @@ import { AccountTypes } from "./account-types.interface";
 
 export interface IUser {
   _id?: string;
+  mobile: string;
+  email: string;
+}
+
+export interface IUserProfile {
+  _id?: string;
+  user_id: string;
   name: {
     first: string;
     last: string;
   };
-  email: string;
-  mobile: string;
   password: string;
   present_address: {
     district: string;
@@ -29,8 +34,8 @@ export interface IUserMethods {
   comparePassword: (password: string) => Promise<boolean>;
 }
 
-export type IUserModel = Model<IUser, {}, IUserMethods>;
+export type IUsersDoc = HydratedDocument<IUser>;
 
-export type IUserDoc = HydratedDocument<IUser, IUserMethods>;
+export type IUsersProfileModel = Model<IUserProfile, {}, IUserMethods>;
 
-export type IUserSession = Omit<IUser, "password">;
+export type IUsersProfileDoc = HydratedDocument<IUserProfile, IUserMethods>;

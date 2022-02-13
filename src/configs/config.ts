@@ -29,4 +29,9 @@ export const config = {
   SMTP_EMAIL: process.env.SMTP_EMAIL,
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,
   OTP_MAX_AGE: parseInt(process.env.OTP_MAX_AGE || "12000", 10),
+  TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
+  TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
+  TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER,
+  VONAGE_API_KEY: process.env.VONAGE_API_KEY,
+  VONAGE_API_SECRET: process.env.VONAGE_API_SECRET,
 };

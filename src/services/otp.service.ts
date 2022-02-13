@@ -32,13 +32,9 @@ class OtpService {
     try {
       const created_at = new Date();
       const expires_at = new Date(created_at.getTime() + config.OTP_MAX_AGE);
+      const key = this.generateKey();
 
-      const otpDoc = new otpModel({
-        key: this.generateKey(),
-        mobile,
-        created_at,
-        expires_at,
-      });
+      const otpDoc = new otpModel({ key, created_at, expires_at });
       const otp = await otpDoc.save();
       console.log("OTP: %s", otp.key);
 
@@ -50,10 +46,9 @@ class OtpService {
   }
 
   async compareOtp(otp: string, secret: string, hash: string) {
-    const otpObj = await otpModel.findOne({ otp });
+    const otpObj = await otpModel.findOne({ key: otp });
     if (!otpObj) throw new Error("Invalid OTP");
 
-    console.log(otpObj.expires_at.toISOString(), new Date().toISOString());
     const valid = otpObj.expires_at > new Date();
     const otpHash = this.hashOtp(secret, otpObj);
 
