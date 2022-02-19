@@ -3,17 +3,18 @@ import bcrypt from "bcrypt";
 import { IUser, IUserProfile, IUsersProfileModel } from "../interfaces";
 
 const usersSchema = new Schema<IUser>({
-    email: { type: String, required: true },
     mobile: { type: String, require: true },
 });
 
 const usersProfileSchema = new Schema<IUserProfile, IUsersProfileModel>(
     {
         user_id: { type: String, required: true },
+        email: { type: String, required: true },
         name: {
             first: { type: String, require: true },
             last: { type: String, require: true },
         },
+        password: { type: String, required: true },
         account_type: { type: String, require: true },
         addresses: {
             permanent: {
@@ -36,23 +37,23 @@ const usersProfileSchema = new Schema<IUserProfile, IUsersProfileModel>(
     }
 );
 
-// usersSchema.pre("save", async function (this: IUserProfile, next) {
-//   const hash = await bcrypt.hash(this.password, 10);
-//   this.password = hash;
-//   next();
-// });
+usersProfileSchema.pre("save", async function (this: IUserProfile, next) {
+    const hash = await bcrypt.hash(this.password, 10);
+    this.password = hash;
+    next();
+});
 
-// usersSchema.methods.comparePassword = async function (
-//   this: IUserProfile,
-//   password: string
-// ) {
-//   const compare = await bcrypt.compare(password, this.password);
-//   return compare;
-// };
+usersProfileSchema.methods.comparePassword = async function (
+    this: IUserProfile,
+    password: string
+) {
+    const compare = await bcrypt.compare(password, this.password);
+    return compare;
+};
 
-export const usersModel = model<IUser>("registered-users", usersSchema);
+export const usersModel = model<IUser>("users", usersSchema);
 
 export const usersProfileModel = model<IUserProfile, IUsersProfileModel>(
-    "users",
+    "user_profiles",
     usersProfileSchema
 );

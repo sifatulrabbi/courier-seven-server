@@ -13,8 +13,8 @@ const router = Router();
  * @controller send otp to the given mobile number
  */
 router.route("/get-otp").post((req: Request, res: Response) => {
-    const { mobile, email } = req.body;
-    authService.getOtp({ mobile, email }, (err, hash) => {
+    const { mobile } = req.body;
+    authService.getOtp(mobile, (err, hash) => {
         if (err) {
             CustomResponse.badRequest(res, false, err.message);
             return;
@@ -31,9 +31,9 @@ router.route("/get-otp").post((req: Request, res: Response) => {
  * @controller gets the otp from the user and verifies it
  */
 router.route("/register").post((req: Request, res: Response) => {
-    const { mobile, email, otp } = req.body;
+    const { mobile, otp } = req.body;
     const hash = req.cookies[COOKIES.otpAuth];
-    authService.register({ mobile, email, otp, hash }, (err, result) => {
+    authService.register({ mobile, otp, hash }, (err, result) => {
         if (err) {
             return CustomResponse.badRequest(
                 res,

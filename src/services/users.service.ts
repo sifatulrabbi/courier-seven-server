@@ -1,11 +1,8 @@
 import type { IUser, IUserProfile, IDone } from "../interfaces";
 import { usersModel, usersProfileModel } from "../models";
 
-interface ICreateProfile extends Omit<IUserProfile, "_id" | "user_id"> {}
-
-interface IRegProps {
-    mobile: string;
-    email: string;
+interface ICreateProfile extends Omit<IUserProfile, "_id"> {
+    confirm_password: string;
 }
 
 interface IFindProps {
@@ -14,9 +11,9 @@ interface IFindProps {
 }
 
 class UsersService {
-    createUser({ mobile, email }: IRegProps, done: IDone<IUser>) {
+    createUser(mobile: string, done: IDone<IUser>) {
         try {
-            const userDoc = new usersModel({ mobile, email });
+            const userDoc = new usersModel({ mobile });
             userDoc.save(done);
         } catch (err: any) {
             done(new Error(err.message));
@@ -33,9 +30,9 @@ class UsersService {
         }
     }
 
-    findProfile(user_id: string, done: IDone<IUserProfile>) {
+    findProfile(profileId: string, done: IDone<IUserProfile>) {
         try {
-            usersProfileModel.findById(user_id, done);
+            usersProfileModel.findById(profileId, done);
         } catch (err: any) {
             done(new Error(err.message));
         }
@@ -43,18 +40,31 @@ class UsersService {
 
     async createProfile(
         userId: string,
-        { name, addresses, account_type }: ICreateProfile,
+        {
+            name,
+            email,
+            password,
+            confirm_password,
+            addresses,
+            account_type,
+        }: ICreateProfile,
         done: IDone<IUserProfile>
     ) {
         try {
             this.find({ id: userId }, (err, user) => {
                 if (err) return done(err);
                 if (!user) return done(new Error("User not found"));
+                if (password !== confirm_password) {
+                    return done(new Error("Passwords don't match"));
+                }
+
                 const userProfileDoc = new usersProfileModel({
-                    user_id: user?._id,
+                    user_id: user._id,
                     name,
                     addresses,
                     account_type,
+                    email,
+                    password,
                 });
                 userProfileDoc.save(done);
             });
@@ -65,19 +75,29 @@ class UsersService {
 
     async updateProfile(
         userId: string,
-        { name, addresses, account_type }: Partial<ICreateProfile>,
+        {
+            name,
+            email,
+            password,
+            confirm_password,
+            addresses,
+            account_type,
+        }: Partial<ICreateProfile>,
         done: IDone<IUserProfile>
     ) {
         try {
             this.find({ id: userId }, (err, user) => {
                 if (err) return done(err);
                 if (!user) return done(new Error("User not found"));
+                if (password && password !== confirm_password) {
+                    return done(new Error("Passwords don't match"));
+                }
 
                 this.findProfile(userId, (err, userProfile) => {
                     if (err) return done(err);
                     if (!userProfile) return done(new Error("User not found"));
 
-                    if (userProfile._id !== user._id) {
+                    if (userProfile.user_id !== user._id) {
                         return done(new Error("User not authorized"));
                     }
 

@@ -1,19 +1,20 @@
 import { HydratedDocument, Model } from "mongoose";
-import { AccountTypes } from "./account-types.interface";
+import { AccountTypes } from "./interfaces";
 
 export interface IUser {
     _id?: string;
     mobile: string;
-    email: string;
 }
 
 export interface IUserProfile {
     _id?: string;
     user_id: string;
+    email: string;
     name: {
         first: string;
         last: string;
     };
+    password: string;
     addresses: {
         present: {
             district: string;
