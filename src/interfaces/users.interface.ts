@@ -1,5 +1,5 @@
 import { HydratedDocument, Model } from "mongoose";
-import { AccountTypes } from "./interfaces";
+import { IAccountTypes } from "./interfaces";
 
 export interface IUser {
     _id?: string;
@@ -29,7 +29,7 @@ export interface IUserProfile {
             houser: string;
         };
     };
-    account_type: AccountTypes;
+    account_type: IAccountTypes;
 }
 
 export interface IUserMethods {

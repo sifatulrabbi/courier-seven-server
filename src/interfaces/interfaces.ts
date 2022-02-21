@@ -1,4 +1,6 @@
-export type AccountTypes = "bronze" | "silver" | "platinum" | "diamond";
+export type IAccountTypes = "bronze" | "silver" | "platinum" | "diamond";
+
+export type IProductTypes = "solid" | "liquid" | "fragile";
 
 export type IDone<T> = (err: any | Error, result?: T) => void;
 
