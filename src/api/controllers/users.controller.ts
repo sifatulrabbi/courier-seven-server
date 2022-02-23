@@ -6,42 +6,76 @@ import { usersService } from "../../services";
 const router = Router();
 
 /**
+ *
  * @route /all
  * @method GET
- * @controller return all the users
+ * @description get all users information
+ *
+ * @method POST
+ * @description create user
  */
-router.route("").get((req: Request, res: Response) => {});
+router
+  .route("/")
+  .get((req: Request, res: Response) => {
+    try {
+    } catch (err: any) {
+      CustomResponse.internal(res, err.message, err);
+    }
+  })
+  .post((req: Request, res: Response) => {
+    try {
+    } catch (err: any) {
+      CustomResponse.internal(res, err.message, err);
+    }
+  });
 
 /**
+ *
  * @route /profile
  * @method GET
- * @controller returns the profile of the logged in user
+ * @description returns the profile of the logged in user
  */
-router.route("").get((req: Request, res: Response) => {});
+router.route("/profile").get((req: Request, res: Response) => {
+  try {
+  } catch (err: any) {
+    CustomResponse.internal(res, err.message, err);
+  }
+});
 
 /**
+ *
  * @route /profile/:id
  * @param id
  * @method GET
- * @controller finds a user with the id
- */
-router.route("").get((req: Request, res: Response) => {});
-
-/**
- * @route /
- * @method POST
- * @controller creates user
- * @redirects /profile
- */
-router.route("").get((req: Request, res: Response) => {});
-
-/**
- * @route /profile/:id
+ * @description finds an user with the id
+ *
+ * @method PUT
+ * @description updates an user
+ *
  * @method DELETE
- * @controller removes user
+ * @description removes an user
  */
-router.route("").get((req: Request, res: Response) => {});
+router
+  .route("/profile/:id")
+  .get((req: Request, res: Response) => {
+    try {
+    } catch (err: any) {
+      CustomResponse.internal(res, err.message, err);
+    }
+  })
+  .put((req: Request, res: Response) => {
+    try {
+    } catch (err: any) {
+      CustomResponse.internal(res, err.message, err);
+    }
+  })
+  .delete((req: Request, res: Response) => {
+    try {
+    } catch (err: any) {
+      CustomResponse.internal(res, err.message, err);
+    }
+  });
 
 export function useUserRouter(app: Express) {
-    app.use("/api/v1/users", router);
+  app.use("/api/v1/users", router);
 }

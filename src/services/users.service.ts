@@ -1,142 +1,145 @@
 import type { IUser, IUserProfile, IDone } from "../interfaces";
-import { usersModel, usersProfileModel } from "../models";
+import { usersModel, userProfilesModel } from "../models";
 
 interface ICreateProfile extends Omit<IUserProfile, "_id"> {
-    confirm_password: string;
+  confirm_password: string;
 }
 
 interface IFindProps {
-    id?: string;
-    mobile?: string;
+  id?: string;
+  mobile?: string;
+}
+
+interface IFindProfile {
+  userId?: string;
+  profileId?: string;
 }
 
 class UsersService {
-    createUser(mobile: string, done: IDone<IUser>) {
-        try {
-            const userDoc = new usersModel({ mobile });
-            userDoc.save(done);
-        } catch (err: any) {
-            done(new Error(err.message));
-        }
+  // create primary user with mobile
+  createUser(mobile: string, done: IDone<IUser>) {
+    try {
+      const userDoc = new usersModel({ mobile });
+      userDoc.save(done);
+    } catch (err: any) {
+      done(err);
     }
+  }
 
-    find({ id, mobile }: IFindProps, done: IDone<IUser>) {
-        try {
-            if (id) return usersModel.findById(id, done);
-            if (mobile) return usersModel.findOne({ mobile: mobile }, done);
-            done(new Error("mobile or email is required"));
-        } catch (err: any) {
-            done(new Error(err.message));
-        }
+  // find primary user doc with userId or mobile number
+  findUser({ id, mobile }: IFindProps, done: IDone<IUser>) {
+    try {
+      if (id) return usersModel.findById(id, done);
+      if (mobile) return usersModel.findOne({ mobile: mobile }, done);
+      done(new Error("mobile or email is required"));
+    } catch (err: any) {
+      done(err);
     }
+  }
 
-    findProfile(profileId: string, done: IDone<IUserProfile>) {
-        try {
-            usersProfileModel.findById(profileId, done);
-        } catch (err: any) {
-            done(new Error(err.message));
-        }
+  // update user mobile number
+  updateUser(userId: string, mobile: string, done: IDone<IUser>) {
+    try {
+      this.findUser({ id: userId }, (err: any, user?: IUser) => {
+        if (err) return done(err);
+        if (!user) return done(new Error("User not found"));
+
+        usersModel.findByIdAndUpdate(userId, { mobile }, done);
+      });
+    } catch (err: any) {
+      done(err);
     }
+  }
 
-    async createProfile(
-        userId: string,
-        {
-            name,
-            email,
-            password,
-            confirm_password,
-            addresses,
-            account_type,
-        }: ICreateProfile,
-        done: IDone<IUserProfile>
-    ) {
-        try {
-            this.find({ id: userId }, (err, user) => {
-                if (err) return done(err);
-                if (!user) return done(new Error("User not found"));
-                if (password !== confirm_password) {
-                    return done(new Error("Passwords don't match"));
-                }
+  // remove user and call removeProfile function
+  removeUser(userId: string, done: IDone<IUser>) {
+    try {
+      this.findUser({ id: userId }, (err: any, user?: IUser) => {
+        if (err) return done(err);
+        if (!user) return done(new Error("User not found"));
 
-                const userProfileDoc = new usersProfileModel({
-                    user_id: user._id,
-                    name,
-                    addresses,
-                    account_type,
-                    email,
-                    password,
-                });
-                userProfileDoc.save(done);
-            });
-        } catch (err: any) {
-            done(new Error(err.message));
-        }
+        usersModel.findByIdAndRemove(userId, (err: any) => {
+          if (err) return done(err);
+
+          this.removeProfile(userId, (err: any, profile?: IUserProfile) => {
+            if (err) return done(err);
+            if (!profile) {
+              return done(new Error("User not found"));
+            }
+
+            done(null, user);
+          });
+        });
+      });
+    } catch (err) {
+      done(err);
     }
+  }
 
-    async updateProfile(
-        userId: string,
-        {
-            name,
-            email,
-            password,
-            confirm_password,
-            addresses,
-            account_type,
-        }: Partial<ICreateProfile>,
-        done: IDone<IUserProfile>
-    ) {
-        try {
-            this.find({ id: userId }, (err, user) => {
-                if (err) return done(err);
-                if (!user) return done(new Error("User not found"));
-                if (password && password !== confirm_password) {
-                    return done(new Error("Passwords don't match"));
-                }
-
-                this.findProfile(userId, (err, userProfile) => {
-                    if (err) return done(err);
-                    if (!userProfile) return done(new Error("User not found"));
-
-                    if (userProfile.user_id !== user._id) {
-                        return done(new Error("User not authorized"));
-                    }
-
-                    const data = Object.assign(userProfile, {
-                        name,
-                        addresses,
-                        account_type,
-                    });
-
-                    usersProfileModel.updateMany(data, done);
-                });
-            });
-        } catch (err: any) {
-            done(new Error(err.message));
-        }
+  // create profile for a primary user
+  createProfile(data: ICreateProfile, done: IDone<IUserProfile>) {
+    try {
+      const userDoc = new userProfilesModel(data);
+      userDoc.save(done);
+    } catch (err: any) {
+      done(err);
     }
+  }
 
-    async removeUser(userId: string, done: IDone<string>) {
-        try {
-            this.find({ id: userId }, (err, user) => {
-                if (err) return done(err);
-                if (!user) return done(new Error("User not found"));
-
-                usersModel.findByIdAndRemove(userId, (err: any) => {
-                    if (err) return done(new Error(String(err)));
-
-                    usersProfileModel.findOneAndRemove(
-                        { user_id: userId },
-                        (err: any) => {
-                            if (err) return done(new Error(String(err)));
-                            done(null, "User removed");
-                        }
-                    );
-                });
-            });
-        } catch (err) {
-            done(new Error("Unable to remove user please try again later"));
-        }
+  // find user profile with userId or profileId
+  findProfile(prop: IFindProfile, done: IDone<IUserProfile>) {
+    try {
+      switch (prop) {
+        case prop.profileId:
+          userProfilesModel.findById(prop.profileId, done);
+          break;
+        case prop.userId:
+          userProfilesModel.findOne({ user_id: prop.userId }, done);
+        default:
+          done(new Error("userId or profileId not found"));
+      }
+    } catch (err: any) {
+      done(err);
     }
+  }
+
+  // update user profile
+  updateProfile(
+    userId: string,
+    data: Partial<ICreateProfile>,
+    done: IDone<IUserProfile>
+  ) {
+    try {
+      this.findUser({ id: userId }, (err: any, user?: IUser) => {
+        if (err) return done(err);
+        if (!user) return done(new Error("User not found"));
+
+        this.findProfile({ userId }, (err: any, profile?: IUserProfile) => {
+          if (err) return done(err);
+
+          userProfilesModel.findOneAndUpdate({ user_id: userId }, data, done);
+        });
+      });
+    } catch (err: any) {
+      done(err);
+    }
+  }
+
+  // remove user profile
+  removeProfile(userId: string, done: IDone<IUserProfile>) {
+    try {
+      this.findProfile({ userId }, (err: any, profile?: IUserProfile) => {
+        if (err) return done(err);
+        if (!profile) {
+          return done(new Error("User profile does not exist"));
+        }
+
+        userProfilesModel.findOneAndRemove({ user_id: userId }, done);
+      });
+    } catch (err: any) {
+      done(err);
+    }
+  }
 }
 
 export const usersService = new UsersService();
