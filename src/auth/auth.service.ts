@@ -9,6 +9,8 @@ interface IGetOtp {
 
 interface IRegister {
   mobile: string;
+  first_name: string;
+  last_name: string;
   otp: string;
   hash: string;
 }
@@ -16,49 +18,50 @@ interface IRegister {
 class AuthService {
   async getOtp(mobile: string, done: IDone<string>) {
     try {
-      if (!mobile) {
-        done(new Error("mobile number is required"));
-        return;
-      }
-
       const otp = await otpService.generateOtp(mobile);
       done(null, otp.hash);
     } catch (err: any) {
-      done(new Error(err.message));
+      done(err);
     }
   }
 
-  async register({ mobile, otp, hash }: IRegister, done: IDone<IUser>) {
-    try {
-      if (!mobile || !otp || !hash) {
-        return done(new Error("mobile, email, otp, hash is required"));
-      }
+  async register(
+    { mobile, first_name, last_name, otp, hash }: IRegister,
+    done: IDone<IUser>
+  ) {
+    if (!mobile || !otp || !hash) {
+      return done(new Error("mobile, email, otp, hash is required"));
+    }
 
-      const verify = await otpService.compareOtp(otp, mobile, hash);
-      if (!verify) return done(new Error("Unable to verify OTP"));
-      usersService.createUser(mobile, done);
+    try {
+      await otpService.compareOtp(otp, mobile, hash, (err, success) => {
+        if (err) return done(err);
+        if (!success) return done(new Error("Unable to verify OTP"));
+        usersService.createUser({ mobile, first_name, last_name }, done);
+      });
     } catch (err: any) {
-      done(new Error(String(err.message)));
+      done(err);
     }
   }
 
   async verifyUser(
-    email: string,
     mobile: string,
     otp: string,
     hash: string,
     done: (err: any, user?: IUser | false) => void
   ) {
     try {
-      const verify = await otpService.compareOtp(otp, mobile, hash);
-      if (!verify) return done(new Error("Unable to verify OTP"));
+      await otpService.compareOtp(otp, mobile, hash, (err, success) => {
+        if (err) return done(err);
+        if (!success) return done(new Error("Unable to verify OTP"));
 
-      usersModel.findOne({ email, mobile }, (err: any, result: IUser) => {
-        if (err) return done(new Error(err.message));
-        if (!result) {
-          return done(new Error("User not found"), false);
-        }
-        done(null, result);
+        usersModel.findOne({ mobile }, (err: any, user?: IUser) => {
+          if (err) return done(err);
+          if (!user) {
+            return done(new Error("User not found"), false);
+          }
+          done(null, user);
+        });
       });
     } catch (err) {
       done(err);
@@ -76,7 +79,7 @@ class AuthService {
 
   async deserializer(userId: string, done: IDone<IUser>) {
     try {
-      usersService.find({ id: userId }, done);
+      usersService.findUser({ id: userId }, done);
     } catch (err) {
       done(err);
     }

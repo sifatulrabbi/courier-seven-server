@@ -16,8 +16,7 @@ router.route("/get-otp").post((req: Request, res: Response) => {
   const { mobile } = req.body;
   authService.getOtp(mobile, (err, hash) => {
     if (err) {
-      CustomResponse.badRequest(res, false, err.message);
-      return;
+      return CustomResponse.badRequest(res, false, err.message);
     }
     if (!hash) return CustomResponse.internal(res, false, err.message);
     res.cookie(COOKIES.otpAuth, hash);
@@ -30,29 +29,34 @@ router.route("/get-otp").post((req: Request, res: Response) => {
  * @method POST
  * @controller gets the otp from the user and verifies it
  */
-router.route("/register").post((req: Request, res: Response) => {
-  const { mobile, otp } = req.body;
-  const hash = req.cookies[COOKIES.otpAuth];
-  authService.register({ mobile, otp, hash }, (err, result) => {
-    if (err) {
-      return CustomResponse.badRequest(
-        res,
-        "Unable to register user",
-        err.message
-      );
-    }
+router
+  .route("/register")
+  .post(checkUserMiddleware, (req: Request, res: Response) => {
+    const { mobile, first_name, last_name, otp } = req.body;
+    const hash = req.cookies[COOKIES.otpAuth];
+    authService.register(
+      { mobile, first_name, last_name, otp, hash },
+      (err, result) => {
+        if (err) {
+          return CustomResponse.badRequest(
+            res,
+            "Unable to register user",
+            err.message
+          );
+        }
 
-    if (!result) {
-      return CustomResponse.notFound(
-        res,
-        "Unable to register user",
-        err.message
-      );
-    }
+        if (!result) {
+          return CustomResponse.notFound(
+            res,
+            "Unable to register user",
+            err.message
+          );
+        }
 
-    CustomResponse.created(res, "User registered", [result]);
+        CustomResponse.created(res, "User registered", [result]);
+      }
+    );
   });
-});
 
 /**
  * @route /login

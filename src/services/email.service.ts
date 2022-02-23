@@ -1,4 +1,4 @@
-import type { IMail, IUser, IUserProfile } from "../interfaces";
+import type { IMail, IUser } from "../interfaces";
 import nodemailer from "nodemailer";
 import { transportConfig } from "../configs";
 import { ADMIN_EMAILS, MAIL_SUBJECTS } from "../libs/constants";
@@ -34,16 +34,11 @@ class EmailService {
     const mail: IMail = {
       to: ADMIN_EMAILS,
       subject: MAIL_SUBJECTS.userCreated,
-      text:
-        "New user created at Courier 007.\nMobile: " +
-        user.mobile +
-        "\nEmail: " +
-        user.email,
+      text: "New user created at Courier 007.\nMobile: " + user.mobile,
       html: `
         <h3 style="">New user details</h3>
         <p>
         <strong>Mobile: </strong>${user.mobile}
-        <strong>Email: </strong>${user.email}<br/>
         </p>
         <a style="color: black;" href="#">Learn More</a>`,
     };

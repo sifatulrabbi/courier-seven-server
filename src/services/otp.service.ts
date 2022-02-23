@@ -1,4 +1,4 @@
-import { IOtp } from "../interfaces";
+import { IDone, IOtp } from "../interfaces";
 import { otpModel } from "../models";
 import { createHmac } from "crypto";
 import { config } from "../configs";
@@ -35,6 +35,7 @@ class OtpService {
       const key = this.generateKey();
       const otpDoc = new otpModel({ key, created_at, expires_at });
       const otp = await otpDoc.save();
+      console.log("key: " + otp.key);
 
       const hash = this.hashOtp(mobile, otp);
       return { key: otp.key, hash };
@@ -43,18 +44,23 @@ class OtpService {
     }
   }
 
-  async compareOtp(otp: string, mobile: string, hash: string) {
+  async compareOtp(
+    otp: string,
+    mobile: string,
+    hash: string,
+    done: IDone<boolean>
+  ) {
     const otpObj = await otpModel.findOne({ key: otp });
-    if (!otpObj) throw new Error("Invalid OTP");
+    if (!otpObj) return done(new Error("OTP invalid"));
 
     const valid = otpObj.expires_at > new Date();
-    if (!valid) throw new Error("Your OTP has been expired");
+    if (!valid) done(new Error("Your OTP has been expired"));
 
     const otpHash = this.hashOtp(mobile, otpObj);
-    if (otpHash !== hash) throw new Error("Identity error");
+    if (otpHash !== hash) done(new Error("Identity error"));
 
     await otpModel.deleteMany({});
-    return true;
+    done(null, true);
   }
 }
 

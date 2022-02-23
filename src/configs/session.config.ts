@@ -12,7 +12,7 @@ const sessionConfig = {
     httpOnly: true,
   },
   store: new MongoStore({
-    collectionName: "users-session",
+    collectionName: "user-sessions",
     mongoUrl: config.MONGODB_URI,
     ttl: config.COOKIE_MAX_AGE,
     autoRemove: "native",
