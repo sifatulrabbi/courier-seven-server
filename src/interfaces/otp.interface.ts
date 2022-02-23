@@ -1,14 +1,14 @@
 import { HydratedDocument, Model } from "mongoose";
 
 export interface IOtp {
-    _id?: string;
-    key: string;
-    created_at: Date;
-    expires_at: Date;
+  _id?: string;
+  key: string;
+  created_at: Date;
+  expires_at: Date;
 }
 
 export interface IOtpMethods {
-    isValid: () => boolean;
+  isValid: () => boolean;
 }
 
 export type IOtpDoc = HydratedDocument<IOtp>;
