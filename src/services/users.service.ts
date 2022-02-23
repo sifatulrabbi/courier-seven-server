@@ -1,6 +1,12 @@
 import type { IUser, IUserProfile, IDone } from "../interfaces";
 import { usersModel, userProfilesModel } from "../models";
 
+interface ICreateUser {
+  mobile: string;
+  first_name: string;
+  last_name: string;
+}
+
 interface ICreateProfile extends Omit<IUserProfile, "_id"> {
   confirm_password: string;
 }
@@ -16,10 +22,25 @@ interface IFindProfile {
 }
 
 class UsersService {
-  // create primary user with mobile
-  createUser(mobile: string, done: IDone<IUser>) {
+  // get all users
+  findAll(done: IDone<IUser[]>) {
     try {
-      const userDoc = new usersModel({ mobile });
+      usersModel.find({}, done);
+    } catch (err: any) {
+      done(err);
+    }
+  }
+
+  // create primary user with mobile
+  createUser(
+    { first_name, last_name, mobile }: ICreateUser,
+    done: IDone<IUser>
+  ) {
+    try {
+      const userDoc = new usersModel({
+        mobile,
+        name: { first: first_name, last: last_name },
+      });
       userDoc.save(done);
     } catch (err: any) {
       done(err);
@@ -78,6 +99,10 @@ class UsersService {
 
   // create profile for a primary user
   createProfile(data: ICreateProfile, done: IDone<IUserProfile>) {
+    if (data.password !== data.confirm_password) {
+      return done(new Error("Passwords don't match"));
+    }
+
     try {
       const userDoc = new userProfilesModel(data);
       userDoc.save(done);
@@ -109,6 +134,10 @@ class UsersService {
     data: Partial<ICreateProfile>,
     done: IDone<IUserProfile>
   ) {
+    if (data.password && data.password !== data.confirm_password) {
+      return done(new Error("Passwords don't match"));
+    }
+
     try {
       this.findUser({ id: userId }, (err: any, user?: IUser) => {
         if (err) return done(err);

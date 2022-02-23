@@ -1,4 +1,4 @@
-import type { IUser, IUserProfile } from "../../interfaces";
+import type { IUser } from "../../interfaces";
 import { Router, Express, Request, Response } from "express";
 import { CustomResponse } from "../../libs";
 import { usersService } from "../../services";
@@ -17,16 +17,16 @@ const router = Router();
 router
   .route("/")
   .get((req: Request, res: Response) => {
-    try {
-    } catch (err: any) {
-      CustomResponse.internal(res, err.message, err);
-    }
+    usersService.findAll((err, users) => {
+      if (err) return CustomResponse.badRequest(res, err.message, err);
+      CustomResponse.ok(res, "ok", users);
+    });
   })
   .post((req: Request, res: Response) => {
-    try {
-    } catch (err: any) {
-      CustomResponse.internal(res, err.message, err);
-    }
+    usersService.createProfile(req.body, (err, user) => {
+      if (err) return CustomResponse.notFound(res, err.message, err);
+      CustomResponse.created(res, false, [user]);
+    });
   });
 
 /**
@@ -36,10 +36,15 @@ router
  * @description returns the profile of the logged in user
  */
 router.route("/profile").get((req: Request, res: Response) => {
-  try {
-  } catch (err: any) {
-    CustomResponse.internal(res, err.message, err);
+  if (!req.isAuthenticated()) {
+    return CustomResponse.unauthorized(res, false, null);
   }
+
+  const user = req.user as IUser;
+  usersService.findProfile({ userId: user._id }, (err, profile) => {
+    if (err) return CustomResponse.notFound(res, err.message, null);
+    CustomResponse.ok(res, false, [profile]);
+  });
 });
 
 /**
@@ -58,22 +63,34 @@ router.route("/profile").get((req: Request, res: Response) => {
 router
   .route("/profile/:id")
   .get((req: Request, res: Response) => {
-    try {
-    } catch (err: any) {
-      CustomResponse.internal(res, err.message, err);
-    }
+    usersService.findProfile({ profileId: req.params.id }, (err, profile) => {
+      if (err) return CustomResponse.notFound(res, err.message, null);
+      CustomResponse.ok(res, false, [profile]);
+    });
   })
   .put((req: Request, res: Response) => {
-    try {
-    } catch (err: any) {
-      CustomResponse.internal(res, err.message, err);
+    if (!req.isAuthenticated()) {
+      CustomResponse.unauthorized(res, false, null);
     }
+
+    const user = req.user as IUser;
+    const id = user._id || "id";
+    usersService.updateProfile(id, req.body, (err, profile) => {
+      if (err) return CustomResponse.badRequest(res, err.message, err);
+      CustomResponse.ok(res, false, [profile]);
+    });
   })
   .delete((req: Request, res: Response) => {
-    try {
-    } catch (err: any) {
-      CustomResponse.internal(res, err.message, err);
+    if (!req.isAuthenticated()) {
+      CustomResponse.unauthorized(res, false, null);
     }
+
+    const user = req.user as IUser;
+    const id = user._id || "id";
+    usersService.removeUser(id, (err, user) => {
+      if (err) return CustomResponse.badRequest(res, err.message, err);
+      CustomResponse.ok(res, "User removed", [user]);
+    });
   });
 
 export function useUserRouter(app: Express) {

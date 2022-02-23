@@ -4,16 +4,16 @@ import { IAccountTypes } from "./interfaces";
 export interface IUser {
   _id?: string;
   mobile: string;
+  name: {
+    first: string;
+    last: string;
+  };
 }
 
 export interface IUserProfile {
   _id?: string;
   user_id: string;
   email: string;
-  name: {
-    first: string;
-    last: string;
-  };
   password: string;
   addresses: {
     present: {

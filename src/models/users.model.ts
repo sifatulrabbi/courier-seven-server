@@ -4,16 +4,16 @@ import { IUser, IUserProfile, IUserProfilesModel } from "../interfaces";
 
 const usersSchema = new Schema<IUser>({
   mobile: { type: String, require: true },
+  name: {
+    first: { type: String, require: true },
+    last: { type: String, require: true },
+  },
 });
 
 const usersProfileSchema = new Schema<IUserProfile, IUserProfilesModel>(
   {
     user_id: { type: String, required: true },
     email: { type: String, required: true },
-    name: {
-      first: { type: String, require: true },
-      last: { type: String, require: true },
-    },
     password: { type: String, required: true },
     account_type: { type: String, require: true },
     addresses: {
