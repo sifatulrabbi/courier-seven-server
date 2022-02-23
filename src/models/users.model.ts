@@ -1,33 +1,27 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
-import { IUser, IUserProfile, IUserProfilesModel } from "../interfaces";
+import { IUser, IUsersModel } from "../interfaces";
 
-const usersSchema = new Schema<IUser>({
-  mobile: { type: String, require: true },
-  name: {
-    first: { type: String, require: true },
-    last: { type: String, require: true },
-  },
-});
-
-const usersProfileSchema = new Schema<IUserProfile, IUserProfilesModel>(
+const usersSchema = new Schema<IUser, IUsersModel>(
   {
-    user_id: { type: String, required: true },
-    email: { type: String, required: true },
+    mobile: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     account_type: { type: String, require: true },
     addresses: {
       permanent: {
-        district: { type: String, require: true },
-        area: { type: String, require: true },
+        district: { type: String, required: true },
+        sub_district: { type: String, required: true },
+        area: { type: String, required: true },
         street: { type: String, require: true },
-        house: { type: String, require: true },
+        house: { type: String, required: true },
       },
       present: {
-        district: { type: String, require: true },
-        area: { type: String, require: true },
+        district: { type: String, required: true },
+        sub_district: { type: String, required: true },
+        area: { type: String, required: true },
         street: { type: String, require: true },
-        house: { type: String, require: true },
+        house: { type: String, required: true },
       },
     },
   },
@@ -37,14 +31,14 @@ const usersProfileSchema = new Schema<IUserProfile, IUserProfilesModel>(
   }
 );
 
-usersProfileSchema.pre("save", async function (this: IUserProfile, next) {
+usersSchema.pre("save", async function (this: IUser, next) {
   const hash = await bcrypt.hash(this.password, 10);
   this.password = hash;
   next();
 });
 
-usersProfileSchema.methods.comparePassword = async function (
-  this: IUserProfile,
+usersSchema.methods.comparePassword = async function (
+  this: IUser,
   password: string
 ) {
   const compare = await bcrypt.compare(password, this.password);
@@ -53,7 +47,7 @@ usersProfileSchema.methods.comparePassword = async function (
 
 export const usersModel = model<IUser>("users", usersSchema);
 
-export const userProfilesModel = model<IUserProfile, IUserProfilesModel>(
-  "user_profiles",
-  usersProfileSchema
+export const userProfilesModel = model<IUser, IUsersModel>(
+  "users",
+  usersSchema
 );

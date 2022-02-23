@@ -1,8 +1,8 @@
 import { HydratedDocument, Model } from "mongoose";
 
 export interface IOtp {
-  _id?: string;
-  key: string;
+  _id: string;
+  secret: string;
   created_at: Date;
   expires_at: Date;
 }

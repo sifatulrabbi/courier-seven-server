@@ -8,5 +8,6 @@ export interface IAddress {
   district: string;
   sub_district: string;
   area: string;
-  detail: string;
+  street: string;
+  house: string;
 }

@@ -2,65 +2,25 @@ import { IDone, IOtp } from "../interfaces";
 import { otpModel } from "../models";
 import { createHmac } from "crypto";
 import { config } from "../configs";
+import { totp } from "otplib";
+import { hash } from "bcrypt";
 
 class OtpService {
-  private hashOtp(secret: string, otp: IOtp): string {
-    const hash = createHmac("sha256", secret)
-      .update(
-        String({
-          _id: otp._id,
-          key: otp.key,
-          created_at: otp.created_at,
-          expiries_at: otp.expires_at,
-        })
-      )
-      .digest("hex");
-    return hash;
-  }
+  totpLib = totp;
 
-  private generateKey(): string {
-    const numbers = "0123456789";
-    let key: string = "";
-
-    for (let i = 0; i < 6; i++) {
-      key = key + numbers[Math.floor(Math.random() * numbers.length)];
-    }
-    return key;
+  constructor() {
+    this.totpLib.options = { digits: 6, step: 45 };
   }
 
   async generateOtp(mobile: string) {
-    try {
-      const created_at = new Date();
-      const expires_at = new Date(created_at.getTime() + config.OTP_MAX_AGE);
-      const key = this.generateKey();
-      const otpDoc = new otpModel({ key, created_at, expires_at });
-      const otp = await otpDoc.save();
-      console.log("key: " + otp.key);
-
-      const hash = this.hashOtp(mobile, otp);
-      return { key: otp.key, hash };
-    } catch (err) {
-      throw new Error(String(err));
-    }
+    const secret = await hash(mobile, 10);
+    const token = this.totpLib.generate(secret);
+    return token;
   }
 
-  async compareOtp(
-    otp: string,
-    mobile: string,
-    hash: string,
-    done: IDone<boolean>
-  ) {
-    const otpObj = await otpModel.findOne({ key: otp });
-    if (!otpObj) return done(new Error("OTP invalid"));
-
-    const valid = otpObj.expires_at > new Date();
-    if (!valid) done(new Error("Your OTP has been expired"));
-
-    const otpHash = this.hashOtp(mobile, otpObj);
-    if (otpHash !== hash) done(new Error("Identity error"));
-
-    await otpModel.deleteMany({});
-    done(null, true);
+  async verifyOtp(mobile: string, token: string) {
+    const secret = await hash(String(mobile), 10);
+    return this.totpLib.verify({ token, secret });
   }
 }
 
