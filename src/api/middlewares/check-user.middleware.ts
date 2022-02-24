@@ -1,25 +1,19 @@
 import { Request, Response, NextFunction } from "express";
-import { CustomResponse } from "../../libs";
+import { convertMobileNumber, CustomResponse } from "../../libs";
 import { usersService } from "../../services";
 
 export async function checkUserMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
 ) {
-  try {
-    const { mobile } = req.body;
-    usersService.find({ mobile: mobile }, (err, user) => {
-      if (user) {
-        return CustomResponse.badRequest(
-          res,
-          false,
-          "User already exists please login"
-        );
-      }
-    });
-    next();
-  } catch (err: any) {
-    CustomResponse.badRequest(res, false, err.message);
-  }
+    const mobile = convertMobileNumber(req.body.mobile);
+    const user = await usersService.findOne({ mobile: mobile });
+
+    if (!user) return next();
+    CustomResponse.badRequest(
+        res,
+        "Mobile number in use, please login",
+        "Duplicate error"
+    );
 }

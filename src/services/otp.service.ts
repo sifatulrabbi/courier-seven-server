@@ -1,61 +1,87 @@
-import { IOtp } from "../interfaces";
 import { otpModel } from "../models";
-import { createHmac } from "crypto";
-import { config } from "../configs";
+import { hash, compare } from "bcrypt";
+const otpGenerator = require("otp-generator");
+
+interface IVerifyObj {
+    mobile: string;
+    token: string;
+    created_at: Date;
+    expires_at: Date;
+}
 
 class OtpService {
-  private hashOtp(secret: string, otp: IOtp): string {
-    const hash = createHmac("sha256", secret)
-      .update(
-        String({
-          _id: otp._id,
-          key: otp.key,
-          created_at: otp.created_at,
-          expiries_at: otp.expires_at,
-        })
-      )
-      .digest("hex");
-    return hash;
-  }
-
-  private generateKey(): string {
-    const numbers = "0123456789";
-    let key: string = "";
-
-    for (let i = 0; i < 6; i++) {
-      key = key + numbers[Math.floor(Math.random() * numbers.length)];
+    private addMinutes(date: Date, minutes: number) {
+        return new Date(date.getTime() + minutes * 60000);
     }
-    return key;
-  }
 
-  async generateOtp(mobile: string) {
-    try {
-      const created_at = new Date();
-      const expires_at = new Date(created_at.getTime() + config.OTP_MAX_AGE);
-      const key = this.generateKey();
-      const otpDoc = new otpModel({ key, created_at, expires_at });
-      const otp = await otpDoc.save();
-
-      const hash = this.hashOtp(mobile, otp);
-      return { key: otp.key, hash };
-    } catch (err) {
-      throw new Error(String(err));
+    private async genVerificationKey(verifyObj: IVerifyObj) {
+        const verificationKey = await hash(JSON.stringify(verifyObj), 10);
+        return verificationKey;
     }
-  }
 
-  async compareOtp(otp: string, mobile: string, hash: string) {
-    const otpObj = await otpModel.findOne({ key: otp });
-    if (!otpObj) throw new Error("Invalid OTP");
+    private async verifyVerificationKey(verifyObj: IVerifyObj, key: string) {
+        const string = JSON.stringify(verifyObj);
+        const verify = await compare(string, key);
+        return verify;
+    }
 
-    const valid = otpObj.expires_at > new Date();
-    if (!valid) throw new Error("Your OTP has been expired");
+    async generateOtp(mobile: string) {
+        const token: string = otpGenerator.generate(6, {
+            digits: true,
+            lowerCaseAlphabets: false,
+            upperCaseAlphabets: false,
+            specialChars: false,
+        });
+        const created_at = new Date();
+        const expires_at = this.addMinutes(created_at, 3);
+        const verificationKey = await this.genVerificationKey({
+            mobile,
+            token,
+            created_at,
+            expires_at,
+        });
 
-    const otpHash = this.hashOtp(mobile, otpObj);
-    if (otpHash !== hash) throw new Error("Identity error");
+        const otpDoc = new otpModel({
+            token,
+            created_at,
+            expires_at,
+            verification_key: verificationKey,
+        });
+        await otpDoc.save();
 
-    await otpModel.deleteMany({});
-    return true;
-  }
+        return { token, verificationKey };
+    }
+
+    async verifyOtp(mobile: string, token: string, key: string) {
+        const otpDoc = await otpModel.findOne({ token, key });
+
+        if (!otpDoc) {
+            throw new Error("Invalid OTP");
+        }
+        if (key !== otpDoc.verification_key) {
+            throw new Error("Identity error: verification failed");
+        }
+        if (otpDoc.expires_at.getTime() < new Date().getTime()) {
+            console.log(otpDoc.expires_at > new Date());
+            throw new Error("OTP invalid");
+        }
+        if (
+            !(await this.verifyVerificationKey(
+                {
+                    mobile,
+                    token,
+                    created_at: otpDoc.created_at,
+                    expires_at: otpDoc.expires_at,
+                },
+                key
+            ))
+        ) {
+            return false;
+        }
+
+        otpModel.findByIdAndRemove(otpDoc._id);
+        return true;
+    }
 }
 
 export const otpService = new OtpService();

@@ -1,88 +1,80 @@
-import { Express, Router, Request, Response, NextFunction } from "express";
+import { Express, Router } from "express";
 import passport from "passport";
-import { authService } from "../../auth";
-import { CustomResponse } from "../../libs";
-import { COOKIES } from "../../libs/constants";
-import { checkUserMiddleware } from "../middlewares";
+import { authService } from "../../services";
+import { convertMobileNumber, CustomResponse } from "../../libs";
+import { checkUserMiddleware, verifyMobileMiddleware } from "../middlewares";
 
 const router = Router();
 
-/**
- * @route /get-otp
- * @method POST
- * @controller send otp to the given mobile number
- */
-router.route("/get-otp").post((req: Request, res: Response) => {
-  const { mobile } = req.body;
-  authService.getOtp(mobile, (err, hash) => {
-    if (err) {
-      CustomResponse.badRequest(res, false, err.message);
-      return;
-    }
-    if (!hash) return CustomResponse.internal(res, false, err.message);
-    res.cookie(COOKIES.otpAuth, hash);
-    CustomResponse.ok(res, "An OTP has been sent to the email");
-  });
-});
-
-/**
- * @route /register
- * @method POST
- * @controller gets the otp from the user and verifies it
- */
-router.route("/register").post((req: Request, res: Response) => {
-  const { mobile, otp } = req.body;
-  const hash = req.cookies[COOKIES.otpAuth];
-  authService.register({ mobile, otp, hash }, (err, result) => {
-    if (err) {
-      return CustomResponse.badRequest(
-        res,
-        "Unable to register user",
-        err.message
-      );
-    }
-
-    if (!result) {
-      return CustomResponse.notFound(
-        res,
-        "Unable to register user",
-        err.message
-      );
-    }
-
-    CustomResponse.created(res, "User registered", [result]);
-  });
-});
-
-/**
- * @route /login
- * @method POST
- * @controller login user and redirect to user profile
- */
 router
-  .route("/login")
-  .post(
-    passport.authenticate("otp-strategy"),
-    (req: Request, res: Response) => {
-      if (!req.isAuthenticated()) {
-        return CustomResponse.unauthorized(res, false, null);
-      }
-      CustomResponse.ok(res, "Log in successful", [req.user]);
-    }
-  )
-  .get((req: Request, res: Response) => {
-    CustomResponse.ok(res, false, [
-      { message: "Enter your email, mobile and otp to login" },
-    ]);
-  });
+    .route("/register")
+    .get(verifyMobileMiddleware, checkUserMiddleware, async (req, res) => {
+        const mobile = convertMobileNumber(req.body.mobile);
 
-/**
- * @route /logout
- * @method POST
- * @controller logout current user and redirect to login
- */
-router.route("/logout").post((req: Request, res: Response) => {});
+        await authService.sendVerificationOtp(mobile, (err, otp) => {
+            if (err) return CustomResponse.badRequest(res, err.message, err);
+            if (!otp)
+                return CustomResponse.badRequest(
+                    res,
+                    "Unable to create OTP",
+                    null
+                );
+
+            CustomResponse.ok(res, "OTP sent to the mobile number", [
+                {
+                    token: otp.token,
+                    verification_key: otp.verificationKey,
+                },
+            ]);
+        });
+    })
+    .post(verifyMobileMiddleware, checkUserMiddleware, async (req, res) => {
+        const data = req.body;
+        data.mobile = convertMobileNumber(req.body.mobile);
+
+        authService.verifyRegistration(data, (err, user) => {
+            if (err) return CustomResponse.badRequest(res, err.message, err);
+            if (!user) {
+                return CustomResponse.internal(
+                    res,
+                    "Unable to create user",
+                    null
+                );
+            }
+
+            CustomResponse.created(res, "User registered", [user]);
+        });
+    });
+
+router
+    .route("/login")
+    .get(verifyMobileMiddleware, (req, res) => {
+        // const mobile = convertMobileNumber(req.body.mobile);
+        // authService.sendVerificationOtp(mobile, (err) => {
+        //   if (err) return CustomResponse.badRequest(res, err.message, err);
+        //   CustomResponse.ok(res, "OTP sent to the mobile number");
+        // });
+        CustomResponse.unauthorized(
+            res,
+            "User mobile and password to login",
+            null
+        );
+    })
+    .post(
+        verifyMobileMiddleware,
+        passport.authenticate("local", { failureRedirect: "/api/auth/login" }),
+        (req, res) => {
+            if (!req.isAuthenticated()) {
+                return CustomResponse.unauthorized(
+                    res,
+                    "Use mobile and password to login",
+                    null
+                );
+            }
+            CustomResponse.ok(res, "Login successful", [req.user]);
+        }
+    );
 
 export function userAuthRouter(app: Express) {
-  app.use("/api/v1/auth", router);
+    app.use("/api/v1/auth", router);
 }
