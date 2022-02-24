@@ -10,5 +10,5 @@ const router = Router();
  */
 
 export function useParcelsController(app: Express) {
-  app.use("/api/v1/parcels", router);
+    app.use("/api/v1/parcels", router);
 }

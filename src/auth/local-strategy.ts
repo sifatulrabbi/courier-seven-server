@@ -1,10 +1,10 @@
-// import { Strategy } from "passport-local";
-// import { authService } from "./auth.service";
+import { Strategy } from "passport-local";
+import { authService } from "../services";
 
-// const localStrategy = new Strategy(
-//   {
-//     usernameField: "mobile",
-//     passwordField: "otp",
-//   },
-//   authService.verifyUser
-// );
+export const localStrategy = new Strategy(
+    {
+        usernameField: "mobile",
+        passwordField: "password",
+    },
+    authService.verifyLogin
+);

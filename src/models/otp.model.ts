@@ -1,10 +1,11 @@
 import { Schema, model } from "mongoose";
-import { IOtp, IOtpModel } from "../interfaces";
+import { IOtp } from "../interfaces";
 
-const otpSchema = new Schema<IOtp, IOtpModel>({
-  secret: { type: String, required: true, unique: true },
-  created_at: { type: Date, required: true },
-  expires_at: { type: Date, required: true },
+const otpSchema = new Schema<IOtp>({
+    token: { type: String, required: true },
+    verification_key: { type: String, required: true, unique: true },
+    created_at: { type: Date, required: true },
+    expires_at: { type: Date, required: true },
 });
 
-export const otpModel = model<IOtp, IOtpModel>("otp", otpSchema);
+export const otpModel = model<IOtp>("otp", otpSchema);
