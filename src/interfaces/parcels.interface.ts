@@ -3,11 +3,19 @@ import { IAddress } from "./interfaces";
 import { IProductTypes } from "./interfaces";
 
 export interface IParcel {
-    _id?: string;
+    _id: string;
     invoice_id: string;
+    shop: {
+        shop_id: string;
+        name: string;
+        email?: string;
+        mobile: string;
+        address: IAddress;
+    };
     customer: {
         name: string;
         mobile: string;
+        email?: string;
         address: IAddress;
     };
     product: {
@@ -15,18 +23,8 @@ export interface IParcel {
         weight: number;
         type: IProductTypes;
     };
-    shop: {
-        shop_id: string;
-        name: string;
-        address: IAddress;
-    };
     collection_amount: number;
     notes?: string;
-    created_at: string;
-    delivery: {
-        hubs: [];
-        riders: [];
-    };
 }
 
 export type IParcelDoc = HydratedDocument<IParcel>;
