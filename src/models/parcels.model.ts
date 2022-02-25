@@ -7,8 +7,9 @@ const parcelsSchema = new mongoose.Schema<IParcel>(
         shop: {
             shop_id: { type: String, required: true },
             name: { type: String, required: true },
+            mobile: { type: String, required: true },
+            owner: { type: String, required: true },
             email: { type: String },
-            mobile: { type: String },
             address: {
                 district: { type: String, required: true },
                 sub_district: { type: String, required: true },

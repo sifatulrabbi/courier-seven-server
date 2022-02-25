@@ -8,6 +8,7 @@ export interface IParcel {
     shop: {
         shop_id: string;
         name: string;
+        owner: string;
         email?: string;
         mobile: string;
         address: IAddress;
@@ -30,3 +31,29 @@ export interface IParcel {
 export type IParcelDoc = HydratedDocument<IParcel>;
 
 export type IParcelsModel = Model<IParcel>;
+
+export interface ICreateParcelDto {
+    invoice_id: string;
+    shop: {
+        shop_id: string;
+        name: string;
+        email?: string;
+        mobile: string;
+        address: IAddress;
+    };
+    customer: {
+        name: string;
+        mobile: string;
+        email?: string;
+        address: IAddress;
+    };
+    product: {
+        price: number;
+        weight: number;
+        type: IProductTypes;
+    };
+    collection_amount: number;
+    notes?: string;
+}
+
+export interface IUpdateParcelDto extends Partial<ICreateParcelDto> {}
