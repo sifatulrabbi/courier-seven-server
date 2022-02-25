@@ -75,6 +75,6 @@ router
         }
     );
 
-export function userAuthRouter(app: Express) {
+export function useAuthRouter(app: Express) {
     app.use("/api/v1/auth", router);
 }

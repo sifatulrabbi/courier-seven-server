@@ -1,9 +1,11 @@
 import type { ICreateParcelDto, IParcel, IDone } from "../../interfaces";
-import { Router, Express, Response } from "express";
+import { Router, Express } from "express";
 import { CustomResponse } from "../../libs";
 import { parcelsService } from "../../services";
 
 const router = Router();
+
+const { badRequest, notFound, ok, created } = CustomResponse;
 
 // find parcel withing a shop
 router.route("/").get((req, res) => {
@@ -12,25 +14,17 @@ router.route("/").get((req, res) => {
             req.query.shop.toString(),
             req.query.invoice.toString(),
             (err, parcel) => {
-                if (err) {
-                    return CustomResponse.badRequest(res, err.message, {
-                        ...err,
-                    });
-                }
-                if (!parcel) return CustomResponse.notFound(res, false, null);
-                CustomResponse.ok(res, false, [parcel]);
+                if (err) return badRequest(res, err.message, { ...err });
+                if (!parcel) return notFound(res, false, null);
+                ok(res, false, [parcel]);
             }
         );
     }
 
     parcelsService.findMany((err, parcels) => {
-        if (err) {
-            return CustomResponse.badRequest(res, err.message, {
-                ...err,
-            });
-        }
-        if (!parcels) return CustomResponse.notFound(res, false, null);
-        CustomResponse.ok(res, false, parcels);
+        if (err) return badRequest(res, err.message, { ...err });
+        if (!parcels) return notFound(res, false, null);
+        ok(res, false, parcels);
     });
 });
 
@@ -39,11 +33,9 @@ router
     // get parcel with id
     .get((req, res) => {
         parcelsService.findOne(req.params.id, (err, parcel) => {
-            if (err) {
-                return CustomResponse.badRequest(res, err.message, { ...err });
-            }
-            if (!parcel) return CustomResponse.notFound(res, false, null);
-            CustomResponse.ok(res, false, [parcel]);
+            if (err) return badRequest(res, err.message, { ...err });
+            if (!parcel) return notFound(res, false, null);
+            ok(res, false, [parcel]);
         });
     })
     // update parcel
@@ -53,13 +45,9 @@ router
             { parcelId: req.params.id, shopId: data.shop.shop_id },
             data,
             (err, parcel) => {
-                if (err) {
-                    return CustomResponse.badRequest(res, err.message, {
-                        ...err,
-                    });
-                }
-                if (!parcel) return CustomResponse.notFound(res, false, null);
-                CustomResponse.ok(res, false, [parcel]);
+                if (err) return badRequest(res, err.message, { ...err });
+                if (!parcel) return notFound(res, false, null);
+                ok(res, false, [parcel]);
             }
         );
     });
@@ -67,11 +55,9 @@ router
 // create parcel
 router.route("/create").post((req, res) => {
     parcelsService.create(req.body, (err, parcel) => {
-        if (err) {
-            return CustomResponse.badRequest(res, err.message, { ...err });
-        }
-        if (!parcel) return CustomResponse.notFound(res, false, null);
-        CustomResponse.created(res, false, [parcel]);
+        if (err) return badRequest(res, err.message, { ...err });
+        if (!parcel) return notFound(res, false, null);
+        created(res, false, [parcel]);
     });
 });
 

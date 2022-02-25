@@ -34,6 +34,7 @@ export type IParcelsModel = Model<IParcel>;
 
 export interface ICreateParcelDto {
     invoice_id: string;
+    collection_amount: number;
     shop: {
         shop_id: string;
         name: string;
@@ -52,7 +53,6 @@ export interface ICreateParcelDto {
         weight: number;
         type: IProductTypes;
     };
-    collection_amount: number;
     notes?: string;
 }
 

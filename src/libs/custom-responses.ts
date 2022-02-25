@@ -47,7 +47,7 @@ export class CustomResponse {
         new CustomResponse(
             res,
             404,
-            message ? message : "No Found",
+            message ? message : "Not Found",
             null,
             errors
         );
