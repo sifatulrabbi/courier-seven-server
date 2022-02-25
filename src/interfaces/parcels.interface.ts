@@ -18,10 +18,13 @@ export interface IParcel {
         email?: string;
         address: IAddress;
     };
-    product: { price: number; weight: number; type: IProductTypes };
+    product: {
+        price: number;
+        weight: number;
+        type: IProductTypes;
+    };
     collection_amount: number;
     notes?: string;
-    created_at: string;
 }
 
 export type IParcelDoc = HydratedDocument<IParcel>;
