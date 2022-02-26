@@ -6,10 +6,9 @@ import {
   IShop,
 } from '../interfaces';
 import { shopsModel } from '../models/shops.model';
-// import console from 'console';
 
 class ShopsService {
-  // finds shops
+  // finds all the shops
   async allShops(done: IDone<IShop[]>) {
     try {
       const shops = await shopsModel.find({});
@@ -19,6 +18,7 @@ class ShopsService {
     }
   }
 
+  // find all the shops of a single user
   async findUsersShop({ userId }: { userId: string }, done: IDone<IShop[]>) {
     try {
       const shops = await shopsModel.find({ owner_id: userId });
@@ -50,6 +50,7 @@ class ShopsService {
   // creates a shop
   async create(data: ICreateShopDto, done: IDone<IShop>) {
     try {
+      // look for duplicate shop name
       const duplicate = await shopsModel.findOne({
         owner_id: data.owner_id,
         name: data.name,
@@ -58,6 +59,7 @@ class ShopsService {
         throw new Error("Can't have multiple shops with the same name");
       }
 
+      // create the shop
       const shopDoc = new shopsModel(data);
       const shop: IShopDoc = await shopDoc.save();
       done(null, shop);
@@ -69,14 +71,44 @@ class ShopsService {
   // updates a shop
   async update(shopId: string, data: IUpdateShopDto, done: IDone<IShop>) {
     try {
-      const shop = await this.findShop(shopId);
+      // look for duplicate shop name
+      const duplicate = await shopsModel.findOne({
+        owner_id: data.owner_id,
+        name: data.name,
+      });
+      if (duplicate) {
+        throw new Error('Shop name has been taken please use another name');
+      }
+
+      // find the shop with owner id, shop id and update
+      const shop = await shopsModel.findOne({
+        owner_id: data.owner_id,
+        _id: shopId,
+      });
       if (!shop) return done(null);
-      const updatedShop: IShopDoc | null = await shop.updateOne(data, {
+      const updatedShop = await shopsModel.findByIdAndUpdate(shopId, data, {
         new: true,
       });
-      if (!updatedShop) throw new Error('Unable to update shop');
+      if (!updatedShop) return done(null);
       done(null, updatedShop);
     } catch (err) {
+      done(err);
+    }
+  }
+
+  // remove shop
+  async remove(shopId: string, ownerId: string, done: IDone<IShop>) {
+    try {
+      // find shop with owner id, shop id and remove
+      const shop = await shopsModel.findOne({
+        owner_id: ownerId,
+        _id: shopId,
+      });
+      if (!shop) {
+        return done(null);
+      }
+      await shop.remove(done);
+    } catch (err: any) {
       done(err);
     }
   }

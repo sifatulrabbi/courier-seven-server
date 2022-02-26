@@ -32,15 +32,28 @@ router
   })
   // update a shop with shop id
   .put(authGuard, (req, res) => {
+    const user = req.user as IUser;
     const id = req.params.id;
     const data = req.body;
-
+    data.owner_id = user._id;
     shopsService.update(id, data, (err, shop) => {
       if (err) return CustomResponse.badRequest(res, err.message, err);
       if (!shop) {
         return CustomResponse.notFound(res, 'Shop not found', null);
       }
       CustomResponse.ok(res, 'Shop updated', [shop]);
+    });
+  })
+  // remove a shop with id
+  .delete(authGuard, (req, res) => {
+    const user = req.user as IUser;
+    const id = req.params.id;
+    shopsService.remove(id, user._id, (err, shop) => {
+      if (err) return CustomResponse.badRequest(res, err.message, err);
+      if (!shop) {
+        return CustomResponse.notFound(res, 'Shop not found', null);
+      }
+      CustomResponse.ok(res, 'Shop removed', [shop]);
     });
   });
 
