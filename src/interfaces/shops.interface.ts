@@ -11,3 +11,7 @@ export interface IShop {
 }
 
 export type IShopDoc = HydratedDocument<IShop>;
+
+export type ICreateShopDto = Omit<IShop, '_id'>;
+
+export type IUpdateShopDto = Partial<ICreateShopDto>;
