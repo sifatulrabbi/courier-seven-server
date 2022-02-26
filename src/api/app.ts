@@ -1,11 +1,16 @@
-import express from "express";
-import cors from "cors";
-import helmet from "helmet";
-import mongoSanitize from "express-mongo-sanitize";
-import cookieParse from "cookie-parser";
-import { prepareSession, preparePassport } from "../configs";
-import { showLogs } from "../libs";
-import { HealthController, useUserRouter, userAuthRouter } from "./controllers";
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
+import cookieParse from 'cookie-parser';
+import { prepareSession, preparePassport } from '../configs';
+import { showLogs } from '../libs';
+import {
+  HealthController,
+  useUserRouter,
+  useAuthRouter,
+  useParcelsController,
+} from './controllers';
 
 export const app = express();
 
@@ -22,4 +27,5 @@ showLogs(app);
 
 HealthController.use(app);
 useUserRouter(app);
-userAuthRouter(app);
+useAuthRouter(app);
+useParcelsController(app);

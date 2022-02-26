@@ -1,2 +1,2 @@
-export * from "./check-user.middleware";
-export * from "./verify-mobile.middleware";
+export * from './check-user.middleware';
+export * from './verify-mobile.middleware';
