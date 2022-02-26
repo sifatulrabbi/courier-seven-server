@@ -10,6 +10,7 @@ import {
   useUserRouter,
   useAuthRouter,
   useParcelsController,
+  useShopsController,
 } from './controllers';
 
 export const app = express();
@@ -29,3 +30,4 @@ HealthController.use(app);
 useUserRouter(app);
 useAuthRouter(app);
 useParcelsController(app);
+useShopsController(app);

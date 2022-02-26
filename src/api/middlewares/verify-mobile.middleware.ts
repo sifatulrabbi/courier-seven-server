@@ -9,6 +9,5 @@ export function verifyMobileMiddleware(
   if (!verifyMobileNumber(req.body.mobile)) {
     return CustomResponse.badRequest(res, 'Mobile number invalid', null);
   }
-
   next();
 }

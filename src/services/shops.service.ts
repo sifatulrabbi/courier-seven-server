@@ -6,6 +6,7 @@ import {
   IShop,
 } from '../interfaces';
 import { shopsModel } from '../models/shops.model';
+// import console from 'console';
 
 class ShopsService {
   // finds shops
@@ -13,24 +14,16 @@ class ShopsService {
     try {
       const shops = await shopsModel.find({});
       done(null, shops);
-    } catch (err: any) {
+    } catch (err) {
       done(err);
     }
   }
 
-  async findUsersShop(
-    { userId, invoiceId }: { userId: string; invoiceId?: string },
-    done: IDone<IShop[]>,
-  ) {
+  async findUsersShop({ userId }: { userId: string }, done: IDone<IShop[]>) {
     try {
-      const query = {
-        owner_id: userId,
-        invoice_id: invoiceId,
-      };
-      const shops = await shopsModel.find(query);
-      if (shops.length < 1) return done(null);
+      const shops = await shopsModel.find({ owner_id: userId });
       done(null, shops);
-    } catch (err: any) {
+    } catch (err) {
       done(err);
     }
   }
@@ -57,18 +50,18 @@ class ShopsService {
   // creates a shop
   async create(data: ICreateShopDto, done: IDone<IShop>) {
     try {
-      const prevShop = await shopsModel.findOne({
+      const duplicate = await shopsModel.findOne({
         owner_id: data.owner_id,
         name: data.name,
       });
-      if (prevShop) {
+      if (duplicate) {
         throw new Error("Can't have multiple shops with the same name");
       }
 
       const shopDoc = new shopsModel(data);
       const shop: IShopDoc = await shopDoc.save();
       done(null, shop);
-    } catch (err: any) {
+    } catch (err) {
       done(err);
     }
   }
@@ -83,7 +76,7 @@ class ShopsService {
       });
       if (!updatedShop) throw new Error('Unable to update shop');
       done(null, updatedShop);
-    } catch (err: any) {
+    } catch (err) {
       done(err);
     }
   }
