@@ -1,24 +1,25 @@
 {
-    "compilerOptions": {
-        "target": "ES2018",
-        "outDir": "./build",
-        "rootDir": "./src",
-        "module": "CommonJS",
-        "moduleResolution": "node",
-        "declarationDir": "./src",
-        "declaration": true,
-        "allowJs": false,
-        "allowSyntheticDefaultImports": true,
-        "esModuleInterop": true,
-        "alwaysStrict": true,
-        "strictNullChecks": true,
-        "skipLibCheck": true,
-        "strict": true,
-        "pretty": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "forceConsistentCasingInFileNames": true
-    },
-    "include": ["./src"],
-    "exclude": ["./build", "./node_modules"]
+  "compilerOptions": {
+    "target": "ES2018",
+    "outDir": "./build",
+    "rootDir": "./src",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "declarationDir": "./src",
+    "declaration": true,
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "pretty": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["./src"],
+  "exclude": ["./build", "./node_modules"]
 }
