@@ -1,6 +1,6 @@
 import { Router, Express } from 'express';
 import { IUser } from '../../interfaces';
-import { CustomResponse } from '../../lib';
+import { CustomResponse, omitUserData } from '../../lib';
 import { usersService } from '../../services';
 import { authGuard } from '../middlewares';
 
@@ -31,7 +31,7 @@ router
     usersService.findOne({ id }, (err, result) => {
       if (err) return badRequest(res, err.message, err);
       if (!result) return notFound(res, 'User not found', null);
-      ok(res, false, [result]);
+      ok(res, false, [omitUserData(result)]);
     });
   })
   .put(authGuard, (req, res) => {
@@ -45,7 +45,7 @@ router
     usersService.update(id, data, (err, result) => {
       if (err) return badRequest(res, err.message, err);
       if (!result) return notFound(res, false, null);
-      ok(res, 'User info updated', [result]);
+      ok(res, 'User info updated', [omitUserData(result)]);
     });
   })
   .delete(authGuard, (req, res) => {
