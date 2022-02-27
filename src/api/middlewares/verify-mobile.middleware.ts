@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyMobileNumber, CustomResponse } from '../../libs';
+import { verifyMobileNumber, CustomResponse } from '../../lib';
 
 export function verifyMobileMiddleware(
   req: Request,

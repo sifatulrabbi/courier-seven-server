@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import cookieParse from 'cookie-parser';
 import { prepareSession, preparePassport } from '../configs';
-import { showLogs } from '../libs';
+import { showLogs } from '../lib';
 import {
   HealthController,
   useUserRouter,

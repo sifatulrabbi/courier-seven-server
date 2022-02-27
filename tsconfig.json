@@ -5,8 +5,6 @@
     "rootDir": "./src",
     "module": "CommonJS",
     "moduleResolution": "node",
-    "declarationDir": "./src",
-    "declaration": true,
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -15,8 +13,6 @@
     "skipLibCheck": true,
     "strict": true,
     "pretty": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true
   },

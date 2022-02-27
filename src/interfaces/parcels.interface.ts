@@ -35,13 +35,8 @@ export type IParcelsModel = Model<IParcel>;
 export interface ICreateParcelDto {
   invoice_id: string;
   collection_amount: number;
-  shop: {
-    shop_id: string;
-    name: string;
-    email?: string;
-    mobile: string;
-    address: IAddress;
-  };
+  shop_id: string;
+  user_name: string;
   customer: {
     name: string;
     mobile: string;
