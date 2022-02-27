@@ -58,6 +58,7 @@ router
     usersService.remove(id, (err, result) => {
       if (err) return badRequest(res, err.message, err);
       if (!result) return notFound(res, false, null);
+      req.logout();
       ok(res, result, []);
     });
   });
