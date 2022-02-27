@@ -7,9 +7,9 @@ import type {
   IUserEvent,
 } from '../interfaces';
 import { usersModel } from '../models';
-import { EventEmitter } from '../lib/event-emitter-class';
+import { EventClass } from '../lib';
 
-class UsersService extends EventEmitter<IUserEvent, IUser> {
+class UsersService extends EventClass<IUserEvent, IUser> {
   // create user
   async create(data: ICreateUserDto, done: IDone<IUser>) {
     if (data.password !== data.confirm_password) {

@@ -1,6 +1,6 @@
 import type { ISubscriber, ICallback } from '../interfaces';
 
-export class EventEmitter<E, D> {
+export class EventClass<E, D> {
   subscribers: ISubscriber<E, D>[] = [];
 
   subscribe(event: E, callback: ICallback<D>) {
