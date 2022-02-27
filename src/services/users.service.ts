@@ -7,7 +7,38 @@ import type {
 } from '../interfaces';
 import { usersModel } from '../models';
 
+export type IUserEvent = 'save' | 'update' | 'remove';
+
+type ICallback = (user: IUser) => any;
+
+interface ISubscriber {
+  event: IUserEvent;
+  callback: ICallback;
+}
+
 class UsersService {
+  private subscribers: ISubscriber[] = [];
+
+  subscribe(event: IUserEvent, callback: ICallback) {
+    this.subscribers.push({
+      event,
+      callback,
+    });
+  }
+
+  unsubscribe(event: IUserEvent, callback: ICallback) {
+    const index = this.subscribers.indexOf({ event, callback });
+    if (index < 0) return;
+    this.subscribers.splice(index, 1);
+  }
+
+  private trigger(event: IUserEvent, user: IUser) {
+    const arr = this.subscribers.filter((item) => item.event === event);
+    for (const item of arr) {
+      item.callback(user);
+    }
+  }
+
   // create user
   async create(data: ICreateUserDto, done: IDone<IUser>) {
     if (data.password !== data.confirm_password) {
@@ -20,6 +51,7 @@ class UsersService {
       const userDoc: IUserDoc = new usersModel(data);
       const user: IUserDoc = await userDoc.save();
       done(null, user);
+      this.trigger('save', user);
     } catch (err: any) {
       done(err);
     }
@@ -38,6 +70,7 @@ class UsersService {
       });
       if (!updatedUser) return done(null);
       done(null, updatedUser);
+      this.trigger('update', updatedUser);
     } catch (err: any) {
       done(err);
     }
@@ -48,6 +81,7 @@ class UsersService {
     const removedUser = await usersModel.findByIdAndRemove(userId);
     if (!removedUser) return done(new Error('Unable to remove user'));
     done(null, 'User removed');
+    this.trigger('remove', removedUser);
   }
 
   // find user with id and mobile
