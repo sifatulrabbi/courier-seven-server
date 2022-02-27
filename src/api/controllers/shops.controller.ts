@@ -1,6 +1,6 @@
 import { Express, Router } from 'express';
 import { IUser } from '../../interfaces';
-import { CustomResponse } from '../../libs';
+import { CustomResponse } from '../../lib';
 import { shopsService } from '../../services';
 import { authGuard } from '../middlewares';
 

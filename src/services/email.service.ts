@@ -1,7 +1,7 @@
 import type { IMail, IUser } from '../interfaces';
 import nodemailer from 'nodemailer';
 import { transportConfig } from '../configs';
-import { ADMIN_EMAILS, MAIL_SUBJECTS } from '../libs/constants';
+import { ADMIN_EMAILS, MAIL_SUBJECTS } from '../lib/constants';
 import console from 'console';
 import process from 'process';
 

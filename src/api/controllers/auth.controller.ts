@@ -1,7 +1,7 @@
 import { Express, Router } from 'express';
 import passport from 'passport';
 import { authService } from '../../services';
-import { convertMobileNumber, CustomResponse } from '../../libs';
+import { convertMobileNumber, CustomResponse } from '../../lib';
 import { checkUserMiddleware, verifyMobileMiddleware } from '../middlewares';
 
 const router = Router();

@@ -6,70 +6,54 @@ import type {
   IParcelDoc,
 } from '../interfaces';
 import { parcelsModel } from '../models';
-
-interface IProps {
-  shopId: string;
-  parcelId: string;
-}
+import { shopsService } from './shops.service';
 
 class ParcelsService {
   // create parcel
-  async create(
-    data: ICreateParcelDto,
-    done: IDone<IParcel>,
-  ): Promise<IParcel | null> {
+  async create(data: ICreateParcelDto, done: IDone<IParcel>) {
     try {
-      const parcelDoc = new parcelsModel(data);
+      const shop = await shopsService.findShop(data.shop_id);
+      if (!shop) throw new Error('Shop id invalid');
+
+      const parcelData: any = { ...data };
+      parcelData.shop = {
+        shop_id: shop._id,
+        owner: data.user_name,
+        name: shop.name,
+        mobile: shop.mobile,
+        email: shop.email,
+        address: shop.address,
+      };
+
+      const parcelDoc = new parcelsModel(parcelData);
       const parcel = await parcelDoc.save();
       done(null, parcel);
-      return parcel;
-    } catch (err) {
+    } catch (err: any) {
       done(err);
-      return null;
     }
   }
 
   // update parcel
-  async update(
-    { parcelId }: IProps,
-    data: IUpdateParcelDto,
-    done: IDone<IParcel>,
-  ): Promise<IParcelDoc | null> {
+  async update(parcelId: string, data: IUpdateParcelDto, done: IDone<IParcel>) {
     try {
-      const parcel = await this.findOne(parcelId);
-      if (!parcel) {
-        done(null);
-        return null;
-      }
-      const updatedParcel = await parcel.updateOne(data, { new: true });
-      done(null, updatedParcel);
-      return parcel;
+      const parcel = await parcelsModel.findByIdAndUpdate(parcelId, data, {
+        new: true,
+      });
+      if (!parcel) done(null);
+      else done(null, parcel);
     } catch (err) {
       done(err);
-      return null;
     }
   }
 
   // remove parcel
-  async remove(
-    { shopId, parcelId }: IProps,
-    done: IDone<IParcel>,
-  ): Promise<IParcel | null> {
+  async remove(parcelId: string, done: IDone<IParcel>) {
     try {
-      const parcel = await parcelsModel.findOne({
-        _id: parcelId,
-        shop: { shop_id: shopId },
-      });
-      if (!parcel) {
-        done(null);
-        return null;
-      }
-      await parcel.remove();
-      done(null, parcel);
-      return parcel;
+      const parcel = await parcelsModel.findByIdAndRemove(parcelId);
+      if (!parcel) done(null);
+      else done(null, parcel);
     } catch (err) {
       done(err);
-      return null;
     }
   }
 
@@ -93,12 +77,20 @@ class ParcelsService {
     }
   }
 
-  async findByShop(shopId: string, invoiceId: string, done: IDone<IParcel>) {
+  async findByShop(
+    shopId: string,
+    invoiceId: string | null,
+    done: IDone<IParcel[]>,
+  ) {
     try {
-      const parcel = await parcelsModel.findOne({
-        shop: { shop_id: shopId },
-        invoice_id: invoiceId,
-      });
+      const query = { shop: { shop_id: shopId } };
+      if (invoiceId) {
+        Object.defineProperty(query, 'invoice_id', {
+          value: invoiceId,
+          writable: false,
+        });
+      }
+      const parcel = await parcelsModel.find(query);
       if (!parcel) return done(null);
       done(null, parcel);
     } catch (err: any) {
@@ -106,8 +98,8 @@ class ParcelsService {
     }
   }
 
-  // find a batch of parcels
-  async findMany(done: IDone<IParcel[]>): Promise<IParcel[] | null> {
+  // finds all the parcels
+  async all(done: IDone<IParcel[]>): Promise<IParcel[] | null> {
     try {
       const parcels = await parcelsModel.find({});
       if (!parcels) {

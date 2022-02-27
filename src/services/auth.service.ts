@@ -1,5 +1,5 @@
 import type { IUser, IDone, ICreateUserDto } from '../interfaces';
-import { convertMobileNumber } from '../libs';
+import { convertMobileNumber } from '../lib';
 import { otpService } from './otp.service';
 import { usersService } from './users.service';
 import console from 'console';

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { convertMobileNumber, CustomResponse } from '../../libs';
+import { convertMobileNumber, CustomResponse } from '../../lib';
 import { usersService } from '../../services';
 
 export async function checkUserMiddleware(

@@ -1,6 +1,6 @@
 import { Router, Express } from 'express';
 // import { IUser } from '../../interfaces';
-// import { CustomResponse } from '../../libs';
+// import { CustomResponse } from '../../lib';
 // import { usersService } from '../../services';
 
 const router = Router();
