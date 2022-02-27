@@ -4,41 +4,12 @@ import type {
   ICreateUserDto,
   IUpdateUserDto,
   IUserDoc,
+  IUserEvent,
 } from '../interfaces';
 import { usersModel } from '../models';
+import { EventEmitter } from '../lib/event-emitter-class';
 
-export type IUserEvent = 'save' | 'update' | 'remove';
-
-type ICallback = (user: IUser) => any;
-
-interface ISubscriber {
-  event: IUserEvent;
-  callback: ICallback;
-}
-
-class UsersService {
-  private subscribers: ISubscriber[] = [];
-
-  subscribe(event: IUserEvent, callback: ICallback) {
-    this.subscribers.push({
-      event,
-      callback,
-    });
-  }
-
-  unsubscribe(event: IUserEvent, callback: ICallback) {
-    const index = this.subscribers.indexOf({ event, callback });
-    if (index < 0) return;
-    this.subscribers.splice(index, 1);
-  }
-
-  private trigger(event: IUserEvent, user: IUser) {
-    const arr = this.subscribers.filter((item) => item.event === event);
-    for (const item of arr) {
-      item.callback(user);
-    }
-  }
-
+class UsersService extends EventEmitter<IUserEvent, IUser> {
   // create user
   async create(data: ICreateUserDto, done: IDone<IUser>) {
     if (data.password !== data.confirm_password) {
