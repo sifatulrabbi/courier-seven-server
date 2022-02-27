@@ -13,10 +13,6 @@ class ShopsService {
     usersService.subscribe('remove', (user) => {
       this.removeByUser(user._id);
     });
-
-    usersService.subscribe('update', () => {
-      console.log('inside shopsService: Callback from usersService');
-    });
   }
 
   // finds all the shops
