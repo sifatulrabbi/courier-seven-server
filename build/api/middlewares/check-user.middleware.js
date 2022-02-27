@@ -4,7 +4,7 @@ exports.checkUserMiddleware = void 0;
 const lib_1 = require("../../lib");
 const services_1 = require("../../services");
 async function checkUserMiddleware(req, res, next) {
-    const mobile = (0, lib_1.convertMobileNumber)(req.body.mobile);
+    const mobile = lib_1.convertMobileNumber(req.body.mobile);
     const user = await services_1.usersService.findOne({ mobile: mobile });
     if (!user)
         return next();

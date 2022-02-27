@@ -32,3 +32,5 @@ export interface ICreateUserDto extends Omit<IUser, '_id'> {
 }
 
 export type IUpdateUserDto = Partial<ICreateUserDto>;
+
+export type IUserEvent = 'save' | 'update' | 'remove';

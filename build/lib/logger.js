@@ -8,7 +8,7 @@ const morgan_1 = __importDefault(require("morgan"));
 const config_1 = require("../configs/config");
 function showLogs(app) {
     if (!config_1.config.PROD) {
-        app.use((0, morgan_1.default)('dev'));
+        app.use(morgan_1.default('dev'));
     }
 }
 exports.showLogs = showLogs;

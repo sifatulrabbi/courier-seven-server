@@ -70,7 +70,7 @@ class AuthService {
     try {
       if (!userId) return done(null, false);
       const user = await usersService.findOne({ id: userId });
-      if (!user) return done(null);
+      if (!user) return done(null, false);
       done(null, user);
     } catch (err: unknown) {
       done(err);

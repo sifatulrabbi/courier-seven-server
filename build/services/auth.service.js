@@ -39,7 +39,7 @@ class AuthService {
     async verifyLogin(mobile, password, done) {
         try {
             const user = await users_service_1.usersService.findOne({
-                mobile: (0, lib_1.convertMobileNumber)(mobile),
+                mobile: lib_1.convertMobileNumber(mobile),
             });
             if (!user)
                 return done(null);
@@ -69,7 +69,7 @@ class AuthService {
                 return done(null, false);
             const user = await users_service_1.usersService.findOne({ id: userId });
             if (!user)
-                return done(null);
+                return done(null, false);
             done(null, user);
         }
         catch (err) {

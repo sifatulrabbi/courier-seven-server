@@ -6,8 +6,15 @@ import {
   IShop,
 } from '../interfaces';
 import { shopsModel } from '../models/shops.model';
+import { usersService } from './users.service';
 
 class ShopsService {
+  constructor() {
+    usersService.subscribe('remove', (user) => {
+      this.removeByUser(user._id);
+    });
+  }
+
   // finds all the shops
   async allShops(done: IDone<IShop[]>) {
     try {
@@ -110,6 +117,14 @@ class ShopsService {
       await shop.remove(done);
     } catch (err: any) {
       done(err);
+    }
+  }
+
+  private async removeByUser(userId: string) {
+    try {
+      await shopsModel.remove({ owner_id: userId.toString() });
+    } catch (err) {
+      console.log(err);
     }
   }
 }

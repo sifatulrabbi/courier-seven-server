@@ -4,10 +4,12 @@ import type {
   ICreateUserDto,
   IUpdateUserDto,
   IUserDoc,
+  IUserEvent,
 } from '../interfaces';
 import { usersModel } from '../models';
+import { EventClass } from '../lib';
 
-class UsersService {
+class UsersService extends EventClass<IUserEvent, IUser> {
   // create user
   async create(data: ICreateUserDto, done: IDone<IUser>) {
     if (data.password !== data.confirm_password) {
@@ -20,6 +22,7 @@ class UsersService {
       const userDoc: IUserDoc = new usersModel(data);
       const user: IUserDoc = await userDoc.save();
       done(null, user);
+      this.trigger('save', user);
     } catch (err: any) {
       done(err);
     }
@@ -38,6 +41,7 @@ class UsersService {
       });
       if (!updatedUser) return done(null);
       done(null, updatedUser);
+      this.trigger('update', updatedUser);
     } catch (err: any) {
       done(err);
     }
@@ -48,21 +52,36 @@ class UsersService {
     const removedUser = await usersModel.findByIdAndRemove(userId);
     if (!removedUser) return done(new Error('Unable to remove user'));
     done(null, 'User removed');
+    this.trigger('remove', removedUser);
   }
 
   // find user with id and mobile
-  async findOne({ id, mobile }: { id?: string; mobile?: string }) {
-    // @ts-ignore
-    const user: IUserDoc | null = id
-      ? await usersModel.findById(id)
-      : mobile
-      ? await usersModel.findOne({ mobile: mobile })
-      : null;
-    return user;
+  async findOne(
+    { id, mobile }: { id?: string; mobile?: string },
+    done?: IDone<IUser>,
+  ) {
+    try {
+      // @ts-ignore
+      const user: IUserDoc | null = id
+        ? await usersModel.findById(id)
+        : mobile
+        ? await usersModel.findOne({ mobile: mobile })
+        : null;
+
+      if (!user) {
+        if (done) done(null);
+        return null;
+      }
+      if (done) done(null, user);
+      return user;
+    } catch (err: any) {
+      if (done) done(err);
+      return null;
+    }
   }
 
   // find all the user
-  async findAll(done: IDone<IUser[]>) {
+  async all(done: IDone<IUser[]>) {
     const users = await usersModel.find({});
     done(null, users);
   }

@@ -5,7 +5,7 @@ const express_1 = require("express");
 const lib_1 = require("../../lib");
 const services_1 = require("../../services");
 const middlewares_1 = require("../middlewares");
-const router = (0, express_1.Router)();
+const router = express_1.Router();
 // get all the shops
 router.route('/all').get((_req, res) => {
     services_1.shopsService.allShops((err, shops) => {

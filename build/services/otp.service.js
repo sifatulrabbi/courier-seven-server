@@ -12,12 +12,12 @@ class OtpService {
         return new Date(date.getTime() + minutes * 60000);
     }
     async genVerificationKey(verifyObj) {
-        const verificationKey = await (0, bcrypt_1.hash)(JSON.stringify(verifyObj), 10);
+        const verificationKey = await bcrypt_1.hash(JSON.stringify(verifyObj), 10);
         return verificationKey;
     }
     async verifyVerificationKey(verifyObj, key) {
         const string = JSON.stringify(verifyObj);
-        const verify = await (0, bcrypt_1.compare)(string, key);
+        const verify = await bcrypt_1.compare(string, key);
         return verify;
     }
     async generateOtp(mobile) {

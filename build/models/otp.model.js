@@ -8,4 +8,4 @@ const otpSchema = new mongoose_1.Schema({
     created_at: { type: Date, required: true },
     expires_at: { type: Date, required: true },
 });
-exports.otpModel = (0, mongoose_1.model)('otp', otpSchema);
+exports.otpModel = mongoose_1.model('otp', otpSchema);

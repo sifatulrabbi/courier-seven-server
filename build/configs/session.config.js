@@ -23,6 +23,6 @@ const sessionConfig = {
     }),
 };
 function prepareSession(app) {
-    app.use((0, express_session_1.default)(sessionConfig));
+    app.use(express_session_1.default(sessionConfig));
 }
 exports.prepareSession = prepareSession;

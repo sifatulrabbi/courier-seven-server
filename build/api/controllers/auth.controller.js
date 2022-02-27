@@ -9,11 +9,12 @@ const passport_1 = __importDefault(require("passport"));
 const services_1 = require("../../services");
 const lib_1 = require("../../lib");
 const middlewares_1 = require("../middlewares");
-const router = (0, express_1.Router)();
+const router = express_1.Router();
 router
     .route('/register')
+    // send registration otp to the user
     .get(middlewares_1.verifyMobileMiddleware, middlewares_1.checkUserMiddleware, async (req, res) => {
-    const mobile = (0, lib_1.convertMobileNumber)(req.body.mobile);
+    const mobile = lib_1.convertMobileNumber(req.body.mobile);
     await services_1.authService.sendVerificationOtp(mobile, (err, otp) => {
         if (err)
             return lib_1.CustomResponse.badRequest(res, err.message, err);
@@ -27,9 +28,10 @@ router
         ]);
     });
 })
+    // create user account with all the information
     .post(middlewares_1.verifyMobileMiddleware, middlewares_1.checkUserMiddleware, async (req, res) => {
     const data = req.body;
-    data.mobile = (0, lib_1.convertMobileNumber)(req.body.mobile);
+    data.mobile = lib_1.convertMobileNumber(req.body.mobile);
     services_1.authService.verifyRegistration(data, (err, user) => {
         if (err)
             return lib_1.CustomResponse.badRequest(res, err.message, err);
@@ -49,11 +51,13 @@ router
     // });
     lib_1.CustomResponse.unauthorized(res, 'User mobile and password to login', null);
 })
+    // login
     .post(middlewares_1.verifyMobileMiddleware, passport_1.default.authenticate('local', { failureRedirect: '/api/auth/login' }), (req, res) => {
     if (!req.isAuthenticated()) {
         return lib_1.CustomResponse.unauthorized(res, 'Use mobile and password to login', null);
     }
-    lib_1.CustomResponse.ok(res, 'Login successful', [req.user]);
+    const user = req.user;
+    res.redirect(`/api/v1/users/${user._id}`);
 });
 function useAuthRouter(app) {
     app.use('/api/v1/auth', router);
