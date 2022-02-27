@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersService = void 0;
 const models_1 = require("../models");
-class UsersService {
+const lib_1 = require("../lib");
+class UsersService extends lib_1.EventClass {
     // create user
     async create(data, done) {
         if (data.password !== data.confirm_password) {
@@ -14,6 +15,7 @@ class UsersService {
             const userDoc = new models_1.usersModel(data);
             const user = await userDoc.save();
             done(null, user);
+            this.trigger('save', user);
         }
         catch (err) {
             done(err);
@@ -32,6 +34,7 @@ class UsersService {
             if (!updatedUser)
                 return done(null);
             done(null, updatedUser);
+            this.trigger('update', updatedUser);
         }
         catch (err) {
             done(err);
@@ -43,6 +46,7 @@ class UsersService {
         if (!removedUser)
             return done(new Error('Unable to remove user'));
         done(null, 'User removed');
+        this.trigger('remove', removedUser);
     }
     // find user with id and mobile
     async findOne({ id, mobile }, done) {

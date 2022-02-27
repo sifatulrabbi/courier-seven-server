@@ -2,7 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.shopsService = void 0;
 const shops_model_1 = require("../models/shops.model");
+const users_service_1 = require("./users.service");
 class ShopsService {
+    constructor() {
+        users_service_1.usersService.subscribe('remove', (user) => {
+            this.removeByUser(user._id);
+        });
+    }
     // finds all the shops
     async allShops(done) {
         try {
@@ -106,6 +112,14 @@ class ShopsService {
         }
         catch (err) {
             done(err);
+        }
+    }
+    async removeByUser(userId) {
+        try {
+            await shops_model_1.shopsModel.remove({ owner_id: userId.toString() });
+        }
+        catch (err) {
+            console.log(err);
         }
     }
 }
