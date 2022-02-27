@@ -15,3 +15,4 @@ __exportStar(require("./logger"), exports);
 __exportStar(require("./custom-responses"), exports);
 __exportStar(require("./convert-mobile-number"), exports);
 __exportStar(require("./verify-mobile-number"), exports);
+__exportStar(require("./omit-user-data"), exports);

@@ -10,7 +10,7 @@ const app_1 = require("./api/app");
 const console_1 = __importDefault(require("console"));
 const server = http_1.default.createServer(app_1.app);
 server.listen(configs_1.config.PORT, () => {
-    (0, lib_1.connectDb)();
+    lib_1.connectDb();
     if (!configs_1.config.PROD) {
         console_1.default.log(`Server is running on http://localhost:${configs_1.config.PORT}`);
     }

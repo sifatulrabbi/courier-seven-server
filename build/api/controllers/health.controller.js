@@ -5,7 +5,7 @@ const express_1 = require("express");
 class HealthController {
     constructor(app) {
         this.app = app;
-        this.router = (0, express_1.Router)();
+        this.router = express_1.Router();
         this.router.get('/', this.getHello);
         this.router.get('/health', this.getHealth);
         this.router.get('/mongo-id/:id', this.validateMongoId);

@@ -45,17 +45,31 @@ class UsersService {
         done(null, 'User removed');
     }
     // find user with id and mobile
-    async findOne({ id, mobile }) {
-        // @ts-ignore
-        const user = id
-            ? await models_1.usersModel.findById(id)
-            : mobile
-                ? await models_1.usersModel.findOne({ mobile: mobile })
-                : null;
-        return user;
+    async findOne({ id, mobile }, done) {
+        try {
+            // @ts-ignore
+            const user = id
+                ? await models_1.usersModel.findById(id)
+                : mobile
+                    ? await models_1.usersModel.findOne({ mobile: mobile })
+                    : null;
+            if (!user) {
+                if (done)
+                    done(null);
+                return null;
+            }
+            if (done)
+                done(null, user);
+            return user;
+        }
+        catch (err) {
+            if (done)
+                done(err);
+            return null;
+        }
     }
     // find all the user
-    async findAll(done) {
+    async all(done) {
         const users = await models_1.usersModel.find({});
         done(null, users);
     }
