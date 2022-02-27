@@ -3,6 +3,7 @@ import passport from 'passport';
 import { authService } from '../../services';
 import { convertMobileNumber, CustomResponse } from '../../lib';
 import { checkUserMiddleware, verifyMobileMiddleware } from '../middlewares';
+import { IUser } from '../../interfaces';
 
 const router = Router();
 
@@ -50,6 +51,8 @@ router
     // });
     CustomResponse.unauthorized(res, 'User mobile and password to login', null);
   })
+
+  // login
   .post(
     verifyMobileMiddleware,
     passport.authenticate('local', { failureRedirect: '/api/auth/login' }),
@@ -61,7 +64,8 @@ router
           null,
         );
       }
-      CustomResponse.ok(res, 'Login successful', [req.user]);
+      const user = req.user as IUser;
+      res.redirect(`/api/v1/users/${user._id}`);
     },
   );
 

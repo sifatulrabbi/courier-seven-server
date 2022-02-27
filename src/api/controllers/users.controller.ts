@@ -24,7 +24,9 @@ router
   .get(authGuard, (req, res) => {
     const user = req.user as IUser;
     const id = req.params.id;
-    if (user._id !== id) return forbidden(res, false, 'Incorrect identity');
+    if (user._id.toString() !== id) {
+      return forbidden(res, false, 'Incorrect identity');
+    }
 
     usersService.findOne({ id }, (err, result) => {
       if (err) return badRequest(res, err.message, err);
@@ -35,7 +37,9 @@ router
   .put(authGuard, (req, res) => {
     const user = req.user as IUser;
     const id = req.params.id;
-    if (user._id !== id) return forbidden(res, false, 'Incorrect identity');
+    if (user._id.toString() !== id) {
+      return forbidden(res, false, 'Incorrect identity');
+    }
 
     const data = req.body;
     usersService.update(id, data, (err, result) => {
@@ -47,7 +51,9 @@ router
   .delete(authGuard, (req, res) => {
     const user = req.user as IUser;
     const id = req.params.id;
-    if (user._id !== id) return forbidden(res, false, 'Incorrect identity');
+    if (user._id.toString() !== id) {
+      return forbidden(res, false, 'Incorrect identity');
+    }
 
     usersService.remove(id, (err, result) => {
       if (err) return badRequest(res, err.message, err);
