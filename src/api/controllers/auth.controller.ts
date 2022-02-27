@@ -8,6 +8,7 @@ const router = Router();
 
 router
   .route('/register')
+  // send registration otp to the user
   .get(verifyMobileMiddleware, checkUserMiddleware, async (req, res) => {
     const mobile = convertMobileNumber(req.body.mobile);
 
@@ -24,6 +25,7 @@ router
       ]);
     });
   })
+  // create user account with all the information
   .post(verifyMobileMiddleware, checkUserMiddleware, async (req, res) => {
     const data = req.body;
     data.mobile = convertMobileNumber(req.body.mobile);

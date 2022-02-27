@@ -51,18 +51,32 @@ class UsersService {
   }
 
   // find user with id and mobile
-  async findOne({ id, mobile }: { id?: string; mobile?: string }) {
-    // @ts-ignore
-    const user: IUserDoc | null = id
-      ? await usersModel.findById(id)
-      : mobile
-      ? await usersModel.findOne({ mobile: mobile })
-      : null;
-    return user;
+  async findOne(
+    { id, mobile }: { id?: string; mobile?: string },
+    done?: IDone<IUser>,
+  ) {
+    try {
+      // @ts-ignore
+      const user: IUserDoc | null = id
+        ? await usersModel.findById(id)
+        : mobile
+        ? await usersModel.findOne({ mobile: mobile })
+        : null;
+
+      if (!user) {
+        if (done) done(null);
+        return null;
+      }
+      if (done) done(null, user);
+      return user;
+    } catch (err: any) {
+      if (done) done(err);
+      return null;
+    }
   }
 
   // find all the user
-  async findAll(done: IDone<IUser[]>) {
+  async all(done: IDone<IUser[]>) {
     const users = await usersModel.find({});
     done(null, users);
   }
