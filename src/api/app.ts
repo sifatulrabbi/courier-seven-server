@@ -6,12 +6,11 @@ import cookieParse from 'cookie-parser';
 import { prepareSession, preparePassport } from '../configs';
 import { showLogs } from '../lib';
 import {
-  HealthController,
-  useUserRouter,
-  useAuthRouter,
-  useParcelsController,
-  useShopsController,
-} from './controllers';
+  useAuthRouters,
+  useUsersRouters,
+  useShopsRouters,
+  useParcelsRouter,
+} from './routers';
 
 export const app = express();
 
@@ -26,8 +25,7 @@ preparePassport(app);
 
 showLogs(app);
 
-HealthController.use(app);
-useUserRouter(app);
-useAuthRouter(app);
-useParcelsController(app);
-useShopsController(app);
+useAuthRouters(app);
+useUsersRouters(app);
+useShopsRouters(app);
+useParcelsRouter(app);

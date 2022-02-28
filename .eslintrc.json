@@ -19,7 +19,7 @@
     "eslint-config-prettier",
     "eslint-config-airbnb-typescript/base"
   ],
-  "ignorePatterns": ["./build/*", "*.d.ts"],
+  "ignorePatterns": ["./build/*", "*.d.ts", "*.js"],
   "rules": {
     "no-console": "off", // not using debugging
     "no-underscore-dangle": "off", // using snake_case for the database
