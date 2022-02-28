@@ -1,7 +1,6 @@
-import supertest from 'supertest';
-import { app } from '../src/api/app';
 import { connectDb } from '../src/lib';
 import mongoose from 'mongoose';
+import { usersController } from '../src/api/controllers';
 
 describe('users', () => {
   beforeAll(async () => {
@@ -12,13 +11,24 @@ describe('users', () => {
     await mongoose.disconnect();
   });
 
-  describe('get users route', () => {
-    describe('given the users does not exist', () => {
-      it('should return 401', async () => {
-        const userId = 'sample userId';
+  describe('get user by id', () => {
+    const mockReq: any = {
+      // params: {
+      //   id: 'test-user-001',
+      // },
+      // user: {
+      //   _id: 'test-user-001',
+      //   mobile: '+8801234567890',
+      //   email: 'testuser.001@email.com',
+      // },
+    };
+    const mockRes: any = {
+      json: jest.fn(),
+      status: jest.fn(),
+    };
+    // const mockNext: NextFunction = jest.fn();
 
-        await supertest(app).get(`/api/v1/users/${userId}`).expect(401);
-      });
-    });
+    usersController.getAll(mockReq, mockRes);
+    expect(mockRes.status).toBe(200);
   });
 });
