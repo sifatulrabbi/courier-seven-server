@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy to heroku
 
 on:
   push:
@@ -14,8 +14,8 @@ jobs:
 
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "courier-007-server"
-          heroku_email: "mdsifatulislam.rabbi@gmail.com"
+          heroku_app_name: 'courier-007-server'
+          heroku_email: 'mdsifatulislam.rabbi@gmail.com'
 
         env:
           NODE_ENV: production
