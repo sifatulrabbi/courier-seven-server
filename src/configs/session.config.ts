@@ -1,7 +1,7 @@
 import type { Express } from 'express';
-import MongoStore from 'connect-mongo';
 import session from 'express-session';
 import { config } from './config';
+import { mongoStore } from './mongo-store';
 
 const sessionConfig = {
   secret: config.SESSION_SECRET,
@@ -11,12 +11,7 @@ const sessionConfig = {
     maxAge: config.COOKIE_MAX_AGE,
     httpOnly: true,
   },
-  store: new MongoStore({
-    collectionName: 'user-sessions',
-    mongoUrl: config.MONGODB_URI,
-    ttl: config.COOKIE_MAX_AGE,
-    autoRemove: 'native',
-  }),
+  store: mongoStore,
 };
 
 export function prepareSession(app: Express) {

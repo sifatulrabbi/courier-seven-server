@@ -273,6 +273,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/otp-generator@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/otp-generator/-/otp-generator-4.0.0.tgz#da28b1e254f46262e176ba96541bcfa32660da98"
+  integrity sha512-QsMc+jgx2WX5ciAwc4Wj37eaGYGnoQcUishOWUgpZ+8nypK6hr5jgUE3xumQ7hvX4AC+gxZktpg/dUHWa4FZRA==
+
 "@types/passport-local@^1.0.34":
   version "1.0.34"
   resolved "https://registry.yarnpkg.com/@types/passport-local/-/passport-local-1.0.34.tgz#84d3b35b2fd4d36295039ded17fe5f3eaa62f4f6"

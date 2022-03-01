@@ -2,7 +2,6 @@ import http from 'http';
 import { config } from './configs';
 import { connectDb } from './lib';
 import { app } from './api/app';
-import console from 'console';
 
 const server = http.createServer(app);
 server.listen(config.PORT, () => {
