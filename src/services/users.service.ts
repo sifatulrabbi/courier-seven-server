@@ -57,7 +57,7 @@ class UsersService extends EventClass<IUserEvent, IUser> {
 
   // find user with id and mobile
   async findOne(
-    { id, mobile }: { id?: string; mobile?: string },
+    { id, mobile, email }: { id?: string; mobile?: string; email?: string },
     done?: IDone<IUser>,
   ) {
     try {
@@ -65,7 +65,9 @@ class UsersService extends EventClass<IUserEvent, IUser> {
       const user: IUserDoc | null = id
         ? await usersModel.findById(id)
         : mobile
-        ? await usersModel.findOne({ mobile: mobile })
+        ? await usersModel.findOne({ mobile })
+        : email
+        ? usersModel.findOne({ email })
         : null;
 
       if (!user) {

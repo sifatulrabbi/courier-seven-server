@@ -7,7 +7,10 @@ const router = Router();
 
 router
   .route('/register')
-  .get(verifyMobileMiddleware, checkUserMiddleware, authController.registerGet)
+  .get(
+    /* verifyMobileMiddleware, */ checkUserMiddleware,
+    authController.registerGet,
+  )
   .post(
     verifyMobileMiddleware,
     checkUserMiddleware,
@@ -16,9 +19,9 @@ router
 
 router
   .route('/login')
-  .get(verifyMobileMiddleware, authController.loginGet)
+  .get(/* verifyMobileMiddleware, */ authController.loginGet)
   .post(
-    verifyMobileMiddleware,
+    /* verifyMobileMiddleware, */
     passport.authenticate('local', { failureRedirect: '/api/auth/login' }),
     authController.loginPost,
   );

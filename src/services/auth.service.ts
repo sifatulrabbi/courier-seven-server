@@ -1,17 +1,19 @@
 import type { IUser, IDone, ICreateUserDto } from '../interfaces';
-import { convertMobileNumber } from '../lib';
+// import { convertMobileNumber } from '../lib';
 import { otpService } from './otp.service';
+import { emailService } from './email.service';
 import { usersService } from './users.service';
-import console from 'console';
 
 class AuthService {
   async sendVerificationOtp(
-    mobile: string,
+    email: string, // using email registration instead of mobile verification
     done: IDone<{ token: string; verificationKey: string }>,
   ) {
     try {
-      const otp = await otpService.generateOtp(mobile);
+      const otp = await otpService.generateOtp(email);
       if (!otp) return done(new Error('Unable to create token'));
+
+      await emailService.sendOtpMail(email, otp.token);
       done(null, otp);
       console.log(otp.token);
     } catch (err: any) {
@@ -27,7 +29,7 @@ class AuthService {
 
     try {
       const verify = await otpService.verifyOtp(
-        data.mobile,
+        data.email, // using email instead of mobile verification
         data.token,
         data.verification_key,
       );
@@ -39,10 +41,11 @@ class AuthService {
     }
   }
 
-  async verifyLogin(mobile: string, password: string, done: IDone<IUser>) {
+  async verifyLogin(email: string, password: string, done: IDone<IUser>) {
     try {
       const user = await usersService.findOne({
-        mobile: convertMobileNumber(mobile),
+        // mobile: convertMobileNumber(mobile),
+        email,
       });
 
       if (!user) return done(null);

@@ -2,18 +2,20 @@ import { Request, Response } from 'express';
 import { authService } from '../../services';
 import { convertMobileNumber, CustomResponse } from '../../lib';
 import { IUser } from '../../interfaces';
+import { RESPONSES } from '../../lib/constants';
 
 const { ok, badRequest, internal, created } = CustomResponse;
 
 class AuthController {
   registerGet(req: Request, res: Response) {
-    const mobile = convertMobileNumber(req.body.mobile);
+    // const mobile = convertMobileNumber(req.body.mobile);
+    const email = req.body.email; // using email instead of mobile verification
 
-    authService.sendVerificationOtp(mobile, (err, otp) => {
+    authService.sendVerificationOtp(email, (err, otp) => {
       if (err) return CustomResponse.badRequest(res, err.message, err);
       if (!otp) return badRequest(res, 'Unable to create OTP', null);
 
-      ok(res, 'OTP sent to the mobile number', [
+      ok(res, RESPONSES.otpSent, [
         {
           token: otp.token,
           verification_key: otp.verificationKey,
@@ -38,12 +40,9 @@ class AuthController {
 
   loginPost(req: Request, res: Response) {
     if (!req.isAuthenticated()) {
-      return CustomResponse.unauthorized(
-        res,
-        'Use mobile and password to login',
-        null,
-      );
+      return CustomResponse.unauthorized(res, RESPONSES.loginFailed, null);
     }
+
     const user = req.user as IUser;
     ok(res, 'Login successful', [user]);
   }
@@ -54,7 +53,8 @@ class AuthController {
     //   if (err) return CustomResponse.badRequest(res, err.message, err);
     //   CustomResponse.ok(res, "OTP sent to the mobile number");
     // });
-    CustomResponse.unauthorized(res, 'Use mobile and password to login', null);
+
+    CustomResponse.unauthorized(res, RESPONSES.loginFailed, null);
   }
 
   logoutPost(req: Request, res: Response) {
