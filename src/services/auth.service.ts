@@ -1,5 +1,5 @@
 import type { IUser, IDone, ICreateUserDto } from '../interfaces';
-// import { convertMobileNumber } from '../lib';
+import { /* convertMobileNumber, */ omitUserData } from '../lib';
 import { otpService } from './otp.service';
 import { emailService } from './email.service';
 import { usersService } from './users.service';
@@ -21,7 +21,10 @@ class AuthService {
     }
   }
 
-  async verifyRegistration(data: ICreateUserDto, done: IDone<IUser>) {
+  async verifyRegistration(
+    data: ICreateUserDto,
+    done: IDone<Omit<IUser, 'password'>>,
+  ) {
     if (data.password !== data.confirm_password) {
       done(new Error("Password: passwords don't match"));
       return;
@@ -41,7 +44,11 @@ class AuthService {
     }
   }
 
-  async verifyLogin(email: string, password: string, done: IDone<IUser>) {
+  async verifyLogin(
+    email: string,
+    password: string,
+    done: IDone<Omit<IUser, 'password'>>,
+  ) {
     try {
       const user = await usersService.findOne({
         // mobile: convertMobileNumber(mobile),
@@ -53,7 +60,7 @@ class AuthService {
         return done(new Error('Incorrect password'));
       }
 
-      done(null, user);
+      done(null, omitUserData(user));
     } catch (err: any) {
       done(err);
     }
