@@ -6,13 +6,11 @@ const route = Router();
 
 route.route('/').get(usersController.getAll);
 
-route.use('/:id', authGuard);
-
 route
   .route('/:id')
-  .get(usersController.getOne)
-  .put(usersController.update)
-  .delete(usersController.remove);
+  .get(authGuard, usersController.getOne)
+  .put(authGuard, usersController.update)
+  .delete(authGuard, usersController.remove);
 
 export function useUsersRouters(app: Express) {
   app.use('/api/v1/users', route);

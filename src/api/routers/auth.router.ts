@@ -23,6 +23,8 @@ router
     authController.loginPost,
   );
 
+router.route('/logout').post(authController.logoutPost);
+
 export function useAuthRouters(app: Express) {
   app.use('/api/v1/auth', router);
 }

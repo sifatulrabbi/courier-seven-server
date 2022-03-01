@@ -1,6 +1,5 @@
 import { otpModel } from '../models';
 import { hash, compare } from 'bcrypt';
-// @ts-ignore
 import otpGenerator from 'otp-generator';
 
 interface IVerifyObj {
