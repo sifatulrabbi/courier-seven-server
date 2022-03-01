@@ -1,5 +1,5 @@
 import { Express, Router } from 'express';
-import passport from 'passport';
+// import passport from 'passport';
 import { checkUserMiddleware, verifyMobileMiddleware } from '../middlewares';
 import { authController } from '../controllers';
 
@@ -22,7 +22,6 @@ router
   .get(/* verifyMobileMiddleware, */ authController.loginGet)
   .post(
     /* verifyMobileMiddleware, */
-    passport.authenticate('local', { failureRedirect: '/api/auth/login' }),
     authController.loginPost,
   );
 

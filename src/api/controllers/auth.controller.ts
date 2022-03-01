@@ -3,6 +3,7 @@ import { authService } from '../../services';
 import { convertMobileNumber, CustomResponse } from '../../lib';
 import { IUser } from '../../interfaces';
 import { RESPONSES } from '../../lib/constants';
+import passport from 'passport';
 
 const { ok, badRequest, internal, created } = CustomResponse;
 
@@ -39,12 +40,17 @@ class AuthController {
   }
 
   loginPost(req: Request, res: Response) {
-    if (!req.isAuthenticated()) {
-      return CustomResponse.unauthorized(res, RESPONSES.loginFailed, null);
-    }
+    const authRet = passport.authenticate('local');
+    authRet(req, res, (err: any) => {
+      if (err) return badRequest(res, err.message, err);
 
-    const user = req.user as IUser;
-    ok(res, 'Login successful', [user]);
+      if (!req.isAuthenticated()) {
+        return CustomResponse.unauthorized(res, RESPONSES.loginFailed, null);
+      }
+
+      const user = req.user as IUser;
+      ok(res, 'Login successful', [user]);
+    });
   }
 
   loginGet(req: Request, res: Response) {
