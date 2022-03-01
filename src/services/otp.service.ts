@@ -3,7 +3,7 @@ import { hash, compare } from 'bcrypt';
 import otpGenerator from 'otp-generator';
 
 interface IVerifyObj {
-  mobile: string;
+  email: string; // using email instead of mobile verification
   token: string;
   created_at: Date;
   expires_at: Date;
@@ -25,7 +25,9 @@ class OtpService {
     return verify;
   }
 
-  async generateOtp(mobile: string) {
+  async generateOtp(
+    email: string /* using email instead of mobile verification */,
+  ) {
     const token: string = otpGenerator.generate(6, {
       digits: true,
       lowerCaseAlphabets: false,
@@ -37,7 +39,7 @@ class OtpService {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const expires_at = this.addMinutes(created_at, 3);
     const verificationKey = await this.genVerificationKey({
-      mobile,
+      email,
       token,
       created_at,
       expires_at,
@@ -54,7 +56,11 @@ class OtpService {
     return { token, verificationKey };
   }
 
-  async verifyOtp(mobile: string, token: string, key: string) {
+  async verifyOtp(
+    email: string /* using email instead of mobile verification */,
+    token: string,
+    key: string,
+  ) {
     const otpDoc = await otpModel.findOne({ token, key });
 
     if (!otpDoc) {
@@ -69,7 +75,7 @@ class OtpService {
     if (
       !(await this.verifyVerificationKey(
         {
-          mobile,
+          email, // using email instead of mobile verification
           token,
           created_at: otpDoc.created_at,
           expires_at: otpDoc.expires_at,

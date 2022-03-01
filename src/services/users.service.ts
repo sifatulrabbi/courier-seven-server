@@ -7,11 +7,11 @@ import type {
   IUserEvent,
 } from '../interfaces';
 import { usersModel } from '../models';
-import { EventClass } from '../lib';
+import { EventClass, omitUserData } from '../lib';
 
 class UsersService extends EventClass<IUserEvent, IUser> {
   // create user
-  async create(data: ICreateUserDto, done: IDone<IUser>) {
+  async create(data: ICreateUserDto, done: IDone<Omit<IUser, 'password'>>) {
     if (data.password !== data.confirm_password) {
       done(new Error('Password: password and confirm_password did not match'));
       return;
@@ -21,7 +21,7 @@ class UsersService extends EventClass<IUserEvent, IUser> {
       // @ts-ignore
       const userDoc: IUserDoc = new usersModel(data);
       const user: IUserDoc = await userDoc.save();
-      done(null, user);
+      done(null, omitUserData(user));
       this.trigger('save', user);
     } catch (err: any) {
       done(err);
@@ -57,7 +57,7 @@ class UsersService extends EventClass<IUserEvent, IUser> {
 
   // find user with id and mobile
   async findOne(
-    { id, mobile }: { id?: string; mobile?: string },
+    { id, mobile, email }: { id?: string; mobile?: string; email?: string },
     done?: IDone<IUser>,
   ) {
     try {
@@ -65,7 +65,9 @@ class UsersService extends EventClass<IUserEvent, IUser> {
       const user: IUserDoc | null = id
         ? await usersModel.findById(id)
         : mobile
-        ? await usersModel.findOne({ mobile: mobile })
+        ? await usersModel.findOne({ mobile })
+        : email
+        ? usersModel.findOne({ email })
         : null;
 
       if (!user) {

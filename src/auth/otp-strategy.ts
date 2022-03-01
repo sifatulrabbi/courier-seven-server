@@ -5,7 +5,7 @@ import { authService } from '../services/auth.service';
 
 export const otpStrategy = new passportCustom.Strategy(function (
   req: Request,
-  done: IDone<IUser>,
+  done: IDone<Omit<IUser, 'password'>>,
 ) {
   const { mobile, otp } = req.body;
 

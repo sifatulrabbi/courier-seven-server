@@ -3,7 +3,7 @@ import { authService } from '../services';
 
 export const localStrategy = new Strategy(
   {
-    usernameField: 'mobile',
+    usernameField: 'email', // using email instead of mobile verification
     passwordField: 'password',
   },
   authService.verifyLogin,

@@ -1,17 +1,19 @@
 import type { IUser, IDone, ICreateUserDto } from '../interfaces';
-import { convertMobileNumber } from '../lib';
+import { /* convertMobileNumber, */ omitUserData } from '../lib';
 import { otpService } from './otp.service';
+import { emailService } from './email.service';
 import { usersService } from './users.service';
-import console from 'console';
 
 class AuthService {
   async sendVerificationOtp(
-    mobile: string,
+    email: string, // using email registration instead of mobile verification
     done: IDone<{ token: string; verificationKey: string }>,
   ) {
     try {
-      const otp = await otpService.generateOtp(mobile);
+      const otp = await otpService.generateOtp(email);
       if (!otp) return done(new Error('Unable to create token'));
+
+      await emailService.sendOtpMail(email, otp.token);
       done(null, otp);
       console.log(otp.token);
     } catch (err: any) {
@@ -19,7 +21,10 @@ class AuthService {
     }
   }
 
-  async verifyRegistration(data: ICreateUserDto, done: IDone<IUser>) {
+  async verifyRegistration(
+    data: ICreateUserDto,
+    done: IDone<Omit<IUser, 'password'>>,
+  ) {
     if (data.password !== data.confirm_password) {
       done(new Error("Password: passwords don't match"));
       return;
@@ -27,7 +32,7 @@ class AuthService {
 
     try {
       const verify = await otpService.verifyOtp(
-        data.mobile,
+        data.email, // using email instead of mobile verification
         data.token,
         data.verification_key,
       );
@@ -39,10 +44,15 @@ class AuthService {
     }
   }
 
-  async verifyLogin(mobile: string, password: string, done: IDone<IUser>) {
+  async verifyLogin(
+    email: string,
+    password: string,
+    done: IDone<Omit<IUser, 'password'>>,
+  ) {
     try {
       const user = await usersService.findOne({
-        mobile: convertMobileNumber(mobile),
+        // mobile: convertMobileNumber(mobile),
+        email,
       });
 
       if (!user) return done(null);
@@ -50,7 +60,7 @@ class AuthService {
         return done(new Error('Incorrect password'));
       }
 
-      done(null, user);
+      done(null, omitUserData(user));
     } catch (err: any) {
       done(err);
     }
