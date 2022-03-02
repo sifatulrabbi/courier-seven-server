@@ -36,4 +36,5 @@ export const config = {
   TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER,
   VONAGE_API_KEY: process.env.VONAGE_API_KEY,
   VONAGE_API_SECRET: process.env.VONAGE_API_SECRET,
+  ORIGINS: process.env.ORIGINS ? process.env.ORIGINS.split('#') : [],
 };

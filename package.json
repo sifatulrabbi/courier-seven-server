@@ -13,6 +13,7 @@
   },
   "license": "MIT",
   "private": true,
+  "type": "commonjs",
   "keywords": [
     "courier-007",
     "nodejs",
