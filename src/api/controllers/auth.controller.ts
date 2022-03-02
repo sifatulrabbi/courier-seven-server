@@ -1,20 +1,20 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { authService } from '../../services';
 import { convertMobileNumber, CustomResponse } from '../../lib';
 import { IUser } from '../../interfaces';
 import { RESPONSES } from '../../lib/constants';
 import passport from 'passport';
 
-const { ok, badRequest, internal, created } = CustomResponse;
+const { ok, internal, created, unauthorized } = CustomResponse;
 
 class AuthController {
-  registerGet(req: Request, res: Response) {
+  registerGet(req: Request, res: Response, next: NextFunction) {
     // const mobile = convertMobileNumber(req.body.mobile);
     const email = req.body.email; // using email instead of mobile verification
 
     authService.sendVerificationOtp(email, (err, otp) => {
-      if (err) return CustomResponse.badRequest(res, err.message, err);
-      if (!otp) return badRequest(res, 'Unable to create OTP', null);
+      if (err) return next(err);
+      if (!otp) return next(new Error('Unable to create OTP'));
 
       ok(res, RESPONSES.otpSent, [
         {
@@ -25,12 +25,12 @@ class AuthController {
     });
   }
 
-  registerPost(req: Request, res: Response) {
+  registerPost(req: Request, res: Response, next: NextFunction) {
     const data = req.body;
     data.mobile = convertMobileNumber(req.body.mobile);
 
     authService.verifyRegistration(data, (err, user) => {
-      if (err) return CustomResponse.badRequest(res, err.message, err);
+      if (err) return next(err);
       if (!user) {
         return internal(res, 'Unable to create user', null);
       }
@@ -39,13 +39,13 @@ class AuthController {
     });
   }
 
-  loginPost(req: Request, res: Response) {
+  loginPost(req: Request, res: Response, next: NextFunction) {
     const authRet = passport.authenticate('local');
     authRet(req, res, (err: any) => {
-      if (err) return badRequest(res, err.message, err);
+      if (err) return next(err);
 
       if (!req.isAuthenticated()) {
-        return CustomResponse.unauthorized(res, RESPONSES.loginFailed, null);
+        return unauthorized(res, RESPONSES.loginFailed, null);
       }
 
       const user = req.user as IUser;
@@ -53,14 +53,14 @@ class AuthController {
     });
   }
 
-  loginGet(req: Request, res: Response) {
+  loginGet(req: Request, res: Response /*, next: NextFunction */) {
     // const mobile = convertMobileNumber(req.body.mobile);
     // authService.sendVerificationOtp(mobile, (err) => {
-    //   if (err) return CustomResponse.badRequest(res, err.message, err);
-    //   CustomResponse.ok(res, "OTP sent to the mobile number");
+    //   if (err) return next(err);
+    //   CustomResponse.ok(res, 'OTP sent to the mobile number');
     // });
 
-    CustomResponse.unauthorized(res, RESPONSES.loginFailed, null);
+    unauthorized(res, RESPONSES.loginFailed, null);
   }
 
   logoutPost(req: Request, res: Response) {
