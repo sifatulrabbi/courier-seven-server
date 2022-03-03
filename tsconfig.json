@@ -14,7 +14,8 @@
     "strict": true,
     "pretty": true,
     "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
   },
   "include": ["./src"],
   "exclude": ["./build", "./node_modules"]

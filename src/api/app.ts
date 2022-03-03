@@ -10,6 +10,7 @@ import {
   useUsersRouters,
   useShopsRouters,
   useParcelsRouter,
+  useLocationsRouter,
 } from './routers';
 import { handleError, setHeaders } from './middlewares';
 
@@ -36,5 +37,6 @@ useAuthRouters(app);
 useUsersRouters(app);
 useShopsRouters(app);
 useParcelsRouter(app);
+useLocationsRouter(app);
 
 app.use(handleError);
