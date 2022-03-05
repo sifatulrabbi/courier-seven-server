@@ -36,9 +36,25 @@ class UsersService extends EventClass<IUserEvent, IUser> {
     }
 
     try {
-      const updatedUser = await usersModel.findByIdAndUpdate(userId, data, {
-        new: true,
-      });
+      const user = await this.findOne({ id: userId });
+      if (!user) return done(null);
+
+      // update queue
+      if (data.account_type) user.account_type = data.account_type;
+      if (data.addresses) {
+        if (data.addresses.permanent)
+          user.addresses.permanent = data.addresses.permanent;
+        if (data.addresses.present)
+          user.addresses.present = data.addresses.present;
+      }
+      if (data.email) user.email = data.email;
+      if (data.mobile) user.mobile = data.mobile;
+      if (data.name) {
+        if (data.name.first) user.name.first = data.name.first;
+        if (data.name.last) user.name.last = data.name.last;
+      }
+
+      const updatedUser = await user.save();
       if (!updatedUser) return done(null);
       done(null, updatedUser);
       this.trigger('update', updatedUser);
