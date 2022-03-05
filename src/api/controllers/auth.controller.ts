@@ -41,7 +41,7 @@ class AuthController {
 
   loginPost(req: Request, res: Response, next: NextFunction) {
     const authRet = passport.authenticate('local');
-    authRet(req, res, (err: any) => {
+    return authRet(req, res, (err: any) => {
       if (err) return next(err);
 
       if (!req.isAuthenticated()) {
