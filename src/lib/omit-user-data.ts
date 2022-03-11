@@ -7,7 +7,7 @@ export function omitUserData(data: IUser) {
     name: data.name,
     email: data.email,
     account_type: data.account_type,
-    addresses: data.addresses,
+    address: data.address,
   };
   return newData;
 }

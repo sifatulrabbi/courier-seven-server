@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 export type IAccountTypes = 'bronze' | 'silver' | 'platinum' | 'diamond';
 
 export type IProductTypes = 'solid' | 'liquid' | 'fragile';
@@ -6,8 +5,9 @@ export type IProductTypes = 'solid' | 'liquid' | 'fragile';
 export type IDone<T> = (err: any, result?: T) => void;
 
 export interface IAddress {
+  division: string;
   district: string;
-  sub_district: string;
+  upazila: string;
   area: string;
   street: string;
   house: string;

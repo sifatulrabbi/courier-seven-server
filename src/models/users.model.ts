@@ -4,29 +4,21 @@ import { IUser, IUsersModel } from '../interfaces';
 
 const usersSchema = new Schema<IUser, IUsersModel>(
   {
-    mobile: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
+    mobile: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     name: {
       first: { type: String, required: true },
       last: { type: String, required: true },
     },
     account_type: { type: String, require: true },
-    addresses: {
-      permanent: {
-        district: { type: String, required: true },
-        sub_district: { type: String, required: true },
-        area: { type: String, required: true },
-        street: { type: String, require: true },
-        house: { type: String, required: true },
-      },
-      present: {
-        district: { type: String, required: true },
-        sub_district: { type: String, required: true },
-        area: { type: String, required: true },
-        street: { type: String, require: true },
-        house: { type: String, required: true },
-      },
+    address: {
+      division: { type: String, required: true },
+      district: { type: String, required: true },
+      upazila: { type: String, required: true },
+      area: { type: String, required: true },
+      street: { type: String, require: true },
+      house: { type: String, required: true },
     },
   },
   {

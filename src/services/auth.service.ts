@@ -29,7 +29,6 @@ class AuthService {
       done(new Error("Password: passwords don't match"));
       return;
     }
-
     try {
       const verify = await otpService.verifyOtp(
         data.email, // using email instead of mobile verification
@@ -37,7 +36,6 @@ class AuthService {
         data.verification_key,
       );
       if (!verify) return done(new Error('Unable to verify user'));
-
       await usersService.create(data, done);
     } catch (err: unknown) {
       done(err);

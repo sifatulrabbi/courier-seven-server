@@ -7,10 +7,13 @@ const router = Router();
 
 router
   .route('/register')
-  .get(
+  .post(
     /* verifyMobileMiddleware, */ checkUserMiddleware,
     authController.registerGet,
-  )
+  );
+
+router
+  .route('/register/final')
   .post(
     verifyMobileMiddleware,
     checkUserMiddleware,
