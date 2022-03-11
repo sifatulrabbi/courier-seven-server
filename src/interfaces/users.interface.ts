@@ -11,10 +11,7 @@ export interface IUser {
   };
   account_type: IAccountTypes;
   password: string;
-  addresses: {
-    present: IAddress;
-    permanent: IAddress;
-  };
+  address: IAddress;
 }
 
 export interface IUserMethods {

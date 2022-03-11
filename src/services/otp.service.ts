@@ -44,7 +44,6 @@ class OtpService {
       created_at,
       expires_at,
     });
-
     const otpDoc = new otpModel({
       token,
       created_at,
@@ -52,7 +51,6 @@ class OtpService {
       verification_key: verificationKey,
     });
     await otpDoc.save();
-
     return { token, verificationKey };
   }
 
@@ -61,8 +59,11 @@ class OtpService {
     token: string,
     key: string,
   ) {
-    const otpDoc = await otpModel.findOne({ token, key });
-
+    console.log(email, token, key);
+    const otpDoc = await otpModel.findOne({
+      token,
+      key: String(key),
+    });
     if (!otpDoc) {
       throw new Error('Invalid OTP');
     }
@@ -85,7 +86,6 @@ class OtpService {
     ) {
       return false;
     }
-
     otpModel.findByIdAndRemove(otpDoc._id);
     return true;
   }
