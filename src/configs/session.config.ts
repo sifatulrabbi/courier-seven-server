@@ -1,4 +1,4 @@
-import type { Express } from 'express';
+import type { Application } from 'express';
 import session from 'express-session';
 import { config } from './config';
 import { mongoStore } from './mongo-store';
@@ -14,6 +14,6 @@ const sessionConfig = {
   store: mongoStore,
 };
 
-export function prepareSession(app: Express) {
+export function prepareSession(app: Application) {
   app.use(session(sessionConfig));
 }

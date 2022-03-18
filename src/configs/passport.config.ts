@@ -1,9 +1,9 @@
-import type { Express } from 'express';
+import type { Application } from 'express';
 import passport from 'passport';
 import { localStrategy } from '../auth';
 import { authService } from '../services';
 
-export function preparePassport(app: Express) {
+export function preparePassport(app: Application) {
   app.use(passport.initialize());
   app.use(passport.session());
 

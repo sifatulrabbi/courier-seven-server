@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
@@ -6,15 +6,15 @@ import cookieParse from 'cookie-parser';
 import { prepareSession, preparePassport, config } from '../configs';
 import { showLogs } from '../lib';
 import {
-  useAuthRouters,
-  useUsersRouters,
-  useShopsRouters,
-  useParcelsRouter,
-  useLocationsRouter,
+  authRouter,
+  usersRouter,
+  shopsRouter,
+  parcelsRouter,
+  locationsRouter,
 } from './routers';
 import { handleError, setHeaders } from './middlewares';
 
-export const app = express();
+export const app: Application = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -33,10 +33,10 @@ preparePassport(app);
 app.use(setHeaders);
 showLogs(app);
 
-useAuthRouters(app);
-useUsersRouters(app);
-useShopsRouters(app);
-useParcelsRouter(app);
-useLocationsRouter(app);
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/shops', shopsRouter);
+app.use('/api/v1/parcels', parcelsRouter);
+app.use('/api/v1/locations', locationsRouter);
 
 app.use(handleError);
