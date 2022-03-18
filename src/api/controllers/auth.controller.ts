@@ -5,12 +5,18 @@ import { IUser } from '../../interfaces';
 import { RESPONSES } from '../../lib/constants';
 import passport from 'passport';
 
-const { ok, internal, created, unauthorized } = CustomResponse;
+const { ok, internal, created, unauthorized, badRequest } = CustomResponse;
 
 class AuthController {
   registerGet(req: Request, res: Response, next: NextFunction) {
     // const mobile = convertMobileNumber(req.body.mobile);
     const email = req.body.email; // using email instead of mobile verification
+    if (!email)
+      return badRequest(
+        res,
+        'Email address is required',
+        'Email address not found',
+      );
     authService.sendVerificationOtp(email, (err, otp) => {
       if (err) return next(err);
       if (!otp) return next(new Error('Unable to create OTP'));

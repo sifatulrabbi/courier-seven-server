@@ -13,7 +13,7 @@ import {
 const server = http.createServer(app);
 
 // socket.io
-const io = new Server<
+export const ioServer = new Server<
   ClientToServerEvents,
   ServerToClientEvents,
   InterServerEvents,
@@ -27,17 +27,20 @@ const io = new Server<
   },
 });
 
-io.on('connection', (socket) => {
+ioServer.on('connection', (socket) => {
   console.log('new connection', socket.id);
   socket.emit('withAck', 'Welcome to Courier 007', (e: number) => {
     console.log(`Client age is: ${e}`);
   });
 });
 
-server.listen(config.PORT, () => {
+function prepare() {
   connectDb();
+  console.log(`Server is running on http://localhost:${config.PORT}`);
+}
 
-  if (!config.PROD) {
-    console.log(`Server is running on http://localhost:${config.PORT}`);
-  }
+server.listen(config.PORT, () => {
+  prepare();
 });
+
+export { prepare, server };
