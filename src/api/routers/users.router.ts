@@ -1,17 +1,15 @@
-import { Router, Express } from 'express';
+import { Router } from 'express';
 import { usersController } from '../controllers';
 import { authGuard } from '../middlewares';
 
-const route = Router();
+const router = Router();
 
-route.route('/').get(usersController.getAll);
+router.route('/').get(usersController.getAll);
 
-route
+router
   .route('/:id')
   .get(authGuard, usersController.getOne)
   .put(authGuard, usersController.update)
   .delete(authGuard, usersController.remove);
 
-export function useUsersRouters(app: Express) {
-  app.use('/api/v1/users', route);
-}
+export const usersRouter = router;

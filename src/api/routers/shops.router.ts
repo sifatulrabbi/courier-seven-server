@@ -1,4 +1,4 @@
-import { Express, Router } from 'express';
+import { Express } from 'express';
 import { authGuard } from '../middlewares';
 import { shopsController } from '../controllers';
 
@@ -17,6 +17,4 @@ router
   .get(authGuard, shopsController.getByUser)
   .post(authGuard, shopsController.create);
 
-export function useShopsRouters(app: Express) {
-  app.use('/api/v1/shops', router);
-}
+export const shopsRouter = router;

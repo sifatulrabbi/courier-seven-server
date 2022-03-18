@@ -1,4 +1,4 @@
-import { Router, Express } from 'express';
+import { Router } from 'express';
 import { LocationsController } from '../controllers';
 
 const router = Router();
@@ -12,6 +12,4 @@ router.get('/divisions', controller.getDivisions);
 
 router.get('/upazilas', controller.getUpazilas);
 
-export function useLocationsRouter(app: Express) {
-  app.use('/api/v1/locations', router);
-}
+export const locationsRouter = router;

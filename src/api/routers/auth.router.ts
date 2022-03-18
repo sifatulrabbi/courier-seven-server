@@ -1,5 +1,4 @@
-import { Express, Router } from 'express';
-// import passport from 'passport';
+import { Router } from 'express';
 import { checkUserMiddleware, verifyMobileMiddleware } from '../middlewares';
 import { authController } from '../controllers';
 
@@ -30,6 +29,4 @@ router
 
 router.route('/logout').post(authController.logoutPost);
 
-export function useAuthRouters(app: Express) {
-  app.use('/api/v1/auth', router);
-}
+export const authRouter = router;

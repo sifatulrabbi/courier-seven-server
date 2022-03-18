@@ -1,4 +1,4 @@
-import { Router, Express } from 'express';
+import { Router } from 'express';
 import {
   authGuard,
   verifyUserShopMiddleware,
@@ -36,6 +36,4 @@ router
     controller.remove,
   );
 
-export function useParcelsRouter(app: Express) {
-  app.use('/api/v1/parcels', router);
-}
+export const parcelsRouter = router;
