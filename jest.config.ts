@@ -6,8 +6,9 @@ const config: Config.InitialOptions = {
   verbose: true,
   automock: true,
   transform: {
-    '^.+\\.(ts|tsx)?$': 'ts-jest',
-    '^.+\\.(js|jsx)$': 'babel-jest',
+    '^.+\\.(ts)?$': 'ts-jest',
+    '^.+\\.js$': 'babel-jest',
   },
+  transformIgnorePatterns: ['/node_modules/(?!my-package)(.*)'],
 };
 export default config;

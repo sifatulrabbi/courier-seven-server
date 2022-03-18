@@ -1,4 +1,4 @@
-import { Express } from 'express';
+import { Router } from 'express';
 import { authGuard } from '../middlewares';
 import { shopsController } from '../controllers';
 

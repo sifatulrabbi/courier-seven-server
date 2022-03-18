@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { authService } from '../../services';
-import { convertMobileNumber, CustomResponse } from '../../lib';
+import { CustomResponse } from '../../lib';
 import { IUser } from '../../interfaces';
 import { RESPONSES } from '../../lib/constants';
 import passport from 'passport';
@@ -25,7 +25,6 @@ class AuthController {
 
   registerPost(req: Request, res: Response, next: NextFunction) {
     const data = req.body;
-    data.mobile = convertMobileNumber(req.body.mobile);
     authService.verifyRegistration(data, (err, user) => {
       if (err) return next(err);
       if (!user) {

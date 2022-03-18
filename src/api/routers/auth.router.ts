@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { checkUserMiddleware, verifyMobileMiddleware } from '../middlewares';
+import { checkUserMiddleware } from '../middlewares';
 import { authController } from '../controllers';
 
 const router = Router();
@@ -13,11 +13,7 @@ router
 
 router
   .route('/register/final')
-  .post(
-    verifyMobileMiddleware,
-    checkUserMiddleware,
-    authController.registerPost,
-  );
+  .post(checkUserMiddleware, authController.registerPost);
 
 router
   .route('/login')
