@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { prepare, server } from '../../../src/server';
+import type { ICreateUserDto } from '../../../src/interfaces/users.interface';
 
 beforeAll((done) => {
   prepare();
@@ -82,6 +83,59 @@ describe('authRouter /api/v1/auth', () => {
             password: '12345678',
           };
           request(server).post(url).send(payload).expect(400, done);
+        });
+      });
+    });
+
+    describe('registration step 2', () => {
+      describe('given the otp token is invalid', () => {
+        const url1 = '/api/v1/auth/register';
+        const url2 = '/api/v1/auth/register/final';
+        const payload = {
+          email: 'example@example.com',
+        };
+        let token: string = '123456',
+          verification_key: string = 'key';
+
+        const mockData: ICreateUserDto = {
+          name: { first: 'first', last: 'last' },
+          account_type: 'diamond',
+          email: payload.email,
+          password: 'password',
+          confirm_password: 'password',
+          mobile: '01234567890',
+          address: {
+            division: 'division',
+            district: 'district',
+            area: 'area',
+            upazila: 'upazila',
+            street: 'street',
+            house: 'house',
+          },
+          verification_key,
+          token,
+        };
+
+        beforeEach(async () => {
+          try {
+            const res = await request(server).post(url1).send(payload);
+            token = res.body.data[0].token;
+            verification_key = res.body.data[0].verification_key;
+            expect(token).toBeTruthy();
+            expect(verification_key).toBeTruthy();
+          } catch (err) {
+            expect(err).toBeFalsy();
+          }
+        });
+
+        it('should response with status code 400', async () => {
+          mockData.token = '123456';
+          try {
+            const res = await request(server).post(url2).send(mockData);
+            expect(res.status).toBe(400);
+          } catch (err) {
+            expect(err).toBeFalsy();
+          }
         });
       });
     });
