@@ -6,15 +6,8 @@ import {
   IShop,
 } from '../interfaces';
 import { shopsModel } from '../models/shops.model';
-import { usersService } from './users.service';
 
 class ShopsService {
-  constructor() {
-    usersService.subscribe('remove', (user) => {
-      this.removeByUser(user._id);
-    });
-  }
-
   // finds all the shops
   async allShops(done: IDone<IShop[]>) {
     try {

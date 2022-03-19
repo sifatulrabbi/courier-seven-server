@@ -2,8 +2,7 @@ import type { IMail, IUser } from '../interfaces';
 import nodemailer from 'nodemailer';
 import { transportConfig } from '../configs';
 import { ADMIN_EMAILS, MAIL_SUBJECTS } from '../lib/constants';
-import console from 'console';
-import process from 'process';
+import { runOnDevMode } from '../lib';
 
 class EmailService {
   private readonly transporter: nodemailer.Transporter;
@@ -18,7 +17,9 @@ class EmailService {
         console.error(err);
         return process.exit(1);
       }
-      console.log('Ready to send emails');
+      runOnDevMode(() => {
+        console.log('Ready to send emails');
+      });
     });
   }
 

@@ -1,5 +1,5 @@
 import { config } from './configs';
-import { connectDb } from './lib';
+import { connectDb, runOnDevMode } from './lib';
 import { app } from './api/app';
 import http from 'http';
 import { Server } from 'socket.io';
@@ -36,7 +36,9 @@ ioServer.on('connection', (socket) => {
 
 function prepare() {
   connectDb();
-  console.log(`Server is running on http://localhost:${config.PORT}`);
+  runOnDevMode(() => {
+    console.log(`Server is running on http://localhost:${config.PORT}`);
+  });
 }
 
 server.listen(config.PORT, () => {

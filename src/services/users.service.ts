@@ -4,12 +4,11 @@ import type {
   ICreateUserDto,
   IUpdateUserDto,
   IUserDoc,
-  IUserEvent,
 } from '../interfaces';
 import { usersModel } from '../models';
-import { EventClass, omitUserData } from '../lib';
+import { omitUserData } from '../lib';
 
-class UsersService extends EventClass<IUserEvent, IUser> {
+class UsersService {
   // create user
   async create(data: ICreateUserDto, done: IDone<Omit<IUser, 'password'>>) {
     if (data.password !== data.confirm_password) {
@@ -22,7 +21,6 @@ class UsersService extends EventClass<IUserEvent, IUser> {
       const userDoc: IUserDoc = new usersModel(data);
       const user: IUserDoc = await userDoc.save();
       done(null, omitUserData(user));
-      this.trigger('save', user);
     } catch (err: any) {
       done(err);
     }
@@ -45,7 +43,6 @@ class UsersService extends EventClass<IUserEvent, IUser> {
       const updatedUser = await user.save();
       if (!updatedUser) return done(null);
       done(null, updatedUser);
-      this.trigger('update', updatedUser);
     } catch (err: any) {
       done(err);
     }
@@ -56,7 +53,6 @@ class UsersService extends EventClass<IUserEvent, IUser> {
     const removedUser = await usersModel.findByIdAndRemove(userId);
     if (!removedUser) return done(new Error('Unable to remove user'));
     done(null, 'User removed');
-    this.trigger('remove', removedUser);
   }
 
   // find user with id and mobile
