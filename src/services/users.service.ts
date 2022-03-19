@@ -29,6 +29,9 @@ class UsersService {
   // update user
   async update(userId: string, data: IUpdateUserDto, done: IDone<IUser>) {
     try {
+      if (data.password) data.password = undefined;
+      if (data.confirm_password) data.confirm_password = undefined;
+
       const user = await this.findOne({ id: userId });
       if (!user) return done(null);
       // update queue
