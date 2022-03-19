@@ -13,7 +13,8 @@ class AuthService {
       const otp = await otpService.generateOtp(email);
       if (!otp) return done(new Error('Unable to create token'));
 
-      await emailService.sendOtpMail(email, otp.token);
+      const sent = await emailService.sendOtpMail(email, otp.token);
+      if (!sent) return done(new Error('Unable to send the OPT'));
       done(null, otp);
       console.log(otp.token);
     } catch (err: any) {

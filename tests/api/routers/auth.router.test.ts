@@ -74,6 +74,16 @@ describe('authRouter /api/v1/auth', () => {
             } else done(data);
           });
       });
+
+      describe('while the email addresses is invalid', () => {
+        it('should response with status code 400', (done) => {
+          const payload = {
+            email: 'example.com',
+            password: '12345678',
+          };
+          request(server).post(url).send(payload).expect(400, done);
+        });
+      });
     });
   });
 });
