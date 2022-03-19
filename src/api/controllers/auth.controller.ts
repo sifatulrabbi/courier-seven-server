@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { authService } from '../../services';
 import { CustomResponse } from '../../lib';
-import { IUser } from '../../interfaces';
 import { RESPONSES } from '../../lib/constants';
-import passport from 'passport';
+// import { IUser } from '../../interfaces';
+// import passport from 'passport';
 
-const { ok, internal, created, unauthorized, badRequest } = CustomResponse;
+const { ok, internal, created, unauthorized, badRequest, notFound } =
+  CustomResponse;
 
 class AuthController {
   registerGet(req: Request, res: Response, next: NextFunction) {
@@ -41,13 +42,24 @@ class AuthController {
   }
 
   loginPost(req: Request, res: Response, next: NextFunction) {
-    const authRet = passport.authenticate('local');
-    return authRet(req, res, (err: any) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    if (!email || !password) {
+      return badRequest(
+        res,
+        'Email address and password should be provided',
+        'invalid email and password field',
+      );
+    }
+    authService.verifyLogin(email, password, (err, user) => {
       if (err) return next(err);
-      if (!req.isAuthenticated()) {
-        return unauthorized(res, RESPONSES.loginFailed, null);
+      if (!user) {
+        return notFound(
+          res,
+          'User not found',
+          'not user with the email and password',
+        );
       }
-      const user = req.user as IUser;
       ok(res, 'Login successful', [user]);
     });
   }

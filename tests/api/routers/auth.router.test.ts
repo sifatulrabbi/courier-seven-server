@@ -12,23 +12,40 @@ afterAll((done) => {
   });
 });
 
-describe('Tests form authRouter /api/v1/auth', () => {
+describe('authRouter /api/v1/auth', () => {
   it('should return 401 if GET /login', (done) => {
     request(server).get('/api/v1/auth/login').expect(401, done);
   });
 
-  // describe('login with email and password', () => {
-  //   it('should return 404 for unregistered user', (done) => {
-  //     request(server)
-  //       .post('/api/v1/auth/login')
-  //       .set('Content-type', 'application/json')
-  //       .send({
-  //         email: 'example@email.com',
-  //         password: 'password',
-  //       })
-  //       .expect(400, done);
-  //   });
-  // });
+  describe('user login', () => {
+    describe('login with unregistered email', () => {
+      const url = '/api/v1/auth/login';
+
+      it('should return 404 for unregistered user', (done) => {
+        const payload = {
+          email: 'example@email.com',
+          password: 'password',
+        };
+        request(server).post(url).send(payload).expect(404, done);
+      });
+
+      it('should return 400 for incorrect password', (done) => {
+        const payload = {
+          email: 'islammasraful@gmail.com',
+          password: 'incorrect password',
+        };
+        request(server).post(url).send(payload).expect(400, done);
+      });
+
+      it('should return 200 for correct credentials', (done) => {
+        const payload = {
+          email: 'islammasraful@gmail.com',
+          password: 'password',
+        };
+        request(server).post(url).send(payload).expect(200, done);
+      });
+    });
+  });
 
   describe('registering user', () => {
     describe('register step 1', () => {
@@ -38,13 +55,11 @@ describe('Tests form authRouter /api/v1/auth', () => {
       });
 
       it('should respond with 200 if email is given', (done) => {
-        request(server)
-          .post(url)
-          .send({ email: 'example@email.com' })
-          .expect(200, done);
+        const email = 'example@email.com';
+        request(server).post(url).send({ email }).expect(200, done);
       });
 
-      it('should send a token and opt if email is given', (done) => {
+      it('should send a token and opt if an email is given', (done) => {
         request(server)
           .post(url)
           .send({ email: 'example@email.com' })
