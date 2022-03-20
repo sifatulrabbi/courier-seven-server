@@ -7,9 +7,8 @@ import type {
 } from "../../src/interfaces";
 import { usersService } from "../../src/services/users.service";
 
-beforeAll((done) => {
-    prepare();
-    done();
+beforeAll(async () => {
+    await prepare();
 });
 
 afterAll((done) => {
