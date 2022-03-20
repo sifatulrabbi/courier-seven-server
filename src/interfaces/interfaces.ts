@@ -5,7 +5,6 @@ export type IProductTypes = "solid" | "liquid" | "fragile";
 export type IDone<T> = (err: any, result?: T) => void;
 
 export interface IAddress {
-    division: string;
     district: string;
     upazila: string;
     area: string;

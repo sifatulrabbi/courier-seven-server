@@ -10,7 +10,7 @@ export async function checkUserMiddleware(
     const mobile = req.body.mobile || null;
     const email = req.body.email;
     let user = await usersService.findOne({ email });
-    if (!user) {
+    if (!user && mobile) {
         user = await usersService.findOne({
             mobile: convertMobileNumber(mobile),
         });

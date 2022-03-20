@@ -13,7 +13,6 @@ const usersSchema = new Schema<IUser, IUsersModel>(
         },
         account_type: { type: String, require: true },
         address: {
-            division: { type: String, required: true },
             district: { type: String, required: true },
             upazila: { type: String, required: true },
             area: { type: String, required: true },
