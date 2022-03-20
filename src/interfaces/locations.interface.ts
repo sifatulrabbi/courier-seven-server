@@ -1,5 +1,5 @@
 export interface ILocation {
-  division: string;
-  district: string;
-  upazila: string;
+    division: string;
+    district: string;
+    upazila: string;
 }
