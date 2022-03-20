@@ -2,11 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import { authService } from "../../services";
 import { CustomResponse } from "../../lib";
 import { RESPONSES } from "../../lib/constants";
-// import { IUser } from '../../interfaces';
-// import passport from 'passport';
+import passport from "passport";
+import { IUser } from "../../interfaces";
+import jwt from "jsonwebtoken";
+import { jwtOptions } from "../../configs";
 
-const { ok, internal, created, unauthorized, badRequest, notFound } =
-    CustomResponse;
+const { ok, internal, created, unauthorized, badRequest } = CustomResponse;
 
 class AuthController {
     registerGet(req: Request, res: Response, next: NextFunction) {
@@ -42,26 +43,29 @@ class AuthController {
     }
 
     loginPost(req: Request, res: Response, next: NextFunction) {
-        const email = req.body.email;
-        const password = req.body.password;
-        if (!email || !password) {
-            return badRequest(
-                res,
-                "Email address and password should be provided",
-                "invalid email and password field",
-            );
-        }
-        authService.verifyLogin(email, password, (err, user) => {
-            if (err) return next(err);
-            if (!user) {
-                return notFound(
-                    res,
-                    "User not found",
-                    "not user with the email and password",
-                );
-            }
-            ok(res, "Login successful", [user]);
-        });
+        passport.authenticate(
+            "local",
+            { session: false },
+            (err: any, user: Omit<IUser, "password">) => {
+                if (err) {
+                    return unauthorized(res, err.message, err);
+                }
+
+                req.login(user, (error: any) => {
+                    if (error) return unauthorized(res, error.message, error);
+                    try {
+                        const payload = {
+                            sub: user._id,
+                            email: user.email,
+                        };
+                        const token = jwt.sign(payload, "SECRET", jwtOptions);
+                        ok(res, "Login successful", [{ token }]);
+                    } catch (e: any) {
+                        unauthorized(res, e.message, e);
+                    }
+                });
+            },
+        )(req, res, next);
     }
 
     loginGet(req: Request, res: Response /*, next: NextFunction */) {

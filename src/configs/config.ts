@@ -39,4 +39,5 @@ export const config = {
     VONAGE_API_KEY: process.env.VONAGE_API_KEY,
     VONAGE_API_SECRET: process.env.VONAGE_API_SECRET,
     ORIGINS: process.env.ORIGINS ? process.env.ORIGINS.split("#") : [],
+    JWT_MAX_AGE: parseInt(process.env.JWT_MAX_AGE || "3600", 10),
 };

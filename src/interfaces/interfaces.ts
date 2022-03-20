@@ -29,3 +29,9 @@ export interface IEventEmitter<T, D> {
 
     trigger: (event: T, data: D) => void;
 }
+
+export interface JWTPayload {
+    sub: string;
+    email: string;
+    iat: number;
+}

@@ -1,4 +1,4 @@
-import type { IUser, IDone, ICreateUserDto } from "../interfaces";
+import type { IUser, IDone, ICreateUserDto, JWTPayload } from "../interfaces";
 import { /* convertMobileNumber, */ omitUserData } from "../lib";
 import { otpService } from "./otp.service";
 import { emailService } from "./email.service";
@@ -61,6 +61,17 @@ class AuthService {
 
             done(null, omitUserData(user));
         } catch (err: any) {
+            done(err);
+        }
+    }
+
+    async verifyJwt(payload: JWTPayload, done: IDone<IUser | false>) {
+        try {
+            const userId = payload.sub;
+            const user = await usersService.findOne({ id: userId });
+            if (!user) return done(null, false);
+            done(null, user);
+        } catch (err) {
             done(err);
         }
     }
