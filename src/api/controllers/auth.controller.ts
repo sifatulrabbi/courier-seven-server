@@ -5,7 +5,8 @@ import { RESPONSES } from "../../lib/constants";
 import passport from "passport";
 import { IUser } from "../../interfaces";
 
-const { ok, internal, created, unauthorized, badRequest } = CustomResponse;
+const { ok, internal, created, unauthorized, badRequest, notFound } =
+    CustomResponse;
 
 class AuthController {
     registerGet(req: Request, res: Response, next: NextFunction) {
@@ -47,6 +48,9 @@ class AuthController {
             (err: any, user: Omit<IUser, "password">) => {
                 if (err) {
                     return unauthorized(res, err.message, err);
+                }
+                if (!user) {
+                    return notFound(res, "User not found", null);
                 }
 
                 req.login(user, (error: any) => {
