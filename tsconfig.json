@@ -1,21 +1,21 @@
 {
-  "compilerOptions": {
-    "target": "ES2018",
-    "outDir": "./build",
-    "rootDir": "./src",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "allowJs": false,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "alwaysStrict": true,
-    "strictNullChecks": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "pretty": true,
-    "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
-  },
-  "include": ["./src"]
+    "compilerOptions": {
+        "target": "ES2018",
+        "outDir": "./build",
+        "rootDir": "./src",
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "allowJs": false,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "alwaysStrict": true,
+        "strictNullChecks": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "pretty": true,
+        "noFallthroughCasesInSwitch": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true
+    },
+    "include": ["./src"]
 }

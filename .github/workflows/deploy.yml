@@ -1,27 +1,27 @@
 name: Deploy to heroku
 
 on:
-  push:
-    branches:
-      - release/beta
+    push:
+        branches:
+            - release/beta
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: akhileshns/heroku-deploy@v3.12.12
 
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: 'courier-007-server'
-          heroku_email: 'mdsifatulislam.rabbi@gmail.com'
+              with:
+                  heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+                  heroku_app_name: 'courier-007-server'
+                  heroku_email: 'mdsifatulislam.rabbi@gmail.com'
 
-        env:
-          NODE_ENV: production
-          # SESSION_SECRET: ""
-          # MONGODB_URI: ""
-          # COOKIE_MAX_AGE: 7200000
-          # SMTP_EMAIL: ""
-          # SMTP_PASSWORD: ""
-          # OTP_MAX_AGE: 180000
+              env:
+                  NODE_ENV: production
+                  # SESSION_SECRET: ""
+                  # MONGODB_URI: ""
+                  # COOKIE_MAX_AGE: 7200000
+                  # SMTP_EMAIL: ""
+                  # SMTP_PASSWORD: ""
+                  # OTP_MAX_AGE: 180000

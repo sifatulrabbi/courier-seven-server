@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import { runOnDevMode } from './run-on-dev-mode';
 
 export function showLogs(app: Application) {
-  runOnDevMode(() => {
-    app.use(morgan('dev'));
-  });
+    runOnDevMode(() => {
+        app.use(morgan('dev'));
+    });
 }
