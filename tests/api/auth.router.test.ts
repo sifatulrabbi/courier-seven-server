@@ -1,6 +1,11 @@
 import request from "supertest";
 import { prepare, server } from "../../src/server";
-import type { ICreateUserDto } from "../../src/interfaces/users.interface";
+import type {
+    ICreateUserDto,
+    IAccountTypes,
+    IAddress,
+} from "../../src/interfaces";
+import { usersService } from "../../src/services/users.service";
 
 beforeAll((done) => {
     prepare();
@@ -12,6 +17,43 @@ afterAll((done) => {
         done();
     });
 });
+
+const url1 = "/api/v1/auth/register";
+const url2 = "/api/v1/auth/register/final";
+const payload = {
+    email: "example@example.com",
+};
+
+class MockData implements ICreateUserDto {
+    name: { first: string; last: string };
+    email: string;
+    account_type: IAccountTypes;
+    password: string;
+    confirm_password: string;
+    mobile: string;
+    address: IAddress;
+    verification_key: string;
+    token: string;
+
+    constructor(email: string, verification_key: string, token: string) {
+        this.account_type = "diamond";
+        this.address = {
+            division: "division",
+            district: "district",
+            upazila: "upazila",
+            area: "area",
+            street: "street",
+            house: "house",
+        };
+        this.name = { first: "first", last: "last" };
+        this.email = email;
+        this.token = token;
+        this.verification_key = verification_key;
+        this.mobile = "01234516459";
+        this.password = "password";
+        this.confirm_password = "password";
+    }
+}
 
 describe("user login", () => {
     const url = "/api/v1/auth/login";
@@ -94,37 +136,16 @@ describe("user registration", () => {
     });
 
     describe("registration step 2", () => {
-        const url1 = "/api/v1/auth/register";
-        const url2 = "/api/v1/auth/register/final";
-        const payload = {
-            email: "example@example.com",
-        };
-        const mockData: ICreateUserDto = {
-            name: { first: "first", last: "last" },
-            account_type: "diamond",
-            email: payload.email,
-            password: "password",
-            confirm_password: "password",
-            mobile: "01234567890",
-            address: {
-                division: "division",
-                district: "district",
-                area: "area",
-                upazila: "upazila",
-                street: "street",
-                house: "house",
-            },
-            verification_key: "abcdefgh",
-            token: "123456",
-        };
+        let mockData: ICreateUserDto;
 
         beforeEach(async () => {
             try {
                 const res = await request(server).post(url1).send(payload);
-                mockData.token = res.body.data[0].token;
-                mockData.verification_key = res.body.data[0].verification_key;
-                expect(mockData.token).toBeTruthy();
-                expect(mockData.verification_key).toBeTruthy();
+                const token = res.body.data[0].token;
+                const verification_key = res.body.data[0].verification_key;
+                mockData = new MockData(payload.email, verification_key, token);
+                expect(token).toBeTruthy();
+                expect(verification_key).toBeTruthy();
             } catch (err) {
                 expect(err).toBeFalsy();
             }
@@ -132,14 +153,9 @@ describe("user registration", () => {
 
         describe("given that the otp token was invalid", () => {
             it("should return 400", async () => {
-                const newMockData = {
-                    ...mockData,
-                    token: "123456",
-                };
                 try {
-                    const res = await request(server)
-                        .post(url2)
-                        .send(newMockData);
+                    const data = { ...mockData, token: "0123456" };
+                    const res = await request(server).post(url2).send(data);
                     expect(res.status).toBe(400);
                 } catch (err) {
                     expect(err).toBeFalsy();
@@ -147,39 +163,26 @@ describe("user registration", () => {
             });
         });
 
-        // describe("given that the otp and verification_key is valid", () => {
-        //     let userId: string;
+        describe("given that the token and verification_key was valid", () => {
+            let userId: string = "Some user id";
 
-        //     afterEach(async () => {
-        //         try {
-        //             const res = await request(server).delete(
-        //                 `/api/v1/users/:${userId.toString()}`,
-        //             );
-        //             expect(res.status).toBe(200);
-        //         } catch (err) {
-        //             expect(err).toBeFalsy();
-        //         }
-        //     });
+            afterEach((done) => {
+                usersService.remove(userId, () => {
+                    done();
+                });
+            });
 
-        //     it("should return 200", async () => {
-        //         try {
-        //             const res = await request(server).post(url2).send(mockData);
-        //             expect(res.status).toBe(201);
-        //             userId = res.body.data[0]._id.toString();
-        //         } catch (err) {
-        //             expect(err).toBeFalsy();
-        //         }
-        //     });
-
-        //     it("should return user object", async () => {
-        //         try {
-        //             const res = await request(server).post(url2).send(mockData);
-        //             expect(res.body.data[0].name.first).toBe("first");
-        //             userId = res.body.data[0]._id.toString();
-        //         } catch (err) {
-        //             expect(err).toBeFalsy();
-        //         }
-        //     });
-        // });
+            it("should return 201", async () => {
+                try {
+                    const res = await request(server).post(url2).send(mockData);
+                    expect(res.body.data).toBeTruthy();
+                    if (res.body.data[0]._id) {
+                        userId = res.body.data[0]._id.toString();
+                    } else throw new Error("not user id found");
+                } catch (err) {
+                    expect(err).toBeFalsy();
+                }
+            });
+        });
     });
 });
