@@ -89,27 +89,6 @@ class AuthService {
             done(err);
         }
     }
-
-    // async serializer(user: unknown, done: IDone<string>) {
-    //     try {
-    //         const data = user as IUser;
-    //         if (!user) return done(new Error("User not found"));
-    //         done(null, data._id);
-    //     } catch (err: any) {
-    //         done(err);
-    //     }
-    // }
-
-    // async deserializer(userId: string, done: IDone<IUser | false>) {
-    //     try {
-    //         if (!userId) return done(null, false);
-    //         const user = await usersService.findOne({ id: userId });
-    //         if (!user) return done(null, false);
-    //         done(null, user);
-    //     } catch (err: unknown) {
-    //         done(err);
-    //     }
-    // }
 }
 
 export const authService = new AuthService();
