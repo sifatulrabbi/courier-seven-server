@@ -1,4 +1,4 @@
-import { verifyMobileNumber } from "../../src/lib";
+import { verifyMobileNumber } from "../../src/lib/verify-mobile-number";
 
 describe("Testing verifyMobileNumber function", function () {
     it("should show error if given a string of length less than 11", function () {

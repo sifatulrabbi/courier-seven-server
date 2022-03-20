@@ -32,6 +32,7 @@
         "@typescript-eslint/indent": "off", // sometimes make it hard to indent with prettier
         "@typescript-eslint/ban-ts-comment": "off", // complicated typings
         "@typescript-eslint/no-explicit-any": "off", // unwanted warnings
-        "quotes": ["error", "double"]
+        "quotes": "off",
+        "@typescript-eslint/quotes": ["error", "double"]
     }
 }
