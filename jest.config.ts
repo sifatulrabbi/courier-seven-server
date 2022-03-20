@@ -1,21 +1,21 @@
-import type { Config } from '@jest/types';
+import type { Config } from "@jest/types";
 
 const config: Config.InitialOptions = {
-    preset: 'ts-jest',
+    preset: "ts-jest",
     verbose: true,
     automock: false,
     clearMocks: true,
-    coveragePathIgnorePatterns: ['/node_modules/'],
-    coverageProvider: 'v8',
-    moduleDirectories: ['node_modules'],
-    moduleFileExtensions: ['js', 'ts'],
-    roots: ['tests'],
+    coveragePathIgnorePatterns: ["/node_modules/"],
+    coverageProvider: "v8",
+    moduleDirectories: ["node_modules"],
+    moduleFileExtensions: ["js", "ts"],
+    roots: ["tests"],
     testMatch: [
-        '**/__tests__/**/*.[jt]s?(x)',
-        '**/?(*.)+(spec|test).[tj]s?(x)',
+        "**/__tests__/**/*.[jt]s?(x)",
+        "**/?(*.)+(spec|test).[tj]s?(x)",
     ],
-    testPathIgnorePatterns: ['/node_modules/'],
-    transformIgnorePatterns: ['/node_modules/', '\\.pnp\\.[^\\/]+$'],
+    testPathIgnorePatterns: ["/node_modules/"],
+    transformIgnorePatterns: ["/node_modules/", "\\.pnp\\.[^\\/]+$"],
     silent: true,
     detectOpenHandles: true,
 };

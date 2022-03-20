@@ -4,8 +4,8 @@ import {
     IUpdateShopDto,
     IDone,
     IShop,
-} from '../interfaces';
-import { shopsModel } from '../models/shops.model';
+} from "../interfaces";
+import { shopsModel } from "../models/shops.model";
 
 class ShopsService {
     // finds all the shops
@@ -78,7 +78,7 @@ class ShopsService {
             });
             if (duplicate) {
                 throw new Error(
-                    'Shop name has been taken please use another name',
+                    "Shop name has been taken please use another name",
                 );
             }
 

@@ -1,6 +1,6 @@
-import { otpModel } from '../models';
-import { hash, compare } from 'bcrypt';
-import otpGenerator from 'otp-generator';
+import { otpModel } from "../models";
+import { hash, compare } from "bcrypt";
+import otpGenerator from "otp-generator";
 
 interface IVerifyObj {
     email: string; // using email instead of mobile verification
@@ -65,13 +65,13 @@ class OtpService {
             key: String(key),
         });
         if (!otpDoc) {
-            throw new Error('Invalid OTP');
+            throw new Error("Invalid OTP");
         }
         if (key !== otpDoc.verification_key) {
-            throw new Error('Identity error: verification failed');
+            throw new Error("Identity error: verification failed");
         }
         if (otpDoc.expires_at.getTime() < new Date().getTime()) {
-            throw new Error('OTP invalid');
+            throw new Error("OTP invalid");
         }
         if (
             !(await this.verifyVerificationKey(

@@ -1,22 +1,22 @@
-import { Router } from 'express';
+import { Router } from "express";
 import {
     authGuard,
     verifyUserShopMiddleware,
     verifyShopParcelMiddleware,
-} from '../middlewares';
-import { ParcelsController } from '../controllers';
+} from "../middlewares";
+import { ParcelsController } from "../controllers";
 
 const controller = new ParcelsController();
 
 const router = Router();
 
 router
-    .route('/')
+    .route("/")
     .get(authGuard, verifyUserShopMiddleware, controller.getAll)
     .post(authGuard, verifyUserShopMiddleware, controller.create);
 
 router
-    .route('/:id')
+    .route("/:id")
     .get(
         authGuard,
         verifyUserShopMiddleware,

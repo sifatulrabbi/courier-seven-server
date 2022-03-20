@@ -4,17 +4,17 @@ import type {
     ICreateUserDto,
     IUpdateUserDto,
     IUserDoc,
-} from '../interfaces';
-import { usersModel } from '../models';
-import { omitUserData } from '../lib';
+} from "../interfaces";
+import { usersModel } from "../models";
+import { omitUserData } from "../lib";
 
 class UsersService {
     // create user
-    async create(data: ICreateUserDto, done: IDone<Omit<IUser, 'password'>>) {
+    async create(data: ICreateUserDto, done: IDone<Omit<IUser, "password">>) {
         if (data.password !== data.confirm_password) {
             done(
                 new Error(
-                    'Password: password and confirm_password did not match',
+                    "Password: password and confirm_password did not match",
                 ),
             );
             return;
@@ -58,8 +58,8 @@ class UsersService {
     // remove user
     async remove(userId: string, done: IDone<string>) {
         const removedUser = await usersModel.findByIdAndRemove(userId);
-        if (!removedUser) return done(new Error('Unable to remove user'));
-        done(null, 'User removed');
+        if (!removedUser) return done(new Error("Unable to remove user"));
+        done(null, "User removed");
     }
 
     // find user with id and mobile

@@ -1,5 +1,5 @@
-import { HydratedDocument, Model } from 'mongoose';
-import { IAccountTypes, IAddress } from './interfaces';
+import { HydratedDocument, Model } from "mongoose";
+import { IAccountTypes, IAddress } from "./interfaces";
 
 export interface IUser {
     _id: string;
@@ -22,7 +22,7 @@ export type IUserDoc = HydratedDocument<IUser, IUserMethods>;
 
 export type IUsersModel = Model<IUser, Record<string, unknown>, IUserMethods>;
 
-export interface ICreateUserDto extends Omit<IUser, '_id'> {
+export interface ICreateUserDto extends Omit<IUser, "_id"> {
     confirm_password: string;
     token: string;
     verification_key: string;
@@ -30,4 +30,4 @@ export interface ICreateUserDto extends Omit<IUser, '_id'> {
 
 export type IUpdateUserDto = Partial<ICreateUserDto>;
 
-export type IUserEvent = 'save' | 'update' | 'remove';
+export type IUserEvent = "save" | "update" | "remove";

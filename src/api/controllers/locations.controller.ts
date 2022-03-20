@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import { CustomResponse } from '../../lib';
-import { locationsService } from '../../services';
+import { Request, Response, NextFunction } from "express";
+import { CustomResponse } from "../../lib";
+import { locationsService } from "../../services";
 
 export class LocationsController {
     getAll(req: Request, res: Response, next: NextFunction) {

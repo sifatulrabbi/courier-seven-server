@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Response } from "express";
 
 export class CustomResponse {
     constructor(
@@ -22,7 +22,7 @@ export class CustomResponse {
         message: string | false,
         data: unknown[] | null = null,
     ) {
-        new CustomResponse(res, 200, message ? message : 'Ok', data, null);
+        new CustomResponse(res, 200, message ? message : "Ok", data, null);
     }
 
     static created(
@@ -30,14 +30,14 @@ export class CustomResponse {
         message: string | false,
         data: unknown[] | null = null,
     ) {
-        new CustomResponse(res, 201, message ? message : 'Created', data, null);
+        new CustomResponse(res, 201, message ? message : "Created", data, null);
     }
 
     static badRequest(res: Response, message: string | false, errors: unknown) {
         new CustomResponse(
             res,
             400,
-            message ? message : 'Bad Request',
+            message ? message : "Bad Request",
             null,
             errors,
         );
@@ -47,7 +47,7 @@ export class CustomResponse {
         new CustomResponse(
             res,
             404,
-            message ? message : 'Not Found',
+            message ? message : "Not Found",
             null,
             errors,
         );
@@ -61,7 +61,7 @@ export class CustomResponse {
         new CustomResponse(
             res,
             401,
-            message ? message : 'Unauthorized',
+            message ? message : "Unauthorized",
             null,
             errors,
         );
@@ -71,7 +71,7 @@ export class CustomResponse {
         new CustomResponse(
             res,
             403,
-            message ? message : 'Forbidden',
+            message ? message : "Forbidden",
             null,
             errors,
         );
@@ -81,7 +81,7 @@ export class CustomResponse {
         new CustomResponse(
             res,
             500,
-            message ? message : 'Internal Error',
+            message ? message : "Internal Error",
             null,
             errors,
         );

@@ -1,6 +1,6 @@
-import { Schema, model } from 'mongoose';
-import bcrypt from 'bcrypt';
-import { IUser, IUsersModel } from '../interfaces';
+import { Schema, model } from "mongoose";
+import bcrypt from "bcrypt";
+import { IUser, IUsersModel } from "../interfaces";
 
 const usersSchema = new Schema<IUser, IUsersModel>(
     {
@@ -27,7 +27,7 @@ const usersSchema = new Schema<IUser, IUsersModel>(
     },
 );
 
-usersSchema.pre('save', async function (this: IUser, next) {
+usersSchema.pre("save", async function (this: IUser, next) {
     const hash = await bcrypt.hash(this.password, 10);
     this.password = hash;
     next();
@@ -41,9 +41,9 @@ usersSchema.methods.comparePassword = async function (
     return compare;
 };
 
-export const usersModel = model<IUser>('users', usersSchema);
+export const usersModel = model<IUser>("users", usersSchema);
 
 export const userProfilesModel = model<IUser, IUsersModel>(
-    'users',
+    "users",
     usersSchema,
 );

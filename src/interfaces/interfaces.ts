@@ -1,6 +1,6 @@
-export type IAccountTypes = 'bronze' | 'silver' | 'platinum' | 'diamond';
+export type IAccountTypes = "bronze" | "silver" | "platinum" | "diamond";
 
-export type IProductTypes = 'solid' | 'liquid' | 'fragile';
+export type IProductTypes = "solid" | "liquid" | "fragile";
 
 export type IDone<T> = (err: any, result?: T) => void;
 

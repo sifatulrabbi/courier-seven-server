@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
-import { authService } from '../../services';
-import { CustomResponse } from '../../lib';
-import { RESPONSES } from '../../lib/constants';
+import { Request, Response, NextFunction } from "express";
+import { authService } from "../../services";
+import { CustomResponse } from "../../lib";
+import { RESPONSES } from "../../lib/constants";
 // import { IUser } from '../../interfaces';
 // import passport from 'passport';
 
@@ -15,12 +15,12 @@ class AuthController {
         if (!email)
             return badRequest(
                 res,
-                'Email address is required',
-                'Email address not found',
+                "Email address is required",
+                "Email address not found",
             );
         authService.sendVerificationOtp(email, (err, otp) => {
             if (err) return next(err);
-            if (!otp) return next(new Error('Unable to create OTP'));
+            if (!otp) return next(new Error("Unable to create OTP"));
             ok(res, RESPONSES.otpSent, [
                 {
                     token: otp.token,
@@ -35,9 +35,9 @@ class AuthController {
         authService.verifyRegistration(data, (err, user) => {
             if (err) return next(err);
             if (!user) {
-                return internal(res, 'Unable to create user', null);
+                return internal(res, "Unable to create user", null);
             }
-            created(res, 'User registered', [user]);
+            created(res, "User registered", [user]);
         });
     }
 
@@ -47,8 +47,8 @@ class AuthController {
         if (!email || !password) {
             return badRequest(
                 res,
-                'Email address and password should be provided',
-                'invalid email and password field',
+                "Email address and password should be provided",
+                "invalid email and password field",
             );
         }
         authService.verifyLogin(email, password, (err, user) => {
@@ -56,11 +56,11 @@ class AuthController {
             if (!user) {
                 return notFound(
                     res,
-                    'User not found',
-                    'not user with the email and password',
+                    "User not found",
+                    "not user with the email and password",
                 );
             }
-            ok(res, 'Login successful', [user]);
+            ok(res, "Login successful", [user]);
         });
     }
 
@@ -75,7 +75,7 @@ class AuthController {
 
     logoutPost(req: Request, res: Response) {
         req.logout();
-        ok(res, 'Logout successful', []);
+        ok(res, "Logout successful", []);
     }
 }
 

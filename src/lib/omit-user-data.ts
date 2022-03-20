@@ -1,7 +1,7 @@
-import { IUser } from '../interfaces';
+import { IUser } from "../interfaces";
 
 export function omitUserData(data: IUser) {
-    const newData: Omit<IUser, 'password'> = {
+    const newData: Omit<IUser, "password"> = {
         _id: data._id,
         mobile: data.mobile,
         name: data.name,

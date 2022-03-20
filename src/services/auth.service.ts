@@ -1,8 +1,8 @@
-import type { IUser, IDone, ICreateUserDto } from '../interfaces';
-import { /* convertMobileNumber, */ omitUserData } from '../lib';
-import { otpService } from './otp.service';
-import { emailService } from './email.service';
-import { usersService } from './users.service';
+import type { IUser, IDone, ICreateUserDto } from "../interfaces";
+import { /* convertMobileNumber, */ omitUserData } from "../lib";
+import { otpService } from "./otp.service";
+import { emailService } from "./email.service";
+import { usersService } from "./users.service";
 
 class AuthService {
     async sendVerificationOtp(
@@ -11,10 +11,10 @@ class AuthService {
     ) {
         try {
             const otp = await otpService.generateOtp(email);
-            if (!otp) return done(new Error('Unable to create token'));
+            if (!otp) return done(new Error("Unable to create token"));
 
             const sent = await emailService.sendOtpMail(email, otp.token);
-            if (!sent) return done(new Error('Unable to send the OPT'));
+            if (!sent) return done(new Error("Unable to send the OPT"));
             done(null, otp);
             console.log(otp.token);
         } catch (err: any) {
@@ -24,7 +24,7 @@ class AuthService {
 
     async verifyRegistration(
         data: ICreateUserDto,
-        done: IDone<Omit<IUser, 'password'>>,
+        done: IDone<Omit<IUser, "password">>,
     ) {
         if (data.password !== data.confirm_password) {
             done(new Error("Password: passwords don't match"));
@@ -36,7 +36,7 @@ class AuthService {
                 data.token,
                 data.verification_key,
             );
-            if (!verify) return done(new Error('Unable to verify user'));
+            if (!verify) return done(new Error("Unable to verify user"));
             await usersService.create(data, done);
         } catch (err: unknown) {
             done(err);
@@ -46,7 +46,7 @@ class AuthService {
     async verifyLogin(
         email: string,
         password: string,
-        done: IDone<Omit<IUser, 'password'>>,
+        done: IDone<Omit<IUser, "password">>,
     ) {
         try {
             const user = await usersService.findOne({
@@ -56,7 +56,7 @@ class AuthService {
 
             if (!user) return done(null);
             if (!(await user.comparePassword(password))) {
-                return done(new Error('Incorrect password'));
+                return done(new Error("Incorrect password"));
             }
 
             done(null, omitUserData(user));
@@ -68,7 +68,7 @@ class AuthService {
     async serializer(user: unknown, done: IDone<string>) {
         try {
             const data = user as IUser;
-            if (!user) return done(new Error('User not found'));
+            if (!user) return done(new Error("User not found"));
             done(null, data._id);
         } catch (err: any) {
             done(err);

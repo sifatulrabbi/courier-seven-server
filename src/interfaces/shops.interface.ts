@@ -1,5 +1,5 @@
-import { HydratedDocument } from 'mongoose';
-import { IAddress } from './interfaces';
+import { HydratedDocument } from "mongoose";
+import { IAddress } from "./interfaces";
 
 export interface IShop {
     _id: string;
@@ -12,6 +12,6 @@ export interface IShop {
 
 export type IShopDoc = HydratedDocument<IShop>;
 
-export type ICreateShopDto = Omit<IShop, '_id'>;
+export type ICreateShopDto = Omit<IShop, "_id">;
 
 export type IUpdateShopDto = Partial<ICreateShopDto>;

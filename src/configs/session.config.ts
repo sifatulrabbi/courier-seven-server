@@ -1,7 +1,7 @@
-import type { Application } from 'express';
-import session from 'express-session';
-import { config } from './config';
-import { mongoStore } from './mongo-store';
+import type { Application } from "express";
+import session from "express-session";
+import { config } from "./config";
+import { mongoStore } from "./mongo-store";
 
 const sessionConfig = {
     secret: config.SESSION_SECRET,
