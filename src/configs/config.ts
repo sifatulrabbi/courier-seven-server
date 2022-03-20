@@ -28,7 +28,6 @@ export const config = {
     MONGODB_URI:
         process.env.MONGODB_URI ||
         "mongodb://127.0.0.1:27017/courier-007-database",
-    SESSION_SECRET: process.env.SESSION_SECRET || "KEYBOARD CAT",
     COOKIE_MAX_AGE: parseInt(process.env.COOKIE_MAX_AGE || "10000", 10),
     SMTP_EMAIL: process.env.SMTP_EMAIL,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,
@@ -40,4 +39,5 @@ export const config = {
     VONAGE_API_SECRET: process.env.VONAGE_API_SECRET,
     ORIGINS: process.env.ORIGINS ? process.env.ORIGINS.split("#") : [],
     JWT_MAX_AGE: parseInt(process.env.JWT_MAX_AGE || "3600", 10),
+    JWT_SECRET: process.env.JWT_SECRET || "JWT SECRET KEY",
 };

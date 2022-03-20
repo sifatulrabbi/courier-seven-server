@@ -1,7 +1,7 @@
 export const MAIL_SUBJECTS = {
     userCreated: "A new User has been created at Courier 007",
     parcelCreated: "A new parcel has been created at Courier 007",
-    sendOtp: "OTP for Courier 007",
+    sendOtp: "OTP for Courier Seven",
 };
 
 export const ADMIN_EMAILS = "sifatuli.r@gmail.com";

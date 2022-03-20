@@ -3,7 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import cookieParse from "cookie-parser";
-import { prepareSession, preparePassport, config } from "../configs";
+import { preparePassport, config } from "../configs";
 import { showLogs } from "../lib";
 import {
     authRouter,
@@ -27,7 +27,6 @@ app.use(
 );
 app.use(mongoSanitize());
 app.use(cookieParse());
-prepareSession(app);
 preparePassport(app);
 
 app.use(setHeaders);

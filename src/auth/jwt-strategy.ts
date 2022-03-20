@@ -5,7 +5,7 @@ import { config } from "../configs";
 
 const options: StrategyOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: "SECRET",
+    secretOrKey: config.JWT_SECRET,
     ignoreExpiration: false,
     jsonWebTokenOptions: {
         maxAge: config.JWT_MAX_AGE,

@@ -70,7 +70,7 @@ class AuthService {
                 sub: user._id,
                 email: user.email,
             };
-            const token = jwt.sign(payload, "SECRET", {
+            const token = jwt.sign(payload, config.JWT_SECRET, {
                 expiresIn: config.JWT_MAX_AGE,
             });
             done(null, token);
