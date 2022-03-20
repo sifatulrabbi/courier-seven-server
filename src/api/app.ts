@@ -5,13 +5,7 @@ import mongoSanitize from "express-mongo-sanitize";
 import cookieParse from "cookie-parser";
 import { preparePassport, config } from "../configs";
 import { showLogs } from "../lib";
-import {
-    authRouter,
-    usersRouter,
-    shopsRouter,
-    parcelsRouter,
-    locationsRouter,
-} from "./routers";
+import { authRouter, usersRouter, shopsRouter, parcelsRouter } from "./routers";
 import { handleError, setHeaders } from "./middlewares";
 
 export const app: Application = express();
@@ -36,6 +30,5 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/shops", shopsRouter);
 app.use("/api/v1/parcels", parcelsRouter);
-app.use("/api/v1/locations", locationsRouter);
 
 app.use(handleError);

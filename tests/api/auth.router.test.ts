@@ -12,9 +12,8 @@ beforeAll(async () => {
 });
 
 afterAll((done) => {
-    server.close(() => {
-        done();
-    });
+    server.close();
+    done();
 });
 
 describe("user login", () => {
@@ -61,44 +60,44 @@ describe("user login", () => {
     });
 });
 
-describe("user registration", () => {
-    const url1 = "/api/v1/auth/register";
-    const url2 = "/api/v1/auth/register/final";
-    const payload = {
-        email: "example@example.com",
-    };
+const url1 = "/api/v1/auth/register";
+const url2 = "/api/v1/auth/register/final";
+const payload = {
+    email: "example@example.com",
+};
 
-    class MockData implements ICreateUserDto {
-        name: { first: string; last: string };
-        email: string;
-        account_type: IAccountTypes;
-        password: string;
-        confirm_password: string;
-        mobile: string;
-        address: IAddress;
-        verification_key: string;
-        token: string;
+class MockData implements ICreateUserDto {
+    name: { first: string; last: string };
+    email: string;
+    account_type: IAccountTypes;
+    password: string;
+    confirm_password: string;
+    mobile: string;
+    address: IAddress;
+    verification_key: string;
+    token: string;
 
-        constructor(email: string, verification_key: string, token: string) {
-            this.account_type = "diamond";
-            this.address = {
-                division: "division",
-                district: "district",
-                upazila: "upazila",
-                area: "area",
-                street: "street",
-                house: "house",
-            };
-            this.name = { first: "first", last: "last" };
-            this.email = email;
-            this.token = token;
-            this.verification_key = verification_key;
-            this.mobile = "01234516459";
-            this.password = "password";
-            this.confirm_password = "password";
-        }
+    constructor(email: string, verification_key: string, token: string) {
+        this.account_type = "diamond";
+        this.address = {
+            division: "division",
+            district: "district",
+            upazila: "upazila",
+            area: "area",
+            street: "street",
+            house: "house",
+        };
+        this.name = { first: "first", last: "last" };
+        this.email = email;
+        this.token = token;
+        this.verification_key = verification_key;
+        this.mobile = "01234516459";
+        this.password = "password";
+        this.confirm_password = "password";
     }
+}
 
+describe("user registration", () => {
     describe("register step 1", () => {
         const url = "/api/v1/auth/register";
 
