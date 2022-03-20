@@ -7,14 +7,56 @@ import type {
 } from "../../src/interfaces";
 import { usersService } from "../../src/services/users.service";
 
-beforeAll((done) => {
-    prepare();
-    done();
+beforeAll(async () => {
+    await prepare();
 });
 
 afterAll((done) => {
-    server.close(() => {
-        done();
+    server.close();
+    done();
+});
+
+describe("user login", () => {
+    const url = "/api/v1/auth/login";
+
+    describe("given that the email was unregistered", () => {
+        it("should return 404", (done) => {
+            const payload = {
+                email: "example@email.com",
+                password: "password",
+            };
+            request(server).post(url).send(payload).expect(404, done);
+        });
+    });
+
+    describe("given that the credentials are incorrect", () => {
+        it("should return 400", (done) => {
+            const payload = {
+                email: "islammasraful@gmail.com",
+                password: "incorrect password",
+            };
+            request(server).post(url).send(payload).expect(401, done);
+        });
+    });
+
+    describe("given that the credentials are correct", () => {
+        const payload = {
+            email: "islammasraful@gmail.com",
+            password: "password",
+        };
+
+        it("should return 200", (done) => {
+            request(server).post(url).send(payload).expect(200, done);
+        });
+
+        it("should return a token", async () => {
+            try {
+                const res = await request(server).post(url).send(payload);
+                expect(res.body.data[0].token).toBeTruthy();
+            } catch (err) {
+                expect(err).toBeFalsy();
+            }
+        });
     });
 });
 
@@ -54,40 +96,6 @@ class MockData implements ICreateUserDto {
         this.confirm_password = "password";
     }
 }
-
-describe("user login", () => {
-    const url = "/api/v1/auth/login";
-
-    describe("given that the email was unregistered", () => {
-        it("should return 404", (done) => {
-            const payload = {
-                email: "example@email.com",
-                password: "password",
-            };
-            request(server).post(url).send(payload).expect(404, done);
-        });
-    });
-
-    describe("given that the credentials are incorrect", () => {
-        it("should return 400", (done) => {
-            const payload = {
-                email: "islammasraful@gmail.com",
-                password: "incorrect password",
-            };
-            request(server).post(url).send(payload).expect(400, done);
-        });
-    });
-
-    describe("given that the credentials are correct", () => {
-        it("should return 200", (done) => {
-            const payload = {
-                email: "islammasraful@gmail.com",
-                password: "password",
-            };
-            request(server).post(url).send(payload).expect(200, done);
-        });
-    });
-});
 
 describe("user registration", () => {
     describe("register step 1", () => {

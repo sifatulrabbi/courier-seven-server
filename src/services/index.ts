@@ -5,4 +5,3 @@ export * from "./message.service";
 export * from "./parcels.service";
 export * from "./auth.service";
 export * from "./shops.service";
-export * from "./locations.service";

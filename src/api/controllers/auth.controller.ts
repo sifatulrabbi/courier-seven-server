@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { authService } from "../../services";
 import { CustomResponse } from "../../lib";
 import { RESPONSES } from "../../lib/constants";
-// import { IUser } from '../../interfaces';
-// import passport from 'passport';
+import passport from "passport";
+import { IUser } from "../../interfaces";
 
 const { ok, internal, created, unauthorized, badRequest, notFound } =
     CustomResponse;
@@ -42,26 +42,27 @@ class AuthController {
     }
 
     loginPost(req: Request, res: Response, next: NextFunction) {
-        const email = req.body.email;
-        const password = req.body.password;
-        if (!email || !password) {
-            return badRequest(
-                res,
-                "Email address and password should be provided",
-                "invalid email and password field",
-            );
-        }
-        authService.verifyLogin(email, password, (err, user) => {
-            if (err) return next(err);
-            if (!user) {
-                return notFound(
-                    res,
-                    "User not found",
-                    "not user with the email and password",
-                );
-            }
-            ok(res, "Login successful", [user]);
-        });
+        passport.authenticate(
+            "local",
+            { session: false },
+            (err: any, user: Omit<IUser, "password">) => {
+                if (err) {
+                    return unauthorized(res, err.message, err);
+                }
+                if (!user) {
+                    return notFound(res, "User not found", null);
+                }
+
+                req.login(user, (error: any) => {
+                    if (error) return unauthorized(res, error.message, error);
+                    authService.customLogin(user, (e, token) => {
+                        if (e) return internal(res, e.message, e);
+                        if (!token) return internal(res, false, null);
+                        ok(res, "Login successful", [{ token }]);
+                    });
+                });
+            },
+        )(req, res, next);
     }
 
     loginGet(req: Request, res: Response /*, next: NextFunction */) {

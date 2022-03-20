@@ -4,12 +4,7 @@ import { authController } from "../controllers";
 
 const router = Router();
 
-router
-    .route("/register")
-    .post(
-        /* verifyMobileMiddleware, */ checkUserMiddleware,
-        authController.registerGet,
-    );
+router.route("/register").post(checkUserMiddleware, authController.registerGet);
 
 router
     .route("/register/final")
@@ -17,11 +12,8 @@ router
 
 router
     .route("/login")
-    .get(/* verifyMobileMiddleware, */ authController.loginGet)
-    .post(
-        /* verifyMobileMiddleware, */
-        authController.loginPost,
-    );
+    .get(authController.loginGet)
+    .post(authController.loginPost);
 
 router.route("/logout").post(authController.logoutPost);
 

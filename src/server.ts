@@ -34,8 +34,8 @@ ioServer.on("connection", (socket) => {
     });
 });
 
-function prepare() {
-    connectDb();
+async function prepare() {
+    await connectDb();
     runOnDevMode(() => {
         console.log(`Server is running on http://localhost:${config.PORT}`);
     });

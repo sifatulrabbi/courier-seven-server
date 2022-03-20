@@ -16,12 +16,11 @@ class UserController {
 
     getOne(req: Request, res: Response, next: NextFunction) {
         const user = req.user as IUser;
-        const id = req.params.id;
-        if (user._id.toString() !== id) {
+        if (!user._id) {
             return forbidden(res, false, "Incorrect identity");
         }
 
-        usersService.findOne({ id }, (err, result) => {
+        usersService.findOne({ id: user._id.toString() }, (err, result) => {
             if (err) return next(err);
             if (!result) return notFound(res, "User not found", null);
             ok(res, false, [omitUserData(result)]);
@@ -30,13 +29,12 @@ class UserController {
 
     update(req: Request, res: Response, next: NextFunction) {
         const user = req.user as IUser;
-        const id = req.params.id;
-        if (user._id.toString() !== id) {
+        if (!user._id) {
             return forbidden(res, false, "Incorrect identity");
         }
 
         const data = req.body;
-        usersService.update(id, data, (err, result) => {
+        usersService.update(user._id.toString(), data, (err, result) => {
             if (err) return next(err);
             if (!result) return notFound(res, false, null);
             ok(res, "User info updated", [omitUserData(result)]);
@@ -45,12 +43,11 @@ class UserController {
 
     remove(req: Request, res: Response, next: NextFunction) {
         const user = req.user as IUser;
-        const id = req.params.id;
-        if (user._id.toString() !== id) {
+        if (!user._id) {
             return forbidden(res, false, "Incorrect identity");
         }
 
-        usersService.remove(id, (err, result) => {
+        usersService.remove(user._id.toString(), (err, result) => {
             if (err) return next(err);
             if (!result) return notFound(res, false, null);
             req.logout();
