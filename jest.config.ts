@@ -18,5 +18,6 @@ const config: Config.InitialOptions = {
     transformIgnorePatterns: ["/node_modules/", "\\.pnp\\.[^\\/]+$"],
     silent: true,
     detectOpenHandles: true,
+    forceExit: true,
 };
 export default config;
