@@ -1,4 +1,4 @@
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument } from "mongoose";
 
 export interface IOtp {
     _id: string;

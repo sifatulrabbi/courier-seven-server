@@ -1,5 +1,5 @@
-import { IDone } from '../interfaces';
-import locations from '../data/locations.json';
+import { IDone } from "../interfaces";
+import locations from "../data/locations.json";
 
 class LocationsService {
     all(done: IDone<any[]>) {
@@ -40,7 +40,7 @@ class LocationsService {
             (item, index, self) => self.indexOf(item) === index,
         );
 
-        if (!districts) return done(new Error('Invalid division name'));
+        if (!districts) return done(new Error("Invalid division name"));
         done(null, districts);
     }
 
@@ -54,7 +54,7 @@ class LocationsService {
         });
 
         upazilas.sort();
-        if (!upazilas) return done(new Error('Invalid district name'));
+        if (!upazilas) return done(new Error("Invalid district name"));
         done(null, upazilas);
     }
 }

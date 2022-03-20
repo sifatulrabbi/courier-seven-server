@@ -1,5 +1,5 @@
-import type { IParcel } from '../interfaces';
-import mongoose from 'mongoose';
+import type { IParcel } from "../interfaces";
+import mongoose from "mongoose";
 
 const parcelsSchema = new mongoose.Schema<IParcel>(
     {
@@ -44,4 +44,4 @@ const parcelsSchema = new mongoose.Schema<IParcel>(
     },
 );
 
-export const parcelsModel = mongoose.model<IParcel>('parcels', parcelsSchema);
+export const parcelsModel = mongoose.model<IParcel>("parcels", parcelsSchema);

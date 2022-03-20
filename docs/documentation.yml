@@ -1,16 +1,16 @@
 openapi: 3.0.0
 info:
-    version: '1.0.0'
-    title: 'Courier 007 API'
+    version: "1.0.0"
+    title: "Courier 007 API"
 
 servers:
-    - url: 'http://localhost:5007/api/v1'
-      description: 'Local server'
+    - url: "http://localhost:5007/api/v1"
+      description: "Local server"
 
 paths:
     /users:
         get:
-            summary: 'Sample endpoint: Returns details about a particular user'
+            summary: "Sample endpoint: Returns details about a particular user"
             operationId: listAllUsers
             tags:
                 - users
@@ -23,8 +23,8 @@ paths:
                       type: integer
                       format: int32
             responses:
-                '200':
-                    description: 'Sample response: Details about a user by ID'
+                "200":
+                    description: "Sample response: Details about a user by ID"
                     headers:
                         x-next:
                             description: A link to the next page of responses
@@ -33,13 +33,13 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/User'
+                                $ref: "#/components/schemas/User"
                 default:
                     description: Unexpected error
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Error'
+                                $ref: "#/components/schemas/Error"
 
 components:
     schemas:

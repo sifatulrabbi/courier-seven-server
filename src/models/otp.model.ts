@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import { IOtp } from '../interfaces';
+import { Schema, model } from "mongoose";
+import { IOtp } from "../interfaces";
 
 const otpSchema = new Schema<IOtp>({
     token: { type: String, required: true },
@@ -8,4 +8,4 @@ const otpSchema = new Schema<IOtp>({
     expires_at: { type: Date, required: true },
 });
 
-export const otpModel = model<IOtp>('otp', otpSchema);
+export const otpModel = model<IOtp>("otp", otpSchema);

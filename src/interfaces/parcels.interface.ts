@@ -1,6 +1,6 @@
-import { HydratedDocument, Model } from 'mongoose';
-import { IAddress } from './interfaces';
-import { IProductTypes } from './interfaces';
+import { HydratedDocument, Model } from "mongoose";
+import { IAddress } from "./interfaces";
+import { IProductTypes } from "./interfaces";
 
 export interface IParcel {
     _id: string;

@@ -5,7 +5,7 @@ export interface IMail {
     subject: string;
     text: string;
     html?: string;
-    priority?: 'high' | 'low' | 'normal';
+    priority?: "high" | "low" | "normal";
     headers?: any;
 }
 

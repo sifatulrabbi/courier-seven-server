@@ -1,4 +1,4 @@
-import type { ISubscriber, ICallback } from '../interfaces';
+import type { ISubscriber, ICallback } from "../interfaces";
 
 export class EventClass<E, D> {
     subscribers: ISubscriber<E, D>[] = [];

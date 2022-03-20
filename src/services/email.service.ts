@@ -1,8 +1,8 @@
-import type { IMail, IMailSentInfo, IUser } from '../interfaces';
-import nodemailer from 'nodemailer';
-import { transportConfig } from '../configs';
-import { ADMIN_EMAILS, MAIL_SUBJECTS } from '../lib/constants';
-import { runOnDevMode } from '../lib';
+import type { IMail, IMailSentInfo, IUser } from "../interfaces";
+import nodemailer from "nodemailer";
+import { transportConfig } from "../configs";
+import { ADMIN_EMAILS, MAIL_SUBJECTS } from "../lib/constants";
+import { runOnDevMode } from "../lib";
 
 class EmailService {
     private readonly transporter: nodemailer.Transporter;
@@ -10,7 +10,7 @@ class EmailService {
     private readonly senderEmail: string;
 
     private headers = {
-        'X-company': 'Courier Seven',
+        "X-company": "Courier Seven",
     };
 
     constructor() {
@@ -22,12 +22,12 @@ class EmailService {
                 return process.exit(1);
             }
             runOnDevMode(() => {
-                console.log('Ready to send emails');
+                console.log("Ready to send emails");
             });
         });
     }
 
-    async sendMail(mail: Omit<IMail, 'from'>) {
+    async sendMail(mail: Omit<IMail, "from">) {
         try {
             const mailObj: IMail = {
                 ...mail,
@@ -37,7 +37,7 @@ class EmailService {
             const info = await this.transporter.sendMail(mailObj);
             return info;
         } catch (err) {
-            console.error('Error occurred while sending email', err);
+            console.error("Error occurred while sending email", err);
             return null;
         }
     }
@@ -48,7 +48,7 @@ class EmailService {
                 to: ADMIN_EMAILS,
                 subject: MAIL_SUBJECTS.userCreated,
                 text:
-                    'New user created at Courier 007.\nMobile: ' + user.mobile,
+                    "New user created at Courier 007.\nMobile: " + user.mobile,
                 html: `
         <h3 style="">New user details</h3>
         <p>
@@ -70,11 +70,11 @@ class EmailService {
             const mail: IMail = {
                 to: email,
                 subject: `${otp} is the ${MAIL_SUBJECTS.sendOtp}`,
-                text: 'Dear User,\nyour OTP for Courier 007 is: ' + otp,
+                text: "Dear User,\nyour OTP for Courier 007 is: " + otp,
                 html: `
         <p>Dear User,</p>
         <p>Your OTP for Courier 007 is: <code><h2>${otp}</h2></code></p>`,
-                priority: 'high',
+                priority: "high",
                 headers: this.headers,
             };
             const info: IMailSentInfo = await this.sendMail(mail);

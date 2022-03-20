@@ -1,4 +1,4 @@
-import { IDone } from '../interfaces';
+import { IDone } from "../interfaces";
 
 export class PricesCalculator {
     calculatePrice(from: string, to: string, done: IDone<number>) {

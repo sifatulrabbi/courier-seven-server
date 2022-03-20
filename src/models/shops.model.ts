@@ -1,5 +1,5 @@
-import type { IShop } from '../interfaces';
-import mongoose from 'mongoose';
+import type { IShop } from "../interfaces";
+import mongoose from "mongoose";
 
 const shopsSchema = new mongoose.Schema<IShop>({
     owner_id: { type: String, required: true },
@@ -15,4 +15,4 @@ const shopsSchema = new mongoose.Schema<IShop>({
     },
 });
 
-export const shopsModel = mongoose.model<IShop>('user-shops', shopsSchema);
+export const shopsModel = mongoose.model<IShop>("user-shops", shopsSchema);

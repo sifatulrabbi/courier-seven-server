@@ -4,16 +4,16 @@ import type {
     IParcel,
     IDone,
     IParcelDoc,
-} from '../interfaces';
-import { parcelsModel } from '../models';
-import { shopsService } from './shops.service';
+} from "../interfaces";
+import { parcelsModel } from "../models";
+import { shopsService } from "./shops.service";
 
 class ParcelsService {
     // create parcel
     async create(data: ICreateParcelDto, done: IDone<IParcel>) {
         try {
             const shop = await shopsService.findShop(data.shop_id);
-            if (!shop) throw new Error('Shop id invalid');
+            if (!shop) throw new Error("Shop id invalid");
 
             const parcelData: any = { ...data };
             parcelData.shop = {
@@ -93,7 +93,7 @@ class ParcelsService {
         try {
             const query = { shop: { shop_id: shopId } };
             if (invoiceId) {
-                Object.defineProperty(query, 'invoice_id', {
+                Object.defineProperty(query, "invoice_id", {
                     value: invoiceId,
                     writable: false,
                 });

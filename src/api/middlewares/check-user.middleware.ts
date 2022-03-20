@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import { convertMobileNumber, CustomResponse } from '../../lib';
-import { usersService } from '../../services';
+import { Request, Response, NextFunction } from "express";
+import { convertMobileNumber, CustomResponse } from "../../lib";
+import { usersService } from "../../services";
 
 export async function checkUserMiddleware(
     req: Request,
@@ -18,7 +18,7 @@ export async function checkUserMiddleware(
     if (!user) return next();
     CustomResponse.badRequest(
         res,
-        'Mobile/Email in use, please login',
-        'Duplicate error',
+        "Mobile/Email in use, please login",
+        "Duplicate error",
     );
 }

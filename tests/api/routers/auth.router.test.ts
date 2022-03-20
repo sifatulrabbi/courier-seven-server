@@ -1,6 +1,6 @@
-import request from 'supertest';
-import { prepare, server } from '../../../src/server';
-import type { ICreateUserDto } from '../../../src/interfaces/users.interface';
+import request from "supertest";
+import { prepare, server } from "../../../src/server";
+import type { ICreateUserDto } from "../../../src/interfaces/users.interface";
 
 beforeAll((done) => {
     prepare();
@@ -13,57 +13,57 @@ afterAll((done) => {
     });
 });
 
-describe('authRouter /api/v1/auth', () => {
-    it('should return 401 if GET /login', (done) => {
-        request(server).get('/api/v1/auth/login').expect(401, done);
+describe("authRouter /api/v1/auth", () => {
+    it("should return 401 if GET /login", (done) => {
+        request(server).get("/api/v1/auth/login").expect(401, done);
     });
 
-    describe('user login', () => {
-        describe('login with unregistered email', () => {
-            const url = '/api/v1/auth/login';
+    describe("user login", () => {
+        describe("login with unregistered email", () => {
+            const url = "/api/v1/auth/login";
 
-            it('should return 404 for unregistered user', (done) => {
+            it("should return 404 for unregistered user", (done) => {
                 const payload = {
-                    email: 'example@email.com',
-                    password: 'password',
+                    email: "example@email.com",
+                    password: "password",
                 };
                 request(server).post(url).send(payload).expect(404, done);
             });
 
-            it('should return 400 for incorrect password', (done) => {
+            it("should return 400 for incorrect password", (done) => {
                 const payload = {
-                    email: 'islammasraful@gmail.com',
-                    password: 'incorrect password',
+                    email: "islammasraful@gmail.com",
+                    password: "incorrect password",
                 };
                 request(server).post(url).send(payload).expect(400, done);
             });
 
-            it('should return 200 for correct credentials', (done) => {
+            it("should return 200 for correct credentials", (done) => {
                 const payload = {
-                    email: 'islammasraful@gmail.com',
-                    password: 'password',
+                    email: "islammasraful@gmail.com",
+                    password: "password",
                 };
                 request(server).post(url).send(payload).expect(200, done);
             });
         });
     });
 
-    describe('registering user', () => {
-        describe('register step 1', () => {
-            const url = '/api/v1/auth/register';
-            it('should respond with 400 if no email is given', (done) => {
-                request(server).post(url).send({ email: '' }).expect(400, done);
+    describe("registering user", () => {
+        describe("register step 1", () => {
+            const url = "/api/v1/auth/register";
+            it("should respond with 400 if no email is given", (done) => {
+                request(server).post(url).send({ email: "" }).expect(400, done);
             });
 
-            it('should respond with 200 if email is given', (done) => {
-                const email = 'example@email.com';
+            it("should respond with 200 if email is given", (done) => {
+                const email = "example@email.com";
                 request(server).post(url).send({ email }).expect(200, done);
             });
 
-            it('should send a token and opt if an email is given', (done) => {
+            it("should send a token and opt if an email is given", (done) => {
                 request(server)
                     .post(url)
-                    .send({ email: 'example@email.com' })
+                    .send({ email: "example@email.com" })
                     .end((err, res) => {
                         if (err) {
                             done(new Error(err.message));
@@ -76,41 +76,41 @@ describe('authRouter /api/v1/auth', () => {
                     });
             });
 
-            describe('while the email addresses is invalid', () => {
-                it('should response with status code 400', (done) => {
+            describe("while the email addresses is invalid", () => {
+                it("should response with status code 400", (done) => {
                     const payload = {
-                        email: 'example.com',
-                        password: '12345678',
+                        email: "example.com",
+                        password: "12345678",
                     };
                     request(server).post(url).send(payload).expect(400, done);
                 });
             });
         });
 
-        describe('registration step 2', () => {
-            describe('given the otp token is invalid', () => {
-                const url1 = '/api/v1/auth/register';
-                const url2 = '/api/v1/auth/register/final';
+        describe("registration step 2", () => {
+            describe("given the otp token is invalid", () => {
+                const url1 = "/api/v1/auth/register";
+                const url2 = "/api/v1/auth/register/final";
                 const payload = {
-                    email: 'example@example.com',
+                    email: "example@example.com",
                 };
-                let token: string = '123456',
-                    verification_key: string = 'key';
+                let token: string = "123456",
+                    verification_key: string = "key";
 
                 const mockData: ICreateUserDto = {
-                    name: { first: 'first', last: 'last' },
-                    account_type: 'diamond',
+                    name: { first: "first", last: "last" },
+                    account_type: "diamond",
                     email: payload.email,
-                    password: 'password',
-                    confirm_password: 'password',
-                    mobile: '01234567890',
+                    password: "password",
+                    confirm_password: "password",
+                    mobile: "01234567890",
                     address: {
-                        division: 'division',
-                        district: 'district',
-                        area: 'area',
-                        upazila: 'upazila',
-                        street: 'street',
-                        house: 'house',
+                        division: "division",
+                        district: "district",
+                        area: "area",
+                        upazila: "upazila",
+                        street: "street",
+                        house: "house",
                     },
                     verification_key,
                     token,
@@ -130,8 +130,8 @@ describe('authRouter /api/v1/auth', () => {
                     }
                 });
 
-                it('should response with status code 400', async () => {
-                    mockData.token = '123456';
+                it("should response with status code 400", async () => {
+                    mockData.token = "123456";
                     try {
                         const res = await request(server)
                             .post(url2)

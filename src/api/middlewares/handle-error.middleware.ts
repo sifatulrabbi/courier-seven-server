@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
-import { CustomResponse } from '../../lib';
+import { NextFunction, Request, Response } from "express";
+import { CustomResponse } from "../../lib";
 
 export function handleError(
     err: any,
