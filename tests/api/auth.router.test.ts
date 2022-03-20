@@ -7,9 +7,8 @@ import type {
 } from "../../src/interfaces";
 import { usersService } from "../../src/services/users.service";
 
-beforeAll((done) => {
-    prepare();
-    done();
+beforeAll(async () => {
+    await prepare();
 });
 
 afterAll((done) => {
@@ -37,7 +36,7 @@ describe("user login", () => {
                 email: "islammasraful@gmail.com",
                 password: "incorrect password",
             };
-            request(server).post(url).send(payload).expect(400, done);
+            request(server).post(url).send(payload).expect(401, done);
         });
     });
 
@@ -54,7 +53,7 @@ describe("user login", () => {
         it("should return a token", async () => {
             try {
                 const res = await request(server).post(url).send(payload);
-                expect(res.body.token).toBeTruthy();
+                expect(res.body.data[0].token).toBeTruthy();
             } catch (err) {
                 expect(err).toBeFalsy();
             }
