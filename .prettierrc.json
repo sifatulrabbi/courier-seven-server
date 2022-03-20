@@ -1,9 +1,9 @@
 {
-  "tabWidth": 2,
-  "arrowParens": "always",
-  "bracketSpacing": true,
-  "printWidth": 80,
-  "singleQuote": true,
-  "semi": true,
-  "trailingComma": "all"
+    "tabWidth": 4,
+    "arrowParens": "always",
+    "bracketSpacing": true,
+    "printWidth": 80,
+    "singleQuote": true,
+    "semi": true,
+    "trailingComma": "all"
 }

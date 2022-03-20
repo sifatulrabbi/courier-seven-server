@@ -6,11 +6,11 @@ import cookieParse from 'cookie-parser';
 import { prepareSession, preparePassport, config } from '../configs';
 import { showLogs } from '../lib';
 import {
-  authRouter,
-  usersRouter,
-  shopsRouter,
-  parcelsRouter,
-  locationsRouter,
+    authRouter,
+    usersRouter,
+    shopsRouter,
+    parcelsRouter,
+    locationsRouter,
 } from './routers';
 import { handleError, setHeaders } from './middlewares';
 
@@ -20,10 +20,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(
-  cors({
-    origin: config.ORIGINS,
-    credentials: true,
-  }),
+    cors({
+        origin: config.ORIGINS,
+        credentials: true,
+    }),
 );
 app.use(mongoSanitize());
 app.use(cookieParse());

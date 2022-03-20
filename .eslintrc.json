@@ -1,36 +1,36 @@
 {
-  "root": true,
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "sourceType": "module",
-    "ecmaVersion": 2018,
-    "project": "./tsconfig.json"
-  },
-  "plugins": [
-    "eslint-plugin-prettier",
-    "eslint-plugin-import",
-    "@typescript-eslint"
-  ],
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "eslint-config-import",
-    "eslint-config-prettier",
-    "eslint-config-airbnb-typescript/base"
-  ],
-  "ignorePatterns": [
-    "./build/*",
-    "*.d.ts",
-    "*.test.ts",
-    "*.spec.ts",
-    "*.config.*"
-  ],
-  "rules": {
-    "no-console": "off", // not using debugging
-    "no-underscore-dangle": "off", // using snake_case for the database
-    "@typescript-eslint/indent": "off", // sometimes make it hard to indent with prettier
-    "@typescript-eslint/ban-ts-comment": "off", // complicated typings
-    "@typescript-eslint/no-explicit-any": "off" // unwanted warnings
-  }
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": 2018,
+        "project": "./tsconfig.json"
+    },
+    "plugins": [
+        "eslint-plugin-prettier",
+        "eslint-plugin-import",
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "eslint-config-import",
+        "eslint-config-prettier",
+        "eslint-config-airbnb-typescript/base"
+    ],
+    "ignorePatterns": [
+        "./build/*",
+        "*.d.ts",
+        "*.test.ts",
+        "*.spec.ts",
+        "*.config.*"
+    ],
+    "rules": {
+        "no-console": "off", // not using debugging
+        "no-underscore-dangle": "off", // using snake_case for the database
+        "@typescript-eslint/indent": "off", // sometimes make it hard to indent with prettier
+        "@typescript-eslint/ban-ts-comment": "off", // complicated typings
+        "@typescript-eslint/no-explicit-any": "off" // unwanted warnings
+    }
 }
