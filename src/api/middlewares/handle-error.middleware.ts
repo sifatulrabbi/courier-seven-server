@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { CustomResponse } from "../../lib";
+import { CustomResponse, runOnDevMode } from "../../lib";
 
 export function handleError(
     err: any,
@@ -8,5 +8,8 @@ export function handleError(
     next: NextFunction,
 ): void {
     if (!err) return next();
+    runOnDevMode(() => {
+        console.error(err);
+    });
     CustomResponse.badRequest(res, err.message, err);
 }

@@ -4,8 +4,6 @@ import { CustomResponse } from "../../lib";
 import { RESPONSES } from "../../lib/constants";
 import passport from "passport";
 import { IUser } from "../../interfaces";
-import jwt from "jsonwebtoken";
-import { jwtOptions } from "../../configs";
 
 const { ok, internal, created, unauthorized, badRequest } = CustomResponse;
 
@@ -53,16 +51,11 @@ class AuthController {
 
                 req.login(user, (error: any) => {
                     if (error) return unauthorized(res, error.message, error);
-                    try {
-                        const payload = {
-                            sub: user._id,
-                            email: user.email,
-                        };
-                        const token = jwt.sign(payload, "SECRET", jwtOptions);
+                    authService.customLogin(user, (e, token) => {
+                        if (e) return internal(res, e.message, e);
+                        if (!token) return internal(res, false, null);
                         ok(res, "Login successful", [{ token }]);
-                    } catch (e: any) {
-                        unauthorized(res, e.message, e);
-                    }
+                    });
                 });
             },
         )(req, res, next);

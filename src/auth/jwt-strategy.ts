@@ -6,11 +6,9 @@ import { config } from "../configs";
 const options: StrategyOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: "SECRET",
-    algorithms: ["ES256"],
     ignoreExpiration: false,
     jsonWebTokenOptions: {
         maxAge: config.JWT_MAX_AGE,
-        algorithms: ["ES256"],
     },
 };
 

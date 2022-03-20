@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { checkUserMiddleware } from "../middlewares";
 import { authController } from "../controllers";
-import passport from "passport";
 
 const router = Router();
 
@@ -14,7 +13,7 @@ router
 router
     .route("/login")
     .get(authController.loginGet)
-    .post(passport.authenticate("jwt", { session: false }));
+    .post(authController.loginPost);
 
 router.route("/logout").post(authController.logoutPost);
 
