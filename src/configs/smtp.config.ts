@@ -9,7 +9,11 @@ if (!config.SMTP_EMAIL || !config.SMTP_PASSWORD) {
 
 export const transportConfig = {
     host: "smtp.gmail.com",
-    port: 465,
+    /**
+     * update SMTP port from 465 to 587
+     * learn more https://www.mailgun.com/blog/which-smtp-port-understanding-ports-25-465-587/
+     */
+    port: config.PROD ? 587 : 465,
     secure: true,
     auth: {
         user: config.SMTP_EMAIL,
