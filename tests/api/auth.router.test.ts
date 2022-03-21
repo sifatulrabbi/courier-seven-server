@@ -80,7 +80,6 @@ class MockData implements ICreateUserDto {
     constructor(email: string, verification_key: string, token: string) {
         this.account_type = "diamond";
         this.address = {
-            division: "division",
             district: "district",
             upazila: "upazila",
             area: "area",

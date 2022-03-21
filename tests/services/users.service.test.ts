@@ -10,7 +10,6 @@ let mockData: ICreateUserDto = {
     confirm_password: "password",
     mobile: "01234567890",
     address: {
-        division: "division",
         district: "district",
         area: "area",
         upazila: "upazila",
