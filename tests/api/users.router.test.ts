@@ -72,7 +72,7 @@ describe("get user profile", () => {
                     const res = await request(server)
                         .post("/api/v1/auth/login")
                         .send(payload);
-                    token = res.body.data[0].token;
+                    token = res.body.data.token;
                 } catch (err) {
                     expect(err).toBeFalsy();
                 }
@@ -97,7 +97,7 @@ describe("get user profile", () => {
                     })
                     .end((err, res) => {
                         expect(err).toBeFalsy();
-                        const data = res.body.data[0];
+                        const data = res.body.data;
                         expect(data.name).toBeTruthy();
                         expect(data.shops.data).toBeTruthy();
                         expect(data.payments).toBeTruthy();

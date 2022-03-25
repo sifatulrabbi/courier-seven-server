@@ -21,12 +21,10 @@ class AuthController {
         authService.sendVerificationOtp(email, (err, otp) => {
             if (err) return next(err);
             if (!otp) return next(new Error("Unable to create OTP"));
-            ok(res, RESPONSES.otpSent, [
-                {
-                    token: otp.token,
-                    verification_key: otp.verificationKey,
-                },
-            ]);
+            ok(res, RESPONSES.otpSent, {
+                token: otp.token,
+                verification_key: otp.verificationKey,
+            });
         });
     }
 
@@ -37,7 +35,7 @@ class AuthController {
             if (!user) {
                 return internal(res, "Unable to create user", null);
             }
-            created(res, "User registered", [user]);
+            created(res, "User registered", user);
         });
     }
 
@@ -58,7 +56,7 @@ class AuthController {
                     authService.customLogin(user, (e, token) => {
                         if (e) return internal(res, e.message, e);
                         if (!token) return internal(res, false, null);
-                        ok(res, "Login successful", [{ token }]);
+                        ok(res, "Login successful", { token });
                     });
                 });
             },
@@ -76,7 +74,7 @@ class AuthController {
 
     logoutPost(req: Request, res: Response) {
         req.logout();
-        ok(res, "Logout successful", []);
+        ok(res, "Logout successful");
     }
 }
 

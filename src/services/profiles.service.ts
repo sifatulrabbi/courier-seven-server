@@ -8,7 +8,11 @@ class ProfilesService {
 
             const user = await usersService.findOne({ id: userId });
             if (!user) throw new Error("User not found");
-            Object.assign(profile, { name: user.name });
+            Object.assign(profile, {
+                name: user.name,
+                email: user.email,
+                mobile: user.mobile,
+            });
             Object.assign(profile, { shops: { total: 0, data: [] } });
 
             shopsService.findUsersShop({ userId }, (err, shops) => {

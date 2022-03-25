@@ -1,16 +1,20 @@
 import { Router } from "express";
 import { shopsController } from "../controllers";
+import { authInterceptor } from "../middlewares";
 
 const router = Router();
 
-router.route("/all").get(shopsController.getAll);
+router.route("/all").get(authInterceptor, shopsController.getAll);
 
 router
     .route("/:id")
-    .get(shopsController.getOne)
-    .put(shopsController.update)
-    .delete(shopsController.remove);
+    .get(authInterceptor, shopsController.getOne)
+    .put(authInterceptor, shopsController.update)
+    .delete(authInterceptor, shopsController.remove);
 
-router.route("/").get(shopsController.getByUser).post(shopsController.create);
+router
+    .route("/")
+    .get(authInterceptor, shopsController.getByUser)
+    .post(authInterceptor, shopsController.create);
 
 export const shopsRouter = router;

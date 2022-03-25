@@ -52,7 +52,7 @@ describe("user login", () => {
         it("should return a token", async () => {
             try {
                 const res = await request(server).post(url).send(payload);
-                expect(res.body.data[0].token).toBeTruthy();
+                expect(res.body.data.token).toBeTruthy();
             } catch (err) {
                 expect(err).toBeFalsy();
             }
@@ -129,7 +129,7 @@ describe("user registration", () => {
                             done(new Error(err.message));
                             return;
                         }
-                        const data = res.body.data[0];
+                        const data = res.body.data;
                         data.token && data.verification_key
                             ? done()
                             : done(
@@ -148,8 +148,8 @@ describe("user registration", () => {
         beforeEach(async () => {
             try {
                 const res = await request(server).post(url1).send(payload);
-                const token = res.body.data[0].token;
-                const verification_key = res.body.data[0].verification_key;
+                const token = res.body.data.token;
+                const verification_key = res.body.data.verification_key;
                 mockData = new MockData(payload.email, verification_key, token);
                 expect(token).toBeTruthy();
                 expect(verification_key).toBeTruthy();
@@ -183,8 +183,8 @@ describe("user registration", () => {
                 try {
                     const res = await request(server).post(url2).send(mockData);
                     expect(res.body.data).toBeTruthy();
-                    if (res.body.data[0]._id) {
-                        userId = res.body.data[0]._id.toString();
+                    if (res.body.data._id) {
+                        userId = res.body.data._id.toString();
                     } else throw new Error("not user id found");
                 } catch (err) {
                     expect(err).toBeFalsy();
