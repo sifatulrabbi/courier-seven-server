@@ -19,7 +19,8 @@ describe("get user profile", () => {
             request(server)
                 .get(url)
                 .end((err, res) => {
-                    expect(err).toBeTruthy();
+                    expect(err).toBeFalsy();
+                    expect(res.status).toBe(404);
                     done();
                 });
         });
@@ -35,6 +36,7 @@ describe("get user profile", () => {
                             "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MjJiODU4ZmQ3NmYxNzBmYTMyZTgwNjQiLCJlbWFpbCI6ImlzbGFtbWFzcmFmdWxAZ21haWwuY29tIiwiaWF0IjoxNjQ3ODg4ODgzLCJleHAiOjE2NDc5MjQ4ODN9.DIQ-lMHJcXrP4IDlx-JA1446fQJ-kSXBjWnzd5392pA",
                     })
                     .end((err, res) => {
+                        if (err) return done(err);
                         expect(res.status).toBe(401);
                         done();
                     });
@@ -51,7 +53,51 @@ describe("get user profile", () => {
                             "Bearer eyJhbGciOiJIUzI1NiIs.eyJzdWIiOiI2MjJiODU4ZmQ3NmYxNzBmYTMy.DIQ-lMHJcXrP4IDlx-JA1446fQJ-kSXBjWnzd7892pA",
                     })
                     .end((err, res) => {
+                        if (err) return done(err);
                         expect(res.status).toBe(401);
+                        done();
+                    });
+            });
+        });
+
+        describe("given that the token is valid", () => {
+            let token: string;
+            const payload = {
+                email: "islammasraful@gmail.com",
+                password: "password",
+            };
+
+            beforeEach(async () => {
+                try {
+                    const res = await request(server)
+                        .post("/api/v1/auth/login")
+                        .send(payload);
+                    token = res.body.data[0].token;
+                } catch (err) {
+                    expect(err).toBeFalsy();
+                }
+            });
+
+            it("should return 200", (done) => {
+                request(server)
+                    .get(url)
+                    .set({
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    })
+                    .expect(200, done);
+            });
+
+            it("should return user data", (done) => {
+                request(server)
+                    .get(url)
+                    .set({
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    })
+                    .end((err, res) => {
+                        expect(err).toBeFalsy();
+                        expect(res.body.data[0].name.first).toBeTruthy();
                         done();
                     });
             });
