@@ -1,7 +1,7 @@
 import type { IUser } from "../../interfaces";
 import { Request, Response, NextFunction } from "express";
 import { CustomResponse, omitUserData } from "../../lib";
-import { usersService } from "../../services";
+import { usersService, profilesService } from "../../services";
 
 const { ok, notFound, forbidden } = CustomResponse;
 
@@ -20,10 +20,10 @@ class UserController {
             return forbidden(res, false, "Incorrect identity");
         }
 
-        usersService.findOne({ id: user._id.toString() }, (err, result) => {
+        profilesService.getProfile(user._id, (err, profile) => {
             if (err) return next(err);
-            if (!result) return notFound(res, "User not found", null);
-            ok(res, false, [omitUserData(result)]);
+            if (!profile) return notFound(res, "User not found", null);
+            ok(res, false, [profile]);
         });
     }
 

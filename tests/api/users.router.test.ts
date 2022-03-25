@@ -97,7 +97,10 @@ describe("get user profile", () => {
                     })
                     .end((err, res) => {
                         expect(err).toBeFalsy();
-                        expect(res.body.data[0].name.first).toBeTruthy();
+                        const data = res.body.data[0];
+                        expect(data.name).toBeTruthy();
+                        expect(data.shops.data).toBeTruthy();
+                        expect(data.payments).toBeTruthy();
                         done();
                     });
             });

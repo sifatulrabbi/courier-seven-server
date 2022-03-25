@@ -16,7 +16,7 @@ const config: Config.InitialOptions = {
     ],
     testPathIgnorePatterns: ["/node_modules/"],
     transformIgnorePatterns: ["/node_modules/", "\\.pnp\\.[^\\/]+$"],
-    silent: false,
+    silent: true,
     detectOpenHandles: true,
     forceExit: true,
 };
