@@ -1,6 +1,6 @@
 {
     "name": "courier-007-api",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "main": "build/server.js",
     "repository": {
         "url": "git@github.com:Courier-007/api.git",
