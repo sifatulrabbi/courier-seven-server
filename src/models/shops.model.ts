@@ -8,7 +8,7 @@ const shopsSchema = new mongoose.Schema<IShop>({
     email: { type: String },
     address: {
         district: { type: String, required: true },
-        sub_district: { type: String, required: true },
+        upazila: { type: String, required: true },
         area: { type: String, required: true },
         street: { type: String, required: true },
         house: { type: String, required: true },

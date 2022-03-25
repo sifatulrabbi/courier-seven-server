@@ -25,7 +25,7 @@ class ShopsController {
                     null,
                 );
             }
-            created(res, "Shop created", [shop]);
+            created(res, "Shop created", shop);
         });
     }
 
@@ -39,7 +39,7 @@ class ShopsController {
             if (!shop) {
                 return notFound(res, "Shop not found", null);
             }
-            ok(res, "Shop updated", [shop]);
+            ok(res, "Shop updated", shop);
         });
     }
 
@@ -51,7 +51,7 @@ class ShopsController {
             if (!shop) {
                 return notFound(res, "Shop not found", null);
             }
-            ok(res, "Shop removed", [shop]);
+            ok(res, "Shop removed", shop);
         });
     }
 
@@ -92,7 +92,7 @@ class ShopsController {
             if (!shop) {
                 return notFound(res, "User not found", null);
             }
-            ok(res, false, [shop]);
+            ok(res, false, shop);
         });
     }
 }

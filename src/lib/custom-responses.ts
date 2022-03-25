@@ -5,13 +5,12 @@ export class CustomResponse {
         private res: Response,
         private statusCode: number,
         private message: string,
-        private data: unknown[] | null,
+        private data: unknown | null,
         private errors: unknown,
     ) {
         this.res.status(this.statusCode).json({
             statusCode: this.statusCode,
             message: this.message,
-            data_count: this.data ? this.data.length : 0,
             data: this.data,
             errors: this.errors,
         });
@@ -20,7 +19,7 @@ export class CustomResponse {
     static ok(
         res: Response,
         message: string | false,
-        data: unknown[] | null = null,
+        data: unknown | null = null,
     ) {
         new CustomResponse(res, 200, message ? message : "Ok", data, null);
     }
@@ -28,7 +27,7 @@ export class CustomResponse {
     static created(
         res: Response,
         message: string | false,
-        data: unknown[] | null = null,
+        data: unknown | null = null,
     ) {
         new CustomResponse(res, 201, message ? message : "Created", data, null);
     }

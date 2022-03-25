@@ -23,7 +23,7 @@ class UserController {
         profilesService.getProfile(user._id, (err, profile) => {
             if (err) return next(err);
             if (!profile) return notFound(res, "User not found", null);
-            ok(res, false, [profile]);
+            ok(res, false, profile);
         });
     }
 
@@ -37,7 +37,7 @@ class UserController {
         usersService.update(user._id.toString(), data, (err, result) => {
             if (err) return next(err);
             if (!result) return notFound(res, false, null);
-            ok(res, "User info updated", [omitUserData(result)]);
+            ok(res, "User info updated", omitUserData(result));
         });
     }
 
@@ -51,7 +51,7 @@ class UserController {
             if (err) return next(err);
             if (!result) return notFound(res, false, null);
             req.logout();
-            ok(res, result, []);
+            ok(res, result);
         });
     }
 }

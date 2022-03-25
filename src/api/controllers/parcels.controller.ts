@@ -49,7 +49,7 @@ export class ParcelsController {
         parcelsService.create(data, (err, parcel) => {
             if (err) return next(err);
             if (!parcel) return notFound(res, false, null);
-            created(res, false, [parcel]);
+            created(res, false, parcel);
         });
     }
 
@@ -57,7 +57,7 @@ export class ParcelsController {
         parcelsService.findOne(req.params.id, (err, parcel) => {
             if (err) return next(err);
             if (!parcel) return notFound(res, false, null);
-            ok(res, false, [parcel]);
+            ok(res, false, parcel);
         });
     }
 
@@ -66,7 +66,7 @@ export class ParcelsController {
         parcelsService.update(req.params.id, data, (err, parcel) => {
             if (err) return next(err);
             if (!parcel) return notFound(res, false, null);
-            ok(res, false, [parcel]);
+            ok(res, false, parcel);
         });
     }
 
@@ -74,7 +74,7 @@ export class ParcelsController {
         parcelsService.remove(req.params.id, (err, parcel) => {
             if (err) return next(err);
             if (!parcel) return notFound(res, "Parcel not found", null);
-            ok(res, "Parcel removed", [parcel]);
+            ok(res, "Parcel removed", parcel);
         });
     }
 }
